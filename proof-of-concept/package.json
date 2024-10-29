@@ -1,0 +1,19 @@
+{
+  "name": "proof-of-concept",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Proof of Concepts for Omni-Index",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.8.2",
+    "rxjs": "^7.8.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
