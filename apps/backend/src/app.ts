@@ -7,8 +7,9 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import autoLoadPlugin from "@fastify/autoload";
 import corsPlugin from "@fastify/cors";
 import jwtPlugin from "@fastify/jwt";
-import mongodbPlugin from "@fastify/mongodb";
 import authPlugin from "@fastify/auth";
+import fastifyRacingPlugin from "fastify-racing";
+import { env } from "./env";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -26,13 +27,11 @@ app.register(jwtPlugin, {
   secret: process.env.JWT_SECRET!,
 });
 
-app.register(mongodbPlugin, {
-  url: process.env.MONGODB_URI,
-  database: "inventory-manager",
-  forceClose: true,
-});
-
 app.register(authPlugin);
+
+app.register(fastifyRacingPlugin, {
+  handleError: true,
+});
 
 await app.register(fastifySwagger, {
   swagger: {
@@ -86,7 +85,7 @@ app.after(() => {
 
 app
   .listen({
-    port: process.env.PORT ? Number(process.env.PORT) : 8080,
+    port: env.PORT,
   })
   .then(() => {
     const address = app.server.address();

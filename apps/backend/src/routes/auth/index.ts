@@ -1,9 +1,10 @@
 import { Type } from "@sinclair/typebox";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { ObjectId } from "@fastify/mongodb";
+import { OAuthClient } from "@atproto/oauth-client-node";
 
 import { Item, ITEMS_COLLECTION } from "~/entities/item";
 import { User, USERS_COLLECTION } from "~/entities/user";
+import { ObjectId } from "mongodb";
 
 const RequestSchema = Type.Object({
   userId: Type.String({ format: "uuid" }),
@@ -45,33 +46,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
         },
       },
     },
-    async (request) => {
-      const { userId, permissions } = request.body;
-      const token = app.jwt.sign({
-        sub: userId,
-        permissions,
-      });
-
-      const users = app.mongo.db!.collection<User>(USERS_COLLECTION);
-
-      const isNewUser = !(await users.countDocuments({
-        id: userId,
-      }));
-
-      if (isNewUser) {
-        await users.insertOne({
-          id: userId,
-        });
-        await app.mongo.db!.collection<Item>(ITEMS_COLLECTION).insertMany(
-          defaultItems.map((item) => ({
-            ...item,
-            userId,
-          }))
-        );
-      }
-
-      return { token };
-    }
+    async (request) => {}
   );
 };
 

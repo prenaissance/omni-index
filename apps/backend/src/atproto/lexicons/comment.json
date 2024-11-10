@@ -1,0 +1,11 @@
+{
+  "lexicon": 1,
+  "id": "com.omni-index.comment",
+  "description": "Comment left by the user",
+  "defs": {
+    "main": {
+      "type": "record",
+      "required": []
+    }
+  }
+}
