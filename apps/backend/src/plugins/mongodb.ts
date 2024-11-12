@@ -1,10 +1,11 @@
 import { FastifyPluginAsync } from "fastify";
+import fastifyPlugin from "fastify-plugin";
 import { MongoClient } from "mongodb";
 import { env } from "~/env";
 
 declare module "fastify" {
   interface FastifyInstance {
-    mongo: MongoClient;
+    readonly mongo: MongoClient;
   }
 }
 
@@ -18,4 +19,6 @@ const mongodbPlugin: FastifyPluginAsync = async (app) => {
   app.decorate("mongo", client);
 };
 
-export default mongodbPlugin;
+export default fastifyPlugin(mongodbPlugin, {
+  name: "mongodb",
+});

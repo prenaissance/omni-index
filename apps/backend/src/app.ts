@@ -10,6 +10,8 @@ import jwtPlugin from "@fastify/jwt";
 import authPlugin from "@fastify/auth";
 import fastifyRacingPlugin from "fastify-racing";
 import { env } from "./env";
+import formbodyPlugin from "@fastify/formbody";
+import secureSessionPlugin from "@fastify/secure-session";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -23,11 +25,21 @@ app.register(corsPlugin, {
   credentials: true,
 });
 
-app.register(jwtPlugin, {
-  secret: process.env.JWT_SECRET!,
+app.register(secureSessionPlugin, {
+  key: env.SECRET_KEY,
+  expiry: 60 * 60 * 24 * 7,
+  cookie: {
+    path: "/",
+  },
 });
 
+// app.register(jwtPlugin, {
+//   secret: process.env.JWT_SECRET!,
+// });
+
 app.register(authPlugin);
+
+app.register(formbodyPlugin);
 
 app.register(fastifyRacingPlugin, {
   handleError: true,

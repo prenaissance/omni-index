@@ -1,5 +1,5 @@
 import { NodeOAuthClient } from "@atproto/oauth-client-node";
-import { Db } from "mongodb";
+import type { Db } from "mongodb";
 import { env } from "~/env";
 import { MongoSessionStore, MongoStateStore } from "./storage";
 
@@ -12,9 +12,9 @@ export const createOAuthClient = async (db: Db) => {
       client_name: "Omni-Index",
       client_id: publicUrl
         ? `${url}/client-metadata.json`
-        : `http://localhost?redirect_uri=${encodeURIComponent(`${url}/oauth/callback`)}&scope=${encodeURIComponent("atproto transition:generic")}`,
+        : `http://localhost?redirect_uri=${encodeURIComponent(`${url}/api/oauth/callback`)}&scope=${encodeURIComponent("atproto transition:generic")}`,
       client_uri: url,
-      redirect_uris: [`${url}/auth/callback`],
+      redirect_uris: [`${url}/api/oauth/callback`],
       scope: "atproto transition:generic",
       grant_types: ["authorization_code", "refresh_token"],
       response_types: ["code"],

@@ -1,5 +1,12 @@
 import { fastifyPlugin } from "fastify-plugin";
 import type { FastifyAuthFunction } from "@fastify/auth";
+import { type AtprotoDid } from "@atproto/oauth-client-node";
+
+declare module "@fastify/secure-session" {
+  interface SessionData {
+    did: AtprotoDid;
+  }
+}
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -13,58 +20,30 @@ declare module "fastify" {
 
 const authenticationStrategies = fastifyPlugin(async (app) => {
   app.decorate("verifyAuthenticated", async (request, reply, done) => {
-    if (!request.headers.authorization) {
+    if (!request.atproto) {
       return await reply.code(401).send({
         message: "Unauthorized",
       });
     }
-    const data = app.jwt.verify<any>(
-      request.headers.authorization.replace("Bearer ", "")
-    );
-    if (!data) {
-      return await reply.code(401).send({
-        message: "Unauthorized",
-      });
-    }
-
-    request.identity = {
-      sub: data.sub,
-      permissions: data.permissions,
-    };
-
     done();
   });
 
   app.decorate("verifyPermissions", (permissions: string[]) => {
     return async (request, reply, done) => {
-      if (!request.headers.authorization) {
-        return await reply.code(401).send({
-          message: "Unauthorized",
-        });
-      }
-      const data = app.jwt.verify<any>(
-        request.headers.authorization.replace("Bearer ", "")
-      );
-      if (!data) {
+      if (!request.atproto) {
         return await reply.code(401).send({
           message: "Unauthorized",
         });
       }
 
       if (
-        !permissions.every((permission) =>
-          data.permissions.includes(permission)
-        )
+        // TODO: Add permissions from DB
+        false
       ) {
         return await reply.code(403).send({
           message: "Forbidden",
         });
       }
-
-      request.identity = {
-        sub: data.sub,
-        permissions: data.permissions,
-      };
 
       done();
     };
