@@ -69,6 +69,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
       new URLSearchParams(request.query as Record<string, string>)
     );
     const { did } = session;
+    request.log.info({ did }, "Authenticated");
     request.session.set("did", did);
 
     return reply.redirect(env.FRONTEND_URL);
