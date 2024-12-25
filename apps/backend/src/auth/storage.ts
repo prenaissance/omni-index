@@ -28,7 +28,7 @@ export class MongoStateStore implements NodeSavedStateStore {
           key,
         },
       },
-      { upsert: true }
+      { upsert: true },
     );
   }
 
@@ -68,7 +68,7 @@ export class MongoSessionStore implements NodeSavedSessionStore {
       },
       {
         upsert: true,
-      }
+      },
     );
   }
 

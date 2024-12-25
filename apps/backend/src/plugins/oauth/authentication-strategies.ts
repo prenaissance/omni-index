@@ -8,13 +8,15 @@ declare module "@fastify/secure-session" {
   }
 }
 
+export type RequestUser = unknown;
+
 declare module "fastify" {
   interface FastifyInstance {
     verifyAuthenticated: FastifyAuthFunction;
     verifyPermissions: (permissions: string[]) => FastifyAuthFunction;
   }
   interface FastifyRequest {
-    identity: any;
+    identity: RequestUser;
   }
 }
 
@@ -38,6 +40,7 @@ const authenticationStrategies = fastifyPlugin(async (app) => {
 
       if (
         // TODO: Add permissions from DB
+        // eslint-disable-next-line no-constant-condition
         false
       ) {
         return await reply.code(403).send({
