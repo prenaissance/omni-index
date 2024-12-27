@@ -30,9 +30,10 @@ const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "/login",
     {
       schema: {
+        tags: ["auth"],
         body: Type.Ref(LoginRequestSchema),
         response: {
-          // 200: Type.Ref(LoginResponseSchema),
+          302: Type.Null(),
           404: Type.Object({
             message: Type.String(),
           }),
@@ -64,16 +65,24 @@ const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
     }
   );
 
-  app.get("/callback", async (request, reply) => {
-    const { session } = await app.oauth.callback(
-      new URLSearchParams(request.query as Record<string, string>)
-    );
-    const { did } = session;
-    request.log.info({ did }, "Authenticated");
-    request.session.set("did", did);
+  app.get(
+    "/callback",
+    {
+      schema: {
+        tags: ["auth"],
+      },
+    },
+    async (request, reply) => {
+      const { session } = await app.oauth.callback(
+        new URLSearchParams(request.query as Record<string, string>)
+      );
+      const { did } = session;
+      request.log.info({ did }, "Authenticated");
+      request.session.set("did", did);
 
-    return reply.redirect(env.FRONTEND_URL);
-  });
+      return reply.redirect(env.FRONTEND_URL);
+    }
+  );
 };
 
 export default authRoutes;

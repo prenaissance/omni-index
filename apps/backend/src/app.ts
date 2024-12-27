@@ -2,16 +2,16 @@ import path from "path";
 import Fastify from "fastify";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 
-import fastifySwagger from "@fastify/swagger";
-import fastifySwaggerUi from "@fastify/swagger-ui";
+import { fastifySwagger } from "@fastify/swagger";
+import { fastifySwaggerUi } from "@fastify/swagger-ui";
 import autoLoadPlugin from "@fastify/autoload";
 import corsPlugin from "@fastify/cors";
 import jwtPlugin from "@fastify/jwt";
 import authPlugin from "@fastify/auth";
 import fastifyRacingPlugin from "fastify-racing";
-import { env } from "./env";
 import formbodyPlugin from "@fastify/formbody";
 import secureSessionPlugin from "@fastify/secure-session";
+import { env } from "./env";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);

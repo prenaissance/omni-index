@@ -2,7 +2,7 @@ import { Agent } from "@atproto/api";
 import { NodeOAuthClient } from "@atproto/oauth-client-node";
 import { FastifyPluginAsync } from "fastify";
 import { fastifyPlugin } from "fastify-plugin";
-import { createOAuthClient } from "~/auth/oauth-client";
+import { createOAuthClient } from "~/common/auth/oauth-client";
 
 declare module "fastify" {
   interface FastifyInstance {

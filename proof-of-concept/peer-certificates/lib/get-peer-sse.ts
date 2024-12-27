@@ -6,8 +6,8 @@ export const getPeerSse = async (
   url: string | URL,
   checkServerIdentity?: (
     hostname: string,
-    cert: PeerCertificate,
-  ) => Error | undefined,
+    cert: PeerCertificate
+  ) => Error | undefined
 ) => {
   const response = request(url, {
     method: "GET",
@@ -28,7 +28,7 @@ export const getPeerSse = async (
       });
 
       response.once("error", reject);
-    },
+    }
   );
 
   return {

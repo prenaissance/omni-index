@@ -1,3 +1,5 @@
+import { BlobLink } from "./blob-link";
+
 export type Index = {
   /**
    * The third party host of the media
@@ -11,7 +13,7 @@ export type Index = {
    * Size of the media in bytes
    */
   size?: number;
-  url: string;
+  blob: BlobLink;
 };
 
 export type Media = {

@@ -1,6 +1,6 @@
-import { Db, ObjectId, WithId } from "mongodb";
-import { BlobLink } from "./blob-link";
 import crypto from "node:crypto";
+import { Db, WithId } from "mongodb";
+import { BlobLink } from "./blob-link";
 import { Media } from "./media";
 
 export const ENTRY_COLLECTION = "entries";
@@ -12,7 +12,7 @@ export type Entry = {
   year?: number;
   language?: string;
   description?: string;
-  thumbnail: BlobLink;
+  thumbnail?: BlobLink;
   /** UTC timestamp */
   createdAt: Date;
   /** UTC timestamp */
