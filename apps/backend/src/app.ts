@@ -12,6 +12,7 @@ import fastifyRacingPlugin from "fastify-racing";
 import formbodyPlugin from "@fastify/formbody";
 import secureSessionPlugin from "@fastify/secure-session";
 import { env } from "./env";
+import { commonPayloadsPlugin } from "./common/payloads/_plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -79,6 +80,8 @@ app.register(autoLoadPlugin, {
 app.register(fastifySwaggerUi, {
   routePrefix: "/swagger",
 });
+
+app.register(commonPayloadsPlugin);
 
 // graceful shutdown
 const listeners = ["SIGINT", "SIGTERM"] as const;

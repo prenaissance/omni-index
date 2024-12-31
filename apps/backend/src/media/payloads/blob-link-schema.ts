@@ -9,7 +9,7 @@ export const HotLinkUrlSchema = Type.Object(
     }),
   },
   {
-    $id: "HotLinkUrlSchema",
+    $id: "HotLinkUrl",
   }
 );
 export const IPFSLinkSchema = Type.Object(
@@ -23,10 +23,10 @@ export const IPFSLinkSchema = Type.Object(
     }),
   },
   {
-    $id: "IPFSLinkSchema",
+    $id: "IPFSLink",
   }
 );
 
 export const BlobLinkSchema = Type.Union([HotLinkUrlSchema, IPFSLinkSchema], {
-  $id: "BlobLinkSchema",
+  $id: "BlobLink",
 }) satisfies { static: BlobLink };
