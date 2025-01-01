@@ -45,6 +45,8 @@ export default tseslint.config([
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/consistent-type-definitions": "off",
       "@typescript-eslint/no-unused-vars": "warn",
+      // for react-router, ignoring the path does not work
+      "@typescript-eslint/no-namespace": "off",
 
       "no-empty-pattern": "off",
     },

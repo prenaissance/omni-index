@@ -1,6 +1,6 @@
-import { getPeerSse } from "./lib/get-peer-sse";
 import tls from "node:tls";
 import fs from "fs/promises";
+import { getPeerSse } from "./lib/get-peer-sse";
 
 const fingerprint = await fs.readFile("certificate.sha256", "utf8");
 const trustedFingerprints = new Map([["echo.websocket.org", fingerprint]]);

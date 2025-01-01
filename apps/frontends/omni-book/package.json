@@ -6,7 +6,8 @@
     "build": "cross-env NODE_ENV=production react-router build",
     "dev": "react-router dev",
     "start": "cross-env NODE_ENV=production react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "codegen": "openapi-typescript http://localhost:8080/swagger/json --output app/lib/api-types.ts --enum --root-types && pnpm -w lint:fix"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.1",
@@ -30,6 +31,7 @@
     "@types/react-dom": "^19.0.2",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
+    "openapi-typescript": "^7.4.4",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
     "typescript": "^5.7.2",
