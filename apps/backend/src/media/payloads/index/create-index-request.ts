@@ -1,8 +1,7 @@
 import { Static, Type } from "@sinclair/typebox";
-import { WithoutId } from "mongodb";
-import { Index } from "../entities/entry";
-import { BlobLinkSchema } from "./blob-link-schema";
-import { MetadataSchema } from "~/common/payloads/metadata";
+import { BlobLinkSchema } from "../blob-link-schema";
+import { IndexInit } from "~/media/entities";
+import { MetadataSchema } from "~/common/payloads/metadata-schema";
 
 export const CreateIndexRequest = Type.Object(
   {
@@ -15,6 +14,6 @@ export const CreateIndexRequest = Type.Object(
   {
     $id: "CreateIndexRequest",
   }
-) satisfies { static: WithoutId<Index> };
+) satisfies { static: IndexInit };
 
 export type CreateIndexRequest = Static<typeof CreateIndexRequest>;

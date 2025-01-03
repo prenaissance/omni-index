@@ -1,6 +1,6 @@
 import { Static, Type } from "@sinclair/typebox";
+import { CreateMediaRequest } from "../media/create-media-request";
 import { EntrySchema } from "./entry-schema";
-import { CreateMediaRequest } from "./create-media-request";
 
 export const CreateEntryRequest = Type.Intersect(
   [

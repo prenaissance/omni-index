@@ -13,6 +13,11 @@ import formbodyPlugin from "@fastify/formbody";
 import secureSessionPlugin from "@fastify/secure-session";
 import { env } from "./env";
 import { commonPayloadsPlugin } from "./common/payloads/_plugin";
+import { mediaPlugin } from "./media/_plugin";
+import { eventEmitterPlugin } from "./common/events/_plugin";
+import { mongodbPlugin } from "./common/mongodb/plugins/mongodb-plugin";
+import { atprotoOAuthPlugin } from "./common/auth/plugins/atproto-oauth-plugin";
+import { authenticationStrategiesPlugin } from "./common/auth/plugins/authentication-strategies-plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -68,20 +73,23 @@ await app.register(fastifySwagger, {
   },
 });
 
-app.register(autoLoadPlugin, {
-  dir: path.join(__dirname, "plugins"),
-});
-
-app.register(autoLoadPlugin, {
-  dir: path.join(__dirname, "routes"),
-  options: { prefix: "/api" },
-});
-
 app.register(fastifySwaggerUi, {
   routePrefix: "/swagger",
 });
 
+app.register(mongodbPlugin);
+app.register(atprotoOAuthPlugin);
+app.register(authenticationStrategiesPlugin);
+
 app.register(commonPayloadsPlugin);
+app.register(eventEmitterPlugin);
+app.register(mediaPlugin);
+
+app.register(autoLoadPlugin, {
+  dir: path.join(__dirname, "routes"),
+  routeParams: true,
+  options: { prefix: "/api" },
+});
 
 // graceful shutdown
 const listeners = ["SIGINT", "SIGTERM"] as const;

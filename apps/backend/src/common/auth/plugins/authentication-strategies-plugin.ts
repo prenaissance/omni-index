@@ -20,7 +20,7 @@ declare module "fastify" {
   }
 }
 
-const authenticationStrategies = fastifyPlugin(async (app) => {
+export const authenticationStrategiesPlugin = fastifyPlugin(async (app) => {
   app.decorate("verifyAuthenticated", async (request, reply, done) => {
     if (!request.atproto) {
       return await reply.code(401).send({
@@ -52,5 +52,3 @@ const authenticationStrategies = fastifyPlugin(async (app) => {
     };
   });
 });
-
-export default authenticationStrategies;

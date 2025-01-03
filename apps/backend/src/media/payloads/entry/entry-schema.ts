@@ -1,15 +1,15 @@
 import { Type } from "@sinclair/typebox";
 
-import { ObjectId } from "mongodb";
-import { Entry } from "../entities/entry";
-import { MediaSchema } from "./media-schema";
-import { BlobLinkSchema } from "./blob-link-schema";
-import { MetadataSchema } from "~/common/payloads/metadata";
+import { MediaSchema } from "../media/media-schema";
+import { BlobLinkSchema } from "../blob-link-schema";
+import { Entry } from "~/media/entities";
+import { MetadataSchema } from "~/common/payloads/metadata-schema";
+import { ObjectIdSchema } from "~/common/payloads/object-id-schema";
+import { ClassProperties } from "~/common/utilities/serialization";
 
 export const EntrySchema = Type.Object(
   {
-    _id: Type.Unsafe<ObjectId>({
-      type: "string",
+    _id: ObjectIdSchema({
       description: "ObjectId of the media entry",
     }),
     title: Type.String(),
@@ -28,4 +28,4 @@ export const EntrySchema = Type.Object(
   {
     $id: "Entry",
   }
-) satisfies { static: Entry };
+) satisfies { static: ClassProperties<Entry> };

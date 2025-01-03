@@ -1,5 +1,5 @@
 import { Type } from "@sinclair/typebox";
-import { BlobLink } from "../entities/entry";
+import { BlobLink } from "~/media/entities";
 
 export const HotLinkUrlSchema = Type.Object(
   {

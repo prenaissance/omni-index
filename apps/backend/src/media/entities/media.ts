@@ -1,9 +1,15 @@
-import { WithoutId } from "mongodb";
 import { BlobLink } from "./blob-link";
 import { Entity, EntityInit } from "~/common/entities/entity";
-import { CreateMediaRequest } from "~/media/payloads/create-media-request";
-import { CreateIndexRequest } from "~/media/payloads/create-index-request";
+import { CreateMediaRequest } from "~/media/payloads/media/create-media-request";
 import { Metadata } from "~/common/entities/metadata";
+
+export type IndexInit = {
+  provider?: string;
+  mimeType?: string;
+  size?: number;
+  blob: BlobLink;
+  meta: Metadata;
+} & EntityInit;
 
 export class Index extends Entity {
   /**
@@ -21,14 +27,7 @@ export class Index extends Entity {
   blob: BlobLink;
   meta: Metadata;
 
-  constructor({
-    _id,
-    provider,
-    mimeType,
-    size,
-    blob,
-    meta,
-  }: WithoutId<Index> & EntityInit) {
+  constructor({ _id, provider, mimeType, size, blob, meta }: IndexInit) {
     super({ _id });
     this.provider = provider;
     this.mimeType = mimeType;
@@ -37,17 +36,32 @@ export class Index extends Entity {
     this.meta = meta;
   }
 
-  static fromDocument(document: CreateIndexRequest) {
+  static fromDocument(document: IndexInit) {
     const index = new Index(document);
     return index;
   }
+
+  equals(other: Index) {
+    return (
+      this.provider === other.provider &&
+      this.mimeType === other.mimeType &&
+      this.size === other.size &&
+      JSON.stringify(this.blob) === JSON.stringify(other.blob) &&
+      JSON.stringify(this.meta) === JSON.stringify(other.meta)
+    );
+  }
 }
+
+export type MediaInit = {
+  mirrors: Index[];
+  meta: Record<string, unknown>;
+} & EntityInit;
 
 export class Media extends Entity {
   mirrors: Index[];
   meta: Record<string, unknown>;
 
-  constructor({ _id, mirrors, meta }: WithoutId<Media> & EntityInit) {
+  constructor({ _id, mirrors, meta }: MediaInit) {
     super({ _id });
     this.mirrors = mirrors;
     this.meta = meta;
@@ -62,5 +76,15 @@ export class Media extends Entity {
       meta: document.meta,
     });
     return media;
+  }
+
+  equals(other: Media) {
+    return (
+      this.mirrors.length === other.mirrors.length &&
+      this.mirrors.every((mirror, index) =>
+        mirror.equals(other.mirrors[index])
+      ) &&
+      JSON.stringify(this.meta) === JSON.stringify(other.meta)
+    );
   }
 }

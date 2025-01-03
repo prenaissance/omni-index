@@ -1,0 +1,96 @@
+import { Collection, Db, ObjectId } from "mongodb";
+import { Entry } from "../entities";
+import { EntryUpdatedEvent } from "../events/entry-events";
+import { DomainEventEmitter } from "~/common/events/typed-event-emitter";
+import { PaginationQuery } from "~/common/payloads/pagination/pagination-query";
+
+export class EntryRepository {
+  private readonly collection: Collection<Entry>;
+  constructor(
+    private readonly db: Db,
+    private readonly eventEmitter: DomainEventEmitter
+  ) {
+    this.collection = Entry.getCollection(db);
+  }
+
+  async findOne(id: ObjectId) {
+    const document = await this.collection.findOne({ _id: id });
+    if (!document) {
+      return null;
+    }
+    return Entry.fromDocument(document);
+  }
+
+  async findMany({ skip, limit }: { skip: number; limit: number }) {
+    const documents = await this.collection
+      .find({})
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+    const total = await this.collection.countDocuments();
+    const entries = documents.map(Entry.fromDocument);
+    return {
+      entries,
+      total,
+    };
+  }
+
+  async save(entry: Entry) {
+    const existingEntry = await this.collection.findOne({ _id: entry._id });
+    if (!existingEntry) {
+      await this.collection.insertOne(entry);
+      this.eventEmitter.emit("entry.created", {
+        entry,
+      });
+      return;
+    }
+
+    const existingMediaIds = new Set(existingEntry.media.map((m) => m._id));
+    const newMediaIds = new Set(entry.media.map((m) => m._id));
+    const deletedMediaIds = existingMediaIds.difference(newMediaIds);
+    const addedMediaIds = newMediaIds.difference(existingMediaIds);
+    const remainingMediaIds = newMediaIds.intersection(existingMediaIds);
+
+    const updatedMedia = entry.media
+      .filter((media) => remainingMediaIds.has(media._id))
+      .filter((media) => {
+        const existingMedia = existingEntry.media.find((m) =>
+          m._id.equals(media._id)
+        );
+        return !existingMedia?.equals(media);
+      });
+
+    const mediaUpdates: EntryUpdatedEvent["mediaUpdates"] = updatedMedia.map(
+      (media) => {
+        const existingMedia = existingEntry.media.find((m) =>
+          m._id.equals(media._id)
+        );
+        const existingMirrors = new Set(
+          existingMedia.mirrors.map((m) => m._id)
+        );
+        const newMirrors = new Set(media.mirrors.map((m) => m._id));
+        const deletedMirrorIds = existingMirrors.difference(newMirrors);
+        const createdMirrorIds = newMirrors.difference(existingMirrors);
+        return {
+          mediaId: media._id,
+          fields: media.diff(existingMedia),
+          createdMirrors: media.mirrors.filter((m) =>
+            createdMirrorIds.has(m._id)
+          ),
+          deletedMirrorIds: Array.from(deletedMirrorIds),
+        };
+      }
+    );
+  }
+
+  async delete(id: ObjectId) {
+    const result = await this.collection.deleteOne({ _id: id });
+    if (result.deletedCount === 0) {
+      return false;
+    }
+
+    this.eventEmitter.emit("entry.deleted", {
+      entryId: id,
+    });
+  }
+}

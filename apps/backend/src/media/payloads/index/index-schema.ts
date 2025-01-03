@@ -1,15 +1,13 @@
 import { Type } from "@sinclair/typebox";
-import { ObjectId } from "mongodb";
-import { Index } from "../entities/entry";
-import { BlobLinkSchema } from "./blob-link-schema";
-import { MetadataSchema } from "~/common/payloads/metadata";
+import { BlobLinkSchema } from "../blob-link-schema";
+import { Index } from "~/media/entities";
+import { MetadataSchema } from "~/common/payloads/metadata-schema";
+import { ObjectIdSchema } from "~/common/payloads/object-id-schema";
+import { ClassProperties } from "~/common/utilities/serialization";
 
 export const IndexSchema = Type.Object(
   {
-    _id: Type.Unsafe<ObjectId>({
-      description: "ObjectId of the media index (as hex string)",
-      type: "string",
-    }),
+    _id: ObjectIdSchema(),
     provider: Type.Optional(
       Type.String({
         description: "The third party host of the media",
@@ -29,4 +27,4 @@ export const IndexSchema = Type.Object(
     meta: Type.Ref(MetadataSchema),
   },
   { $id: "Index" }
-) satisfies { static: Index };
+) satisfies { static: ClassProperties<Index> };

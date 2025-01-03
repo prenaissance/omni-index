@@ -4,7 +4,7 @@ import { BlobLink } from "./blob-link";
 import { Media } from "./media";
 import { omit } from "~/common/utilities/functional";
 import { Entity, EntityInit } from "~/common/entities/entity";
-import { CreateEntryRequest } from "~/media/payloads/create-entry-request";
+import { CreateEntryRequest } from "~/media/payloads/entry/create-entry-request";
 
 export const ENTRY_COLLECTION = "entries";
 
