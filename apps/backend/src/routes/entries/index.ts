@@ -7,13 +7,10 @@ import { ExceptionSchema } from "~/common/payloads/exception-schema";
 import { PaginationQuery } from "~/common/payloads/pagination/pagination-query";
 import { PaginatedResponse } from "~/common/payloads/pagination/pagination-response";
 import { Entry } from "~/media/entities/entry";
-import { mediaPayloadsPlugin } from "~/media/payloads/_plugin";
 import { CreateEntryRequest } from "~/media/payloads/entry/create-entry-request";
 import { EntrySchema } from "~/media/payloads/entry/entry-schema";
 
 const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
-  app.register(mediaPayloadsPlugin);
-
   app.get(
     "",
     {
@@ -27,7 +24,6 @@ const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
     async (request) => {
       const { page = 1, limit = 10 } = request.query;
       const skip = (page - 1) * limit;
-      console.log(request.params);
 
       const { entries, total } = await app.mediaEntry.repository.findMany({
         skip,
