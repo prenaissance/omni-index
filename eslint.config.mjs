@@ -47,6 +47,7 @@ export default tseslint.config([
       "@typescript-eslint/no-unused-vars": "warn",
       // for react-router, ignoring the path does not work
       "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
 
       "no-empty-pattern": "off",
     },

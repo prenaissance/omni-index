@@ -9,10 +9,10 @@ export type DocumentLike<T extends Entity> = WithoutId<T> &
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyFn = (...args: any[]) => any;
 
-export type ClassProperties<T extends object> = {
-  [K in keyof T as T[K] extends AnyFn ? never : K]: T[K] extends object[]
+export type ClassProperties<T extends Entity> = {
+  [K in keyof T as T[K] extends AnyFn ? never : K]: T[K] extends Entity[]
     ? ClassProperties<T[K][number]>[]
-    : T[K] extends object
+    : T[K] extends Entity
       ? ClassProperties<T[K]>
       : T[K];
 };

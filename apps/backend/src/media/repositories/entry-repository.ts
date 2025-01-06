@@ -2,7 +2,6 @@ import { Collection, Db, ObjectId } from "mongodb";
 import { Entry } from "../entities";
 import { EntryUpdatedEvent } from "../events/entry-events";
 import { DomainEventEmitter } from "~/common/events/typed-event-emitter";
-import { PaginationQuery } from "~/common/payloads/pagination/pagination-query";
 
 export class EntryRepository {
   private readonly collection: Collection<Entry>;
@@ -64,7 +63,7 @@ export class EntryRepository {
       (media) => {
         const existingMedia = existingEntry.media.find((m) =>
           m._id.equals(media._id)
-        );
+        )!;
         const existingMirrors = new Set(
           existingMedia.mirrors.map((m) => m._id)
         );
@@ -81,6 +80,36 @@ export class EntryRepository {
         };
       }
     );
+
+    const fields = entry.diff(existingEntry);
+    const hasChanges =
+      Object.keys(fields).length > 0 ||
+      mediaUpdates.length > 0 ||
+      deletedMediaIds.size > 0 ||
+      addedMediaIds.size > 0;
+
+    if (!hasChanges) {
+      return;
+    }
+
+    await this.collection.updateOne(
+      { _id: entry._id },
+      {
+        $set: {
+          ...fields,
+          updatedAt: new Date(),
+          media: entry.media,
+        },
+      }
+    );
+
+    this.eventEmitter.emit("entry.updated", {
+      entryId: entry._id,
+      fields,
+      deletedMediaIds: Array.from(deletedMediaIds),
+      createdMedia: entry.media.filter((m) => addedMediaIds.has(m._id)),
+      mediaUpdates,
+    });
   }
 
   async delete(id: ObjectId) {

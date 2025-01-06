@@ -5,8 +5,16 @@ import { Media } from "./media";
 import { omit } from "~/common/utilities/functional";
 import { Entity, EntityInit } from "~/common/entities/entity";
 import { CreateEntryRequest } from "~/media/payloads/entry/create-entry-request";
+import { ClassProperties } from "~/common/utilities/serialization";
 
 export const ENTRY_COLLECTION = "entries";
+
+export type EntryInit = EntityInit &
+  Omit<
+    WithoutId<ClassProperties<Entry>>,
+    "slug" | "createdAt" | "updatedAt" | "media" | "genres"
+  > &
+  Pick<Partial<Entry>, "slug" | "createdAt" | "updatedAt" | "media" | "genres">;
 
 export class Entry extends Entity {
   title: string;
@@ -45,17 +53,7 @@ export class Entry extends Entity {
     return db.collection<Entry>(ENTRY_COLLECTION);
   }
 
-  constructor(
-    props: Omit<
-      WithoutId<Entry>,
-      "slug" | "createdAt" | "updatedAt" | "media" | "genres"
-    > &
-      EntityInit &
-      Pick<
-        Partial<Entry>,
-        "slug" | "createdAt" | "updatedAt" | "media" | "genres"
-      >
-  ) {
+  constructor(props: EntryInit) {
     const {
       _id,
       author,
@@ -100,5 +98,38 @@ export class Entry extends Entity {
       media,
     });
     return entry;
+  }
+
+  diff(other: Entry) {
+    const diff: Partial<Omit<ClassProperties<Entry>, "media">> = {};
+
+    if (this.title !== other.title) diff.title = this.title;
+
+    if (this.author !== other.author) diff.author = this.author;
+
+    if (this.genres.length !== other.genres.length) diff.genres = this.genres;
+
+    if (this.genres.some((genre) => !other.genres.includes(genre)))
+      diff.genres = this.genres;
+
+    if (this.localizedTitle !== other.localizedTitle)
+      diff.localizedTitle = this.localizedTitle;
+
+    if (this.slug !== other.slug) diff.slug = this.slug;
+
+    if (this.year !== other.year) diff.year = this.year;
+
+    if (this.language !== other.language) diff.language = this.language;
+
+    if (this.description !== other.description)
+      diff.description = this.description;
+
+    if (JSON.stringify(this.thumbnail) !== JSON.stringify(other.thumbnail))
+      diff.thumbnail = this.thumbnail;
+
+    if (JSON.stringify(this.meta) !== JSON.stringify(other.meta))
+      diff.meta = this.meta;
+
+    return diff;
   }
 }
