@@ -103,7 +103,7 @@ export class Entry extends Entity {
   diff(other: Entry) {
     const diff: Partial<Omit<ClassProperties<Entry>, "media">> = {};
 
-    if (this.title !== other.title) diff.title = this.title;
+    if (this.title !== other.title) diff.title = this.title ?? null;
 
     if (this.author !== other.author) diff.author = this.author;
 

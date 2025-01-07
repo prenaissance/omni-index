@@ -3,6 +3,7 @@ import { Entity, EntityInit } from "~/common/entities/entity";
 import { CreateMediaRequest } from "~/media/payloads/media/create-media-request";
 import { Metadata } from "~/common/entities/metadata";
 import { ClassProperties } from "~/common/utilities/serialization";
+import { omit } from "~/common/utilities/functional";
 
 export type IndexInit = {
   provider?: string;
@@ -73,8 +74,8 @@ export class Media extends Entity {
       Index.fromDocument(mirror)
     );
     const media = new Media({
+      ...omit(document, ["mirrors"]),
       mirrors,
-      meta: document.meta,
     });
     return media;
   }
