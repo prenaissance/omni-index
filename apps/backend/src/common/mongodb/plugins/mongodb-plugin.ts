@@ -20,7 +20,7 @@ export const mongodbPlugin = fastifyPlugin(
     });
     await client.connect();
     app.decorate("mongo", client);
-    app.decorate("db", client.db(process.env.MONGODB_DB));
+    app.decorate("db", client.db(env.MONGODB_DB));
   },
   {
     name: MONGODB_PLUGIN,

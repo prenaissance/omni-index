@@ -7,6 +7,7 @@ const envSchema = z.object({
     .transform((v) => parseInt(v)),
   PUBLIC_URL: z.string(),
   MONGODB_URL: z.string(),
+  MONGODB_DB: z.string(),
   FRONTEND_URL: z.string().url(),
   SECRET_KEY: z
     .string()
