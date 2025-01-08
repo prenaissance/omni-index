@@ -1,4 +1,4 @@
-export const validateHostname = (hostname: string) => {
+export const isValidHostname = (hostname: string) => {
   if (hostname.length > 255) return false;
 
   const hostnameRegex =

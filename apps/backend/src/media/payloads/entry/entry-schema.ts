@@ -6,6 +6,7 @@ import { Entry } from "~/media/entities";
 import { MetadataSchema } from "~/common/payloads/metadata-schema";
 import { ObjectIdSchema } from "~/common/payloads/object-id-schema";
 import { ClassProperties } from "~/common/utilities/serialization";
+import { DateSchema } from "~/common/payloads/date-schema";
 
 export const EntrySchema = Type.Object(
   {
@@ -19,8 +20,8 @@ export const EntrySchema = Type.Object(
     year: Type.Optional(Type.Number()),
     language: Type.Optional(Type.String()),
     thumbnail: Type.Optional(BlobLinkSchema),
-    createdAt: Type.Unsafe<Date>(Type.String({ format: "date-time" })),
-    updatedAt: Type.Unsafe<Date>(Type.String({ format: "date-time" })),
+    createdAt: DateSchema(),
+    updatedAt: DateSchema(),
     meta: Type.Ref(MetadataSchema),
     media: Type.Array(Type.Ref(MediaSchema)),
     genres: Type.Array(Type.String()),

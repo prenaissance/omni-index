@@ -19,7 +19,7 @@ export class PeerNodeRepository {
 
   async getAll() {
     const documents = await this.collection.find().toArray();
-    return documents.map((document) => new PeerNode(document));
+    return documents.map(PeerNode.fromDocument);
   }
 
   async findOne(filter: Filter<PeerNode>) {
@@ -27,7 +27,7 @@ export class PeerNodeRepository {
     if (!document) {
       return null;
     }
-    return new PeerNode(document);
+    return PeerNode.fromDocument(document);
   }
 
   async deleteOne(filter: Filter<PeerNode>) {
