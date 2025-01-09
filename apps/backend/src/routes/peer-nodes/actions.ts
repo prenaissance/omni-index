@@ -16,6 +16,22 @@ const peerNodeRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.addSchema(CreatePeerNodeRequest);
   app.addSchema(PeerNodeResponse);
 
+  app.get(
+    "",
+    {
+      schema: {
+        tags: ["Peer Nodes"],
+        summary: "Retrieves all peer nodes",
+        response: {
+          200: Type.Array(Type.Ref(PeerNodeResponse)),
+        },
+      },
+    },
+    async () => {
+      return await app.peerNodes.repository.getAll();
+    }
+  );
+
   app.post(
     "",
     {
@@ -64,6 +80,7 @@ const peerNodeRoutes: FastifyPluginAsyncTypebox = async (app) => {
       );
 
       await app.peerNodes.service.add(peerNode);
+      reply.status(201);
       return peerNode;
     }
   );
@@ -99,6 +116,36 @@ const peerNodeRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
       await app.peerNodes.service.refresh(node);
       return node;
+    }
+  );
+
+  app.delete(
+    "/:id",
+    {
+      schema: {
+        tags: ["Peer Nodes"],
+        summary: "Deletes a peer node",
+        params: Type.Object({
+          id: ObjectIdSchema({
+            description: "ObjectId of the peer node",
+          }),
+        }),
+        response: {
+          204: Type.Null(),
+          404: Type.Ref(ExceptionSchema),
+        },
+      },
+    },
+    async (request, reply) => {
+      const { id } = request.params;
+      const deleted = await app.peerNodes.service.deleteById(new ObjectId(id));
+      if (!deleted) {
+        reply.status(404);
+        return {
+          message: "Peer node not found",
+        };
+      }
+      reply.status(204);
     }
   );
 };
