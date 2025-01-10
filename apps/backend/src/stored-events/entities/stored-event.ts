@@ -6,8 +6,6 @@ export type StoredEventInit = {
   payload: unknown;
 } & EntityInit;
 
-export const STORED_EVENT_COLLECTION = "stored_events";
-
 export class StoredEvent extends Entity {
   readonly createdAt: Date;
   readonly type: string;
