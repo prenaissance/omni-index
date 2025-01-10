@@ -19,6 +19,7 @@ import { mongodbPlugin } from "./common/mongodb/plugins/mongodb-plugin";
 import { atprotoOAuthPlugin } from "./common/auth/plugins/atproto-oauth-plugin";
 import { authenticationStrategiesPlugin } from "./common/auth/plugins/authentication-strategies-plugin";
 import { peerNodePlugin } from "./synchronization/plugins/peer-node-plugin";
+import { verifiedRequestPlugin } from "./synchronization/plugins/verified-request-plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -86,6 +87,7 @@ app.register(commonPayloadsPlugin);
 app.register(eventEmitterPlugin);
 app.register(mediaPlugin);
 app.register(peerNodePlugin);
+app.register(verifiedRequestPlugin);
 
 app.register(autoLoadPlugin, {
   dir: path.join(__dirname, "routes"),

@@ -12,6 +12,9 @@ const envSchema = z.object({
   SECRET_KEY: z
     .string()
     .min(32, "The secret key must be at least 32 characters long"),
+  DANGEROUS_SKIP_IDENTITY_VERIFICATION: z
+    .string()
+    .transform((v) => v === "true"),
 });
 
 export const env = envSchema.parse(process.env);
