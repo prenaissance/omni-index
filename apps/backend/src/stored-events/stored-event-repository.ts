@@ -1,4 +1,4 @@
-import { Collection, Db, Filter, ObjectId } from "mongodb";
+import { Collection, Db, Filter, FindOptions, ObjectId } from "mongodb";
 import { StoredEvent } from "./entities/stored-event";
 
 export const STORED_EVENT_COLLECTION = "stored_events";
@@ -21,8 +21,12 @@ export class StoredEventRepository {
     return !!document;
   }
 
-  async findMany(filter: Filter<StoredEvent>) {
-    const documents = await this.collection.find(filter).toArray();
+  async count(filter: Filter<StoredEvent>) {
+    return await this.collection.countDocuments(filter);
+  }
+
+  async findMany(filter: Filter<StoredEvent>, options?: FindOptions) {
+    const documents = await this.collection.find(filter, options).toArray();
     return documents.map(StoredEvent.fromDocument);
   }
 }
