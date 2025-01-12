@@ -6,12 +6,14 @@ import type {
 } from "@atproto/oauth-client-node";
 import type { Collection, Db, WithId } from "mongodb";
 
+export const OAUTH_STATES_COLLECTION = "oauth-states";
+
 export class MongoStateStore implements NodeSavedStateStore {
   private readonly collection: Collection<
     WithId<NodeSavedState> & { key: string }
   >;
   constructor(db: Db) {
-    this.collection = db.collection("oauth-state");
+    this.collection = db.collection(OAUTH_STATES_COLLECTION);
   }
 
   async get(key: string): Promise<NodeSavedState | undefined> {
@@ -41,30 +43,31 @@ export class MongoStateStore implements NodeSavedStateStore {
   }
 }
 
+export const OAUTH_SESSIONS_COLLECTION = "oauth-sessions";
+
 export class MongoSessionStore implements NodeSavedSessionStore {
   private readonly collection: Collection<
     WithId<NodeSavedSession> & { key: string }
   >;
 
   constructor(db: Db) {
-    this.collection = db.collection("oauth-sessions");
+    this.collection = db.collection(OAUTH_SESSIONS_COLLECTION);
   }
 
   async get(key: string): Promise<NodeSavedSession | undefined> {
-    const doc = await this.collection.findOne({ key });
+    const doc = await this.collection.findOne({
+      "tokenSet.sub": key,
+    });
     return doc ?? undefined;
   }
 
   async set(key: string, value: NodeSavedSession): Promise<void> {
     await this.collection.updateOne(
       {
-        key,
+        "tokenSet.sub": key,
       },
       {
-        $set: {
-          ...value,
-          key,
-        },
+        $set: value,
       },
       {
         upsert: true,
@@ -73,7 +76,7 @@ export class MongoSessionStore implements NodeSavedSessionStore {
   }
 
   async del(key: string): Promise<void> {
-    await this.collection.deleteOne({ key });
+    await this.collection.deleteOne({ "tokenSet.sub": key });
   }
 
   async clear(): Promise<void> {
