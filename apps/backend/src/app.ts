@@ -6,12 +6,10 @@ import { fastifySwagger } from "@fastify/swagger";
 import { fastifySwaggerUi } from "@fastify/swagger-ui";
 import autoLoadPlugin from "@fastify/autoload";
 import corsPlugin from "@fastify/cors";
-import jwtPlugin from "@fastify/jwt";
 import authPlugin from "@fastify/auth";
 import fastifyRacingPlugin from "fastify-racing";
 import formbodyPlugin from "@fastify/formbody";
-import secureSessionPlugin from "@fastify/secure-session";
-import { env } from "./env";
+import { env } from "./common/config/env";
 import { commonPayloadsPlugin } from "./common/payloads/_plugin";
 import { mediaPlugin } from "./media/_plugin";
 import { eventEmitterPlugin } from "./common/events/_plugin";
@@ -21,6 +19,8 @@ import { authenticationStrategiesPlugin } from "./common/auth/plugins/authentica
 import { peerNodePlugin } from "./synchronization/plugins/peer-node-plugin";
 import { verifiedRequestPlugin } from "./synchronization/plugins/verified-request-plugin";
 import { storedEventPlugin } from "./stored-events/stored-event-plugin";
+import { configPlugin } from "./common/config/config-plugin";
+import { jwtSetupPlugin } from "./common/auth/plugins/jwt-setup-plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -33,20 +33,6 @@ app.register(corsPlugin, {
   origin: "https://prenaissance.github.io",
   credentials: true,
 });
-
-app.register(secureSessionPlugin, {
-  key: env.SECRET_KEY,
-  expiry: 60 * 60 * 24 * 7,
-  cookie: {
-    path: "/",
-  },
-});
-
-// app.register(jwtPlugin, {
-//   secret: process.env.JWT_SECRET!,
-// });
-
-app.register(authPlugin);
 
 app.register(formbodyPlugin);
 
@@ -81,6 +67,9 @@ app.register(fastifySwaggerUi, {
 });
 
 app.register(mongodbPlugin);
+app.register(configPlugin);
+app.register(jwtSetupPlugin);
+app.register(authPlugin);
 app.register(atprotoOAuthPlugin);
 app.register(authenticationStrategiesPlugin);
 

@@ -3,7 +3,7 @@ import tls, { type PeerCertificate } from "node:tls";
 import { fastifyPlugin } from "fastify-plugin";
 import { Observable } from "rxjs";
 import { PEER_NODE_PLUGIN } from "./peer-node-plugin";
-import { env } from "~/env";
+import { env } from "~/common/config/env";
 
 declare module "fastify" {
   interface FastifyInstance {

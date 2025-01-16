@@ -1,10 +1,15 @@
-import { NodeOAuthClient } from "@atproto/oauth-client-node";
-import type { Db } from "mongodb";
-import { MongoSessionStore, MongoStateStore } from "./storage";
-import { env } from "~/env";
+import {
+  NodeOAuthClient,
+  NodeSavedSessionStore,
+  NodeSavedStateStore,
+} from "@atproto/oauth-client-node";
+import { env } from "~/common/config/env";
 
-export const createOAuthClient = async (db: Db) => {
-  const publicUrl = env.PUBLIC_URL;
+export const createOAuthClient = async (
+  sessionStore: NodeSavedSessionStore,
+  stateStore: NodeSavedStateStore
+) => {
+  const publicUrl = env.NODE_ENV === "production" ? env.API_URL : undefined;
   const url = publicUrl || `http://127.0.0.1:${env.PORT}`;
 
   return new NodeOAuthClient({
@@ -22,7 +27,7 @@ export const createOAuthClient = async (db: Db) => {
       token_endpoint_auth_method: "none",
       dpop_bound_access_tokens: true,
     },
-    stateStore: new MongoStateStore(db),
-    sessionStore: new MongoSessionStore(db),
+    stateStore,
+    sessionStore,
   });
 };

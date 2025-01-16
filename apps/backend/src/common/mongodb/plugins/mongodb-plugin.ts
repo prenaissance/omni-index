@@ -1,6 +1,6 @@
 import { fastifyPlugin } from "fastify-plugin";
 import { Db, MongoClient } from "mongodb";
-import { env } from "~/env";
+import { env } from "~/common/config/env";
 
 declare module "fastify" {
   interface FastifyInstance {

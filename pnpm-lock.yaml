@@ -62,9 +62,6 @@ importers:
       '@fastify/jwt':
         specifier: ^9.0.1
         version: 9.0.1
-      '@fastify/secure-session':
-        specifier: ^8.1.0
-        version: 8.1.0
       '@fastify/swagger':
         specifier: ^9.2.0
         version: 9.2.0
@@ -95,6 +92,9 @@ importers:
       mongodb:
         specifier: ^6.10.0
         version: 6.10.0
+      nanoid:
+        specifier: ^5.0.9
+        version: 5.0.9
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -103,8 +103,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@atproto/lex-cli':
-        specifier: ^0.5.1
-        version: 0.5.1
+        specifier: ^0.5.5
+        version: 0.5.5
       '@types/node':
         specifier: ^22.9.0
         version: 22.9.0
@@ -262,6 +262,9 @@ packages:
   '@atproto/common-web@0.3.1':
     resolution: {integrity: sha512-N7wiTnus5vAr+lT//0y8m/FaHHLJ9LpGuEwkwDAeV3LCiPif4m/FS8x/QOYrx1PdZQwKso95RAPzCGWQBH5j6Q==}
 
+  '@atproto/common-web@0.3.2':
+    resolution: {integrity: sha512-Vx0JtL1/CssJbFAb0UOdvTrkbUautsDfHNOXNTcX2vyPIxH9xOameSqLLunM1hZnOQbJwyjmQCt6TV+bhnanDg==}
+
   '@atproto/did@0.1.3':
     resolution: {integrity: sha512-ULD8Gw/KRRwLFZ2Z2L4DjmdOMrg8IYYlcjdSc+GQ2/QJSVnD2zaJJVTLd3vls121wGt/583rNaiZTT2DpBze4w==}
 
@@ -274,12 +277,15 @@ packages:
   '@atproto/jwk@0.1.1':
     resolution: {integrity: sha512-6h/bj1APUk7QcV9t/oA6+9DB5NZx9SZru9x+/pV5oHFI9Xz4ZuM5+dq1PfsJV54pZyqdnZ6W6M717cxoC7q7og==}
 
-  '@atproto/lex-cli@0.5.1':
-    resolution: {integrity: sha512-Xp9Ifvl523TdKzTtsOmWN0LQAEEaHSAdZ9AZEpkH7BT6FGDURPUqcElkU9IlLz9tQf/CTGgRk55AQQ6wf4j/5g==}
+  '@atproto/lex-cli@0.5.5':
+    resolution: {integrity: sha512-QdeD5KSc5Qi9xasHPQzui2GDF5PZYpRUzFAHKa88inmBBtgx9MBOxw//O7x/Xfscgk5pql1Uou2yoNfomjBFbw==}
     hasBin: true
 
   '@atproto/lexicon@0.4.2':
     resolution: {integrity: sha512-CXoOkhcdF3XVUnR2oNgCs2ljWfo/8zUjxL5RIhJW/UNLp/FSl+KpF8Jm5fbk8Y/XXVPGRAsv9OYfxyU/14N/pw==}
+
+  '@atproto/lexicon@0.4.5':
+    resolution: {integrity: sha512-fljWqMGKn+XWtTprBcS3F1hGBREnQYh6qYHv2sjENucc7REms1gtmZXSerB9N6pVeHVNOnXiILdukeAcic5OEw==}
 
   '@atproto/oauth-client-node@0.2.0':
     resolution: {integrity: sha512-tvJJrMsZ0KXnwtW43zymsXauV9q8fl+Rfr+uRZwyOSi9t2wUIYQ3KqtdDB8hhWoU1I7clQId2yAYuWjSj0yP2w==}
@@ -292,6 +298,9 @@ packages:
 
   '@atproto/syntax@0.3.0':
     resolution: {integrity: sha512-Weq0ZBxffGHDXHl9U7BQc2BFJi/e23AL+k+i5+D9hUq/bzT4yjGsrCejkjq0xt82xXDjmhhvQSZ0LqxyZ5woxA==}
+
+  '@atproto/syntax@0.3.1':
+    resolution: {integrity: sha512-fzW0Mg1QUOVCWUD3RgEsDt6d1OZ6DdFmbKcDdbzUfh0t4rhtRAC05KbZYmxuMPWDAiJ4BbbQ5dkAc/mNypMXkw==}
 
   '@atproto/xrpc@0.6.3':
     resolution: {integrity: sha512-S3tRvOdA9amPkKLll3rc4vphlDitLrkN5TwWh5Tu/jzk7mnobVVE3akYgICV9XCNHKjWM+IAPxFFI2qi+VW6nQ==}
@@ -891,9 +900,6 @@ packages:
   '@fastify/autoload@6.0.2':
     resolution: {integrity: sha512-efRwk2KKTPERxHEnzabK+w2pGxBExCCYixPYUMqtLd++Xsoh4h5Rrq8D2xZDq2BQ8hTFI1rzGLkHWsz40wgoWA==}
 
-  '@fastify/cookie@10.0.1':
-    resolution: {integrity: sha512-NV/wbCUv4ETJ5KM1KMu0fLx0nSCm9idIxwg66NZnNbfPQH3rdbx6k0qRs5uy0y+MhBgvDudYRA30KlK659chyw==}
-
   '@fastify/cors@10.0.1':
     resolution: {integrity: sha512-O8JIf6448uQbOgzSkCqhClw6gFTAqrdfeA6R3fc/3gwTJGUp7gl8/3tbNB+6INuu4RmgVOq99BmvdGbtu5pgOA==}
 
@@ -917,10 +923,6 @@ packages:
 
   '@fastify/merge-json-schemas@0.1.1':
     resolution: {integrity: sha512-fERDVz7topgNjtXsJTTW1JKLy0rhuLRcquYqNR9rF7OcVpCa2OVW49ZPDIhaRRCaUuvVxI+N416xUoF76HNSXA==}
-
-  '@fastify/secure-session@8.1.0':
-    resolution: {integrity: sha512-sCxnu6U4AcQ2LQjpnF5FW+9LC9A0HpEZl93JtdbSfjc8vrzhPAWCeyAzyabyOlBTY50Iu7KJgfBVftdF2RCrOA==}
-    hasBin: true
 
   '@fastify/send@3.1.1':
     resolution: {integrity: sha512-LdiV2mle/2tH8vh6GwGl0ubfUAgvY+9yF9oGI1iiwVyNUVOQamvw5n+OFu6iCNNoyuCY80FFURBn4TZCbTe8LA==}
@@ -1622,10 +1624,6 @@ packages:
 
   cookie-signature@1.0.6:
     resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
-
-  cookie-signature@1.2.2:
-    resolution: {integrity: sha512-D76uU73ulSXrD1UXF4KE2TMxVVwhsnCgfAyTg9k8P6KGZjlXKrOLe4dJQKI3Bxi5wjesZoFXJWElNWBjPZMbhg==}
-    engines: {node: '>=6.6.0'}
 
   cookie@0.7.1:
     resolution: {integrity: sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==}
@@ -2846,6 +2844,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@5.0.9:
+    resolution: {integrity: sha512-Aooyr6MXU6HpvvWXKoVoXwKMs/KyVakWwg7xQfv5/S/RIgJMy0Ifa45H9qqYy7pTCszrHzP21Uk4PZq2HpEM8Q==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -2865,10 +2868,6 @@ packages:
     peerDependenciesMeta:
       encoding:
         optional: true
-
-  node-gyp-build@4.8.2:
-    resolution: {integrity: sha512-IRUxE4BVsHWXkV/SFOut4qTlagw2aM8T5/vnTsmrHJvVoKueJHRc/JaFND7QDDc61kLYUJ6qlZM3sqTSyx2dTw==}
-    hasBin: true
 
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
@@ -3477,9 +3476,6 @@ packages:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
 
-  sodium-native@4.3.0:
-    resolution: {integrity: sha512-OcMgoS0NJx+4yVUlhvL9uZsVZfmyHZ2RpSXkiIoOHMglqvJDeGwn1rUigPrvcNTq3m9hPXtt6syxQbF3vvwmRQ==}
-
   sonic-boom@4.2.0:
     resolution: {integrity: sha512-INb7TM37/mAcsGmc9hyyI6+QR3rR1zVRu36B0NeGXKnOOLiZOfER5SA+N7X7k3yUYRzLWafduTDvJAfDswwEww==}
 
@@ -4057,6 +4053,13 @@ snapshots:
       uint8arrays: 3.0.0
       zod: 3.23.8
 
+  '@atproto/common-web@0.3.2':
+    dependencies:
+      graphemer: 1.4.0
+      multiformats: 9.9.0
+      uint8arrays: 3.0.0
+      zod: 3.23.8
+
   '@atproto/did@0.1.3':
     dependencies:
       zod: 3.23.8
@@ -4076,10 +4079,10 @@ snapshots:
       multiformats: 9.9.0
       zod: 3.23.8
 
-  '@atproto/lex-cli@0.5.1':
+  '@atproto/lex-cli@0.5.5':
     dependencies:
-      '@atproto/lexicon': 0.4.2
-      '@atproto/syntax': 0.3.0
+      '@atproto/lexicon': 0.4.5
+      '@atproto/syntax': 0.3.1
       chalk: 4.1.2
       commander: 9.5.0
       prettier: 3.3.3
@@ -4091,6 +4094,14 @@ snapshots:
     dependencies:
       '@atproto/common-web': 0.3.1
       '@atproto/syntax': 0.3.0
+      iso-datestring-validator: 2.2.2
+      multiformats: 9.9.0
+      zod: 3.23.8
+
+  '@atproto/lexicon@0.4.5':
+    dependencies:
+      '@atproto/common-web': 0.3.2
+      '@atproto/syntax': 0.3.1
       iso-datestring-validator: 2.2.2
       multiformats: 9.9.0
       zod: 3.23.8
@@ -4128,6 +4139,8 @@ snapshots:
       zod: 3.23.8
 
   '@atproto/syntax@0.3.0': {}
+
+  '@atproto/syntax@0.3.1': {}
 
   '@atproto/xrpc@0.6.3':
     dependencies:
@@ -4581,11 +4594,6 @@ snapshots:
 
   '@fastify/autoload@6.0.2': {}
 
-  '@fastify/cookie@10.0.1':
-    dependencies:
-      cookie-signature: 1.2.2
-      fastify-plugin: 5.0.1
-
   '@fastify/cors@10.0.1':
     dependencies:
       fastify-plugin: 5.0.1
@@ -4617,12 +4625,6 @@ snapshots:
   '@fastify/merge-json-schemas@0.1.1':
     dependencies:
       fast-deep-equal: 3.1.3
-
-  '@fastify/secure-session@8.1.0':
-    dependencies:
-      '@fastify/cookie': 10.0.1
-      fastify-plugin: 5.0.1
-      sodium-native: 4.3.0
 
   '@fastify/send@3.1.1':
     dependencies:
@@ -5442,8 +5444,6 @@ snapshots:
   convert-source-map@2.0.0: {}
 
   cookie-signature@1.0.6: {}
-
-  cookie-signature@1.2.2: {}
 
   cookie@0.7.1: {}
 
@@ -6938,6 +6938,8 @@ snapshots:
 
   nanoid@3.3.7: {}
 
+  nanoid@5.0.9: {}
+
   natural-compare@1.4.0: {}
 
   negotiator@0.6.3: {}
@@ -6947,8 +6949,6 @@ snapshots:
   node-fetch@2.7.0:
     dependencies:
       whatwg-url: 5.0.0
-
-  node-gyp-build@4.8.2: {}
 
   node-releases@2.0.19: {}
 
@@ -7640,10 +7640,6 @@ snapshots:
   signal-exit@4.1.0: {}
 
   slash@3.0.0: {}
-
-  sodium-native@4.3.0:
-    dependencies:
-      node-gyp-build: 4.8.2
 
   sonic-boom@4.2.0:
     dependencies:

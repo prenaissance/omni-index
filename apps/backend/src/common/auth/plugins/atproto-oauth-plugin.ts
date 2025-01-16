@@ -1,12 +1,21 @@
 import { Agent } from "@atproto/api";
-import { NodeOAuthClient } from "@atproto/oauth-client-node";
+import {
+  NodeOAuthClient,
+  NodeSavedSessionStore,
+  NodeSavedStateStore,
+} from "@atproto/oauth-client-node";
 import { fastifyPlugin } from "fastify-plugin";
+import { MongoSessionStore, MongoStateStore } from "../storage";
 import { createOAuthClient } from "~/common/auth/oauth-client";
 import { MONGODB_PLUGIN } from "~/common/mongodb/plugins/mongodb-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
-    readonly oauth: NodeOAuthClient;
+    readonly oauth: {
+      readonly client: NodeOAuthClient;
+      readonly stateStore: NodeSavedStateStore;
+      readonly sessionStore: NodeSavedSessionStore;
+    };
   }
 
   interface FastifyRequest {
@@ -21,19 +30,25 @@ declare module "fastify" {
 
 export const atprotoOAuthPlugin = fastifyPlugin(
   async (app) => {
-    app.decorate("oauth", await createOAuthClient(app.mongo.db()));
+    const stateStore = new MongoStateStore(app.db);
+    const sessionStore = new MongoSessionStore(app.db);
+    app.decorate("oauth", {
+      stateStore,
+      sessionStore,
+      client: await createOAuthClient(sessionStore, stateStore),
+    });
     app.get("/client-metadata.json", () => {
-      return app.oauth.clientMetadata;
+      return app.oauth.client.clientMetadata;
     });
 
     app.addHook("onRequest", async (request) => {
-      const sessionDid = request.session.get("did");
+      const did = request.user?.sub;
 
-      const agent = sessionDid
-        ? new Agent(await app.oauth.restore(sessionDid))
+      const agent = did
+        ? new Agent(await app.oauth.client.restore(did))
         : new Agent("https://bsky.social/xrpc");
 
-      (request.atproto as Agent) = agent;
+      app.decorateRequest("atproto", agent);
     });
   },
   {

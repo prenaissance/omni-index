@@ -44,7 +44,14 @@ export default tseslint.config([
       "import-x/no-named-as-default-member": "off",
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/consistent-type-definitions": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       // for react-router, ignoring the path does not work
       "@typescript-eslint/no-namespace": "off",
       "@typescript-eslint/no-non-null-assertion": "off",

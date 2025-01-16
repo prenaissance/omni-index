@@ -1,7 +1,7 @@
 import { Type } from "@sinclair/typebox";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { isValidHandle } from "@atproto/syntax";
-import { env } from "~/env";
+import { env } from "~/common/config/env";
 
 const LoginRequestSchema = Type.Object(
   {
@@ -52,7 +52,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       try {
-        const url = await app.oauth.authorize(handle, {
+        const url = await app.oauth.client.authorize(handle, {
           scope: "atproto transition:generic",
         });
         return reply.redirect(url.toString());
@@ -73,14 +73,16 @@ const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     async (request, reply) => {
-      const { session } = await app.oauth.callback(
+      const { session } = await app.oauth.client.callback(
         new URLSearchParams(request.query as Record<string, string>)
       );
       const { did } = session;
-      request.log.info({ did }, "Authenticated");
-      request.session.set("did", did);
+      request.log.info("Authenticated", { did });
+      const temporaryToken = await app.users.tokenRepository.generateToken(did);
+      const url = new URL(env.FRONTEND_URL);
+      url.searchParams.append("token", temporaryToken);
 
-      return reply.redirect(env.FRONTEND_URL);
+      return reply.redirect(url.toString());
     }
   );
 };
