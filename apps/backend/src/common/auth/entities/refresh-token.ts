@@ -6,29 +6,29 @@ const nanoid = customAlphabet(
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
   32
 );
-const TEMPORARY_TOKEN_EXPIRATION_SECONDS = 5 * 60; // 5 minutes
+const REFRESH_TOKEN_EXPIRATION_SECONDS = 60 * 60 * 24 * 7; // 1 week
 
-export type TemporaryTokenInit = EntityInit & {
+export type RefreshTokenInit = EntityInit & {
   userDid: AtprotoDid;
-  token?: string;
+  refreshToken?: string;
   expiresAt?: Date;
 };
 
-export class TemporaryToken extends Entity {
+export class RefreshToken extends Entity {
   readonly userDid: AtprotoDid;
-  readonly token: string;
+  readonly refreshToken: string;
   readonly expiresAt: Date;
 
-  constructor({ _id, userDid, token, expiresAt }: TemporaryTokenInit) {
+  constructor({ _id, userDid, refreshToken, expiresAt }: RefreshTokenInit) {
     super({ _id });
     this.userDid = userDid;
-    this.token = token ?? TemporaryToken.generateRawToken();
+    this.refreshToken = refreshToken ?? RefreshToken.generateRawToken();
     this.expiresAt =
       expiresAt ??
-      new Date(Date.now() + TEMPORARY_TOKEN_EXPIRATION_SECONDS * 1000);
+      new Date(Date.now() + REFRESH_TOKEN_EXPIRATION_SECONDS * 1000);
   }
 
   static generateRawToken() {
-    return nanoid();
+    return `refresh_${nanoid()}`;
   }
 }

@@ -23,7 +23,7 @@ const LoginResponseSchema = Type.Object(
   }
 );
 
-const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
+const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.addSchema(LoginRequestSchema);
   app.addSchema(LoginResponseSchema);
   app.post(
@@ -87,4 +87,4 @@ const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
   );
 };
 
-export default authRoutes;
+export default oauthRoutes;

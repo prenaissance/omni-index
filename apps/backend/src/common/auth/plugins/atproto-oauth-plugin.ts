@@ -40,6 +40,7 @@ export const atprotoOAuthPlugin = fastifyPlugin(
     app.get("/client-metadata.json", () => {
       return app.oauth.client.clientMetadata;
     });
+    app.decorateRequest("atproto", null!);
 
     app.addHook("onRequest", async (request) => {
       const did = request.user?.sub;
@@ -48,7 +49,7 @@ export const atprotoOAuthPlugin = fastifyPlugin(
         ? new Agent(await app.oauth.client.restore(did))
         : new Agent("https://bsky.social/xrpc");
 
-      app.decorateRequest("atproto", agent);
+      (request as { atproto: Agent }).atproto = agent;
     });
   },
   {

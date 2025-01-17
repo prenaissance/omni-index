@@ -21,6 +21,7 @@ import { verifiedRequestPlugin } from "./synchronization/plugins/verified-reques
 import { storedEventPlugin } from "./stored-events/stored-event-plugin";
 import { configPlugin } from "./common/config/config-plugin";
 import { jwtSetupPlugin } from "./common/auth/plugins/jwt-setup-plugin";
+import { usersPlugin } from "./common/auth/plugins/users-plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -75,6 +76,7 @@ app.register(authenticationStrategiesPlugin);
 
 app.register(commonPayloadsPlugin);
 app.register(eventEmitterPlugin);
+app.register(usersPlugin);
 app.register(mediaPlugin);
 app.register(peerNodePlugin);
 app.register(verifiedRequestPlugin);

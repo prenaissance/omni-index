@@ -1,5 +1,5 @@
 import { Collection, Db } from "mongodb";
-import { Did } from "@atproto/api";
+import { AtprotoDid } from "@atproto/oauth-client-node";
 import { TemporaryToken } from "../entities/temporary-token";
 
 export const TEMPORARY_TOKENS_COLLECTION = "temporary-tokens";
@@ -12,7 +12,7 @@ export class TokenRepository {
   }
 
   /** @returns the generated token */
-  async generateToken(userDid: Did) {
+  async generateToken(userDid: AtprotoDid) {
     const temporaryToken = new TemporaryToken({ userDid });
     await this.temporaryTokenCollection.insertOne(temporaryToken);
     return temporaryToken.token;
