@@ -32,6 +32,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "/token",
     {
       schema: {
+        tags: ["auth"],
         body: Type.Object({
           token: Type.String(),
         }),
@@ -79,6 +80,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "/refresh",
     {
       schema: {
+        tags: ["auth"],
         body: Type.Object({
           refreshToken: Type.String(),
         }),
