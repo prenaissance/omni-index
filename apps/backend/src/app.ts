@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import Fastify from "fastify";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 
@@ -14,14 +14,17 @@ import { commonPayloadsPlugin } from "./common/payloads/_plugin";
 import { mediaPlugin } from "./media/_plugin";
 import { eventEmitterPlugin } from "./common/events/_plugin";
 import { mongodbPlugin } from "./common/mongodb/plugins/mongodb-plugin";
-import { atprotoOAuthPlugin } from "./common/auth/plugins/atproto-oauth-plugin";
-import { authenticationStrategiesPlugin } from "./common/auth/plugins/authentication-strategies-plugin";
 import { peerNodePlugin } from "./synchronization/plugins/peer-node-plugin";
 import { verifiedRequestPlugin } from "./synchronization/plugins/verified-request-plugin";
 import { storedEventPlugin } from "./stored-events/stored-event-plugin";
 import { configPlugin } from "./common/config/config-plugin";
-import { jwtSetupPlugin } from "./common/auth/plugins/jwt-setup-plugin";
-import { usersPlugin } from "./common/auth/plugins/users-plugin";
+import {
+  atprotoOAuthPlugin,
+  authenticationStrategiesPlugin,
+  jwtSetupPlugin,
+  usersPlugin,
+} from "./common/auth/plugins";
+import { swaggerConfig } from "./common/config/boot/swagger-config";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -41,27 +44,7 @@ app.register(fastifyRacingPlugin, {
   handleError: true,
 });
 
-await app.register(fastifySwagger, {
-  swagger: {
-    info: {
-      title: "Fastify API",
-      description: "Backend API for Inventory Manager",
-      version: "0.1.0",
-    },
-  },
-  openapi: {
-    components: {
-      securitySchemes: {
-        jwt: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-        },
-      },
-    },
-    security: [{ jwt: [] }],
-  },
-});
+await app.register(fastifySwagger, swaggerConfig);
 
 app.register(fastifySwaggerUi, {
   routePrefix: "/swagger",

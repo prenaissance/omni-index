@@ -9,7 +9,7 @@ export const PeerNodeResponse = Type.Object(
     _id: ObjectIdSchema(),
     createdAt: DateSchema(),
     hostname: Type.String(),
-    trustLevel: Type.Enum(PeerNode.TrustLevel),
+    // trustLevel: Type.Enum(PeerNode.TrustLevel),
     pinnedCertificates: Type.Array(
       Type.Object({
         _id: ObjectIdSchema(),

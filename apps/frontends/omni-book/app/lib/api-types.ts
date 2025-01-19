@@ -35,7 +35,168 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/entry/{id}": {
+  "/api/auth/token": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            token: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["TokenPair"];
+          };
+        };
+        /** @description Default Response */
+        400: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/auth/refresh": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            refreshToken: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["TokenPair"];
+          };
+        };
+        /** @description Default Response */
+        400: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/entries": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: {
+      parameters: {
+        query?: {
+          /** @description Page number (1 indexed) */
+          page?: number;
+          /** @description Page size */
+          limit?: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": {
+              data: components["schemas"]["Entry"][];
+              meta: {
+                /** @description Total number of items matching the query */
+                total: number;
+                /** @description Current page number (1 indexed) */
+                page: number;
+                /** @description Number of items per page */
+                limit: number;
+              };
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "application/json": components["schemas"]["CreateEntryRequest"];
+        };
+      };
+      responses: {
+        /** @description Default Response */
+        201: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Entry"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/entries/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -58,13 +219,15 @@ export interface paths {
         200: {
           headers: Record<string, unknown>;
           content: {
-            "application/json": components["schemas"]["def-6"];
+            "application/json": components["schemas"]["Entry"];
           };
         };
         /** @description Default Response */
         404: {
           headers: Record<string, unknown>;
-          content?: never;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
         };
       };
     };
@@ -76,7 +239,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/entry/": {
+  "/api/entries/{entryId}/media": {
     parameters: {
       query?: never;
       header?: never;
@@ -89,12 +252,18 @@ export interface paths {
       parameters: {
         query?: never;
         header?: never;
-        path?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+        };
         cookie?: never;
       };
       requestBody?: {
         content: {
-          "application/json": components["schemas"]["def-9"];
+          "application/json": components["schemas"]["CreateMediaRequest"][];
         };
       };
       responses: {
@@ -102,11 +271,218 @@ export interface paths {
         201: {
           headers: Record<string, unknown>;
           content: {
-            "application/json": components["schemas"]["def-6"];
+            "application/json": components["schemas"]["Entry"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
           };
         };
       };
     };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/entries/{entryId}/media/{mediaId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+          /**
+           * @description ObjectId of the media
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          mediaId: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Entry"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/entries/{entryId}/media/{mediaId}/mirrors": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+          /**
+           * @description ObjectId of the media under the entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          mediaId: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "application/json": components["schemas"]["CreateIndexRequest"][];
+        };
+      };
+      responses: {
+        /** @description Default Response */
+        201: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Entry"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/entries/{entryId}/media/{mediaId}/mirrors/{mirrorId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+          /**
+           * @description ObjectId of the media under the entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          mediaId: string;
+          /**
+           * @description ObjectId of the mirror to delete
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          mirrorId: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Entry"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/events": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: {
+      parameters: {
+        query?: {
+          /** @description Page number (1 indexed) */
+          page?: number;
+          /** @description Page size */
+          limit?: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["StoredEventResponse"][];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -131,7 +507,7 @@ export interface paths {
       };
       requestBody?: {
         content: {
-          "application/json": components["schemas"]["def-10"];
+          "application/json": components["schemas"]["LoginRequestSchema"];
         };
       };
       responses: {
@@ -197,6 +573,171 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/peer-nodes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Retrieves all peer nodes */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["PeerNodeListResponse"];
+          };
+        };
+      };
+    };
+    put?: never;
+    /**
+     * Creates a new peer node
+     * @description Creates a new peer node with the specified hostname and trust level
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "application/json": components["schemas"]["CreatePeerNodeRequest"];
+        };
+      };
+      responses: {
+        /** @description Default Response */
+        201: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["PeerNodeResponse"];
+          };
+        };
+        /** @description Default Response */
+        400: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+        /** @description Default Response */
+        409: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/peer-nodes/{id}/refresh": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Refreshes the pinned certificate for a peer node */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the peer node
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["PeerNodeResponse"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/peer-nodes/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Deletes a peer node */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the peer node
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        204: {
+          headers: Record<string, unknown>;
+          content?: never;
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/shallow-ping": {
     parameters: {
       query?: never;
@@ -237,9 +778,28 @@ export interface components {
      * @description Arbitrary metadata
      * @default {}
      */
-    "def-0": Record<string, unknown>;
+    Metadata: Record<string, unknown>;
+    /** Exception */
+    Exception: {
+      /** @description Exception message */
+      message: string;
+      data?: unknown;
+    };
+    /** PaginationQuery */
+    PaginationQuery: {
+      /**
+       * @description Page number (1 indexed)
+       * @default 1
+       */
+      page: number;
+      /**
+       * @description Page size
+       * @default 10
+       */
+      limit: number;
+    };
     /** BlobLink */
-    "def-1":
+    BlobLink:
       | {
           /**
            * Format: uri
@@ -257,7 +817,7 @@ export interface components {
           accessUrl: string;
         };
     /** HotLinkUrl */
-    "def-2": {
+    HotLinkUrl: {
       /**
        * Format: uri
        * @description Hot URL
@@ -265,7 +825,7 @@ export interface components {
       url: string;
     };
     /** IPFSLink */
-    "def-3": {
+    IPFSLink: {
       /** @description IPFS CID */
       cid: string;
       /**
@@ -275,8 +835,11 @@ export interface components {
       accessUrl: string;
     };
     /** Index */
-    "def-4": {
-      /** @description ObjectId of the media index (as hex string) */
+    Index: {
+      /**
+       * @description ObjectId
+       * @example 5fdedb7c25ab1352eef88f60
+       */
       _id: string;
       /** @description The third party host of the media */
       provider?: string;
@@ -284,19 +847,25 @@ export interface components {
       mimeType?: string;
       /** @description Size of the media in bytes */
       size?: number;
-      blob: components["schemas"]["def-1"];
-      meta: components["schemas"]["def-0"];
+      blob: components["schemas"]["BlobLink"];
+      meta: components["schemas"]["Metadata"];
     };
     /** Media */
-    "def-5": {
-      /** @description ObjectId of the media (as hex string) */
+    Media: {
+      /**
+       * @description ObjectId of the media
+       * @example 5fdedb7c25ab1352eef88f60
+       */
       _id: string;
-      mirrors: components["schemas"]["def-4"][];
-      meta: components["schemas"]["def-0"];
+      mirrors: components["schemas"]["Index"][];
+      meta: components["schemas"]["Metadata"];
     };
     /** Entry */
-    "def-6": {
-      /** @description ObjectId of the media entry */
+    Entry: {
+      /**
+       * @description ObjectId of the media entry
+       * @example 5fdedb7c25ab1352eef88f60
+       */
       _id: string;
       title: string;
       author: string;
@@ -325,26 +894,26 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
-      meta: components["schemas"]["def-0"];
-      media: components["schemas"]["def-5"][];
+      meta: components["schemas"]["Metadata"];
+      media: components["schemas"]["Media"][];
       genres: string[];
     };
     /** CreateIndexRequest */
-    "def-7": {
+    CreateIndexRequest: {
       provider?: string;
       mimeType?: string;
       size?: number;
-      blob: components["schemas"]["def-1"];
-      meta: components["schemas"]["def-0"];
+      blob: components["schemas"]["BlobLink"];
+      meta: components["schemas"]["Metadata"];
     };
     /** CreateMediaRequest */
-    "def-8": {
-      meta: components["schemas"]["def-0"];
+    CreateMediaRequest: {
+      meta: components["schemas"]["Metadata"];
     } & {
-      mirrors: components["schemas"]["def-7"][];
+      mirrors: components["schemas"]["CreateIndexRequest"][];
     };
     /** CreateEntryRequest */
-    "def-9": {
+    CreateEntryRequest: {
       title: string;
       author: string;
       localizedTitle?: string;
@@ -367,25 +936,73 @@ export interface components {
              */
             accessUrl: string;
           };
-      meta: components["schemas"]["def-0"];
+      meta: components["schemas"]["Metadata"];
       genres: string[];
     } & {
       media: ({
-        meta: components["schemas"]["def-0"];
+        meta: components["schemas"]["Metadata"];
       } & {
-        mirrors: components["schemas"]["def-7"][];
+        mirrors: components["schemas"]["CreateIndexRequest"][];
       })[];
     };
+    /** TokenPair */
+    TokenPair: {
+      /** @description JWT access token */
+      accessToken: string;
+      /** @description JWT refresh token. Use on POST /api/auth/refresh to get a new token pair. */
+      refreshToken: string;
+    };
+    /** StoredEventResponse */
+    StoredEventResponse: {
+      /**
+       * @description ObjectId
+       * @example 5fdedb7c25ab1352eef88f60
+       */
+      _id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** @description TODO: Constraint to possible events enum */
+      type: string;
+      payload: unknown;
+    };
     /** LoginRequestSchema */
-    "def-10": {
+    LoginRequestSchema: {
       /** @description User handle. Example: @example.bsky.social */
       handle: string;
     };
     /** LoginResponseSchema */
-    "def-11": {
+    LoginResponseSchema: {
       /** @description JWT token */
       token: string;
     };
+    /** CreatePeerNodeRequest */
+    CreatePeerNodeRequest: {
+      hostname: string;
+      trustLevel: "trusted" | "semi-trusted";
+    };
+    /** PeerNodeResponse */
+    PeerNodeResponse: {
+      /**
+       * @description ObjectId
+       * @example 5fdedb7c25ab1352eef88f60
+       */
+      _id: string;
+      /** Format: date-time */
+      createdAt: string;
+      hostname: string;
+      pinnedCertificates: {
+        /**
+         * @description ObjectId
+         * @example 5fdedb7c25ab1352eef88f60
+         */
+        _id: string;
+        /** Format: date-time */
+        createdAt: string;
+        sha256: string;
+      }[];
+    };
+    /** PeerNodeListResponse */
+    PeerNodeListResponse: components["schemas"]["PeerNodeResponse"][];
   };
   responses: never;
   parameters: never;
@@ -393,17 +1010,5 @@ export interface components {
   headers: never;
   pathItems: never;
 }
-export type SchemaDef_0 = components["schemas"]["def-0"];
-export type SchemaDef_1 = components["schemas"]["def-1"];
-export type SchemaDef_2 = components["schemas"]["def-2"];
-export type SchemaDef_3 = components["schemas"]["def-3"];
-export type SchemaDef_4 = components["schemas"]["def-4"];
-export type SchemaDef_5 = components["schemas"]["def-5"];
-export type SchemaDef_6 = components["schemas"]["def-6"];
-export type SchemaDef_7 = components["schemas"]["def-7"];
-export type SchemaDef_8 = components["schemas"]["def-8"];
-export type SchemaDef_9 = components["schemas"]["def-9"];
-export type SchemaDef_10 = components["schemas"]["def-10"];
-export type SchemaDef_11 = components["schemas"]["def-11"];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

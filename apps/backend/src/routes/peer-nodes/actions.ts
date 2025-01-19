@@ -3,18 +3,21 @@ import {
   Type,
 } from "@fastify/type-provider-typebox";
 import { ObjectId } from "mongodb";
-import { ExceptionSchema } from "~/common/payloads/exception-schema";
-import { ObjectIdSchema } from "~/common/payloads/object-id-schema";
+import { ExceptionSchema, ObjectIdSchema } from "~/common/payloads";
 import { PeerNode } from "~/synchronization/entities/peer-node";
 import { PinnedCertificate } from "~/synchronization/entities/pinned-certificate";
-import { CreatePeerNodeRequest } from "~/synchronization/payloads/peer-node/create-peer-node-request";
-import { PeerNodeResponse } from "~/synchronization/payloads/peer-node/peer-node-response";
+import {
+  CreatePeerNodeRequest,
+  PeerNodeListResponse,
+  PeerNodeResponse,
+} from "~/synchronization/payloads/peer-node";
 import { getCertificate } from "~/synchronization/utilities";
 import { isValidHostname } from "~/synchronization/validators";
 
 const peerNodeRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.addSchema(CreatePeerNodeRequest);
   app.addSchema(PeerNodeResponse);
+  app.addSchema(PeerNodeListResponse);
 
   app.get(
     "",
@@ -23,7 +26,7 @@ const peerNodeRoutes: FastifyPluginAsyncTypebox = async (app) => {
         tags: ["Peer Nodes"],
         summary: "Retrieves all peer nodes",
         response: {
-          200: Type.Array(Type.Ref(PeerNodeResponse)),
+          200: Type.Ref(PeerNodeListResponse),
         },
       },
     },
