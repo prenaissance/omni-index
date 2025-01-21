@@ -2,6 +2,8 @@ import { Type } from "@sinclair/typebox";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { isValidHandle } from "@atproto/syntax";
 import { env } from "~/common/config/env";
+import { User } from "~/common/auth/entities/user";
+import { UserRole } from "~/common/auth/entities/enums/user-role";
 
 const LoginRequestSchema = Type.Object(
   {
@@ -37,16 +39,13 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
           404: Type.Object({
             message: Type.String(),
           }),
-          422: Type.Object({
-            message: Type.String(),
-          }),
         },
       },
     },
     async (request, reply) => {
       const { handle } = request.body;
       if (!isValidHandle(handle)) {
-        return reply.code(422).send({
+        return reply.code(404).send({
           message: "Invalid handle",
         });
       }
@@ -78,11 +77,19 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
       );
       const { did } = session;
       request.log.info("Authenticated", { did });
-      const temporaryToken = await app.users.tokenRepository.generateToken(did);
-      const url = new URL(env.FRONTEND_URL);
-      url.searchParams.append("token", temporaryToken);
+      request.session.set("did", did);
 
-      return reply.redirect(url.toString());
+      let user = await app.users.repository.getByDid(did);
+      if (!user) {
+        user = new User({
+          did,
+          role: UserRole.User,
+        });
+        await app.users.repository.save(user);
+        request.log.info("Created user on first log in", { did });
+      }
+
+      return reply.redirect(env.FRONTEND_URL);
     }
   );
 };

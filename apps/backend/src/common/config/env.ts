@@ -12,7 +12,8 @@ const envSchema = z.object({
   MONGODB_DB: z.string(),
   API_URL: z.string(),
   FRONTEND_URL: z.string().url(),
-  INIT_JWT_SECRET: z
+  CALLBACK_URL: z.string().url(),
+  INIT_SESSION_SECRET: z
     .string()
     .min(32, "The secret key must be at least 32 characters long")
     .optional(),

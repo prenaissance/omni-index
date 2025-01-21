@@ -21,9 +21,7 @@ declare module "fastify" {
 
 export const authenticationStrategiesPlugin = fastifyPlugin(async (app) => {
   app.decorate("verifyAuthenticated", async (request, reply) => {
-    try {
-      await request.jwtVerify();
-    } catch (_err) {
+    if (!request.atproto.did) {
       return reply.code(401).send({
         message: "Unauthorized",
       });
@@ -31,16 +29,17 @@ export const authenticationStrategiesPlugin = fastifyPlugin(async (app) => {
   });
 
   app.decorate("verifyRoles", (roles) => async (request, reply) => {
-    try {
-      await request.jwtVerify();
-    } catch (_err) {
+    if (!request.atproto.did) {
       return reply.code(401).send({
         message: "Unauthorized",
       });
     }
-
-    if (!roles.includes(request.user.role)) {
-      return await reply.code(403).send({
+    const user = await app.users.repository.getByDid(
+      // TODO: Remove cast when the library fixed this
+      request.atproto.did as AtprotoDid
+    );
+    if (!user || !roles.includes(user.role)) {
+      return reply.code(403).send({
         message: "Forbidden",
       });
     }

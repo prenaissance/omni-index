@@ -43,7 +43,7 @@ export const atprotoOAuthPlugin = fastifyPlugin(
     app.decorateRequest("atproto", null!);
 
     app.addHook("onRequest", async (request) => {
-      const did = request.user?.sub;
+      const did = request.session.get("did");
 
       const agent = did
         ? new Agent(await app.oauth.client.restore(did))

@@ -1,4 +1,5 @@
 {
+  "$schema": "../json-schema.json",
   "lexicon": 1,
   "id": "com.omni-index.comment",
   "description": "Comment left by the user",

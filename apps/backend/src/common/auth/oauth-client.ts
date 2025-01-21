@@ -9,17 +9,19 @@ export const createOAuthClient = async (
   sessionStore: NodeSavedSessionStore,
   stateStore: NodeSavedStateStore
 ) => {
-  const publicUrl = env.NODE_ENV === "production" ? env.API_URL : undefined;
-  const url = publicUrl || `http://127.0.0.1:${env.PORT}`;
+  const url = env.FRONTEND_URL;
 
   return new NodeOAuthClient({
     clientMetadata: {
       client_name: "Omni-Index",
-      client_id: publicUrl
-        ? `${url}/client-metadata.json`
-        : `http://localhost?redirect_uri=${encodeURIComponent(`${url}/api/oauth/callback`)}&scope=${encodeURIComponent("atproto transition:generic")}`,
+      client_id:
+        env.NODE_ENV === "production"
+          ? `${url}/client-metadata.json`
+          : `http://localhost?redirect_uri=${encodeURIComponent(
+              env.CALLBACK_URL
+            )}&scope=${encodeURIComponent("atproto transition:generic")}`,
       client_uri: url,
-      redirect_uris: [`${url}/api/oauth/callback`],
+      redirect_uris: [env.CALLBACK_URL],
       scope: "atproto transition:generic",
       grant_types: ["authorization_code", "refresh_token"],
       response_types: ["code"],

@@ -21,7 +21,7 @@ import { configPlugin } from "./common/config/config-plugin";
 import {
   atprotoOAuthPlugin,
   authenticationStrategiesPlugin,
-  jwtSetupPlugin,
+  sessionSetupPlugin,
   usersPlugin,
 } from "./common/auth/plugins";
 import { swaggerConfig } from "./common/config/boot/swagger-config";
@@ -52,7 +52,7 @@ app.register(fastifySwaggerUi, {
 
 app.register(mongodbPlugin);
 app.register(configPlugin);
-app.register(jwtSetupPlugin);
+app.register(sessionSetupPlugin);
 app.register(authPlugin);
 app.register(atprotoOAuthPlugin);
 app.register(authenticationStrategiesPlugin);
