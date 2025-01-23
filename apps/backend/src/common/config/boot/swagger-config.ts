@@ -11,14 +11,14 @@ export const swaggerConfig: SwaggerOptions = {
   openapi: {
     components: {
       securitySchemes: {
-        jwt: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
+        session: {
+          type: "apiKey",
+          name: "session",
+          in: "cookie",
         },
       },
     },
-    security: [{ jwt: [] }],
+    security: [{ session: [] }],
   },
   refResolver: {
     buildLocalReference(json, _baseUri, _fragment, i) {

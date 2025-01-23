@@ -3,19 +3,11 @@ import type { FastifyAuthFunction } from "@fastify/auth";
 import { type AtprotoDid } from "@atproto/oauth-client-node";
 import { UserRole } from "../entities/enums/user-role";
 
-export type JwtPayload = {
-  sub: AtprotoDid;
-  role: UserRole;
-};
-
 declare module "fastify" {
   interface FastifyInstance {
     verifyAuthenticated: FastifyAuthFunction;
     /** Verifies that the user matches one of the provided roles */
     verifyRoles: (roles: readonly UserRole[]) => FastifyAuthFunction;
-  }
-  interface FastifyRequest {
-    user: JwtPayload;
   }
 }
 

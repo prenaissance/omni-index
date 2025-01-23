@@ -16,18 +16,8 @@ const LoginRequestSchema = Type.Object(
   }
 );
 
-const LoginResponseSchema = Type.Object(
-  {
-    token: Type.String({ description: "JWT token" }),
-  },
-  {
-    $id: "LoginResponseSchema",
-  }
-);
-
 const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.addSchema(LoginRequestSchema);
-  app.addSchema(LoginResponseSchema);
   app.post(
     "/login",
     {
