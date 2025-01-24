@@ -30,7 +30,9 @@ const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
 
 const app = Fastify({
-  logger: true,
+  logger: {
+    level: env.NODE_ENV === "development" ? "debug" : "info",
+  },
 }).withTypeProvider<TypeBoxTypeProvider>();
 
 app.register(corsPlugin, {

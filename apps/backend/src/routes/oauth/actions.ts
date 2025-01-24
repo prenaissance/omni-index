@@ -59,11 +59,19 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
     {
       schema: {
         tags: ["auth"],
+        querystring: Type.Object(
+          {
+            code: Type.String(),
+            state: Type.String(),
+            iss: Type.String(),
+          },
+          { additionalProperties: true }
+        ),
       },
     },
     async (request, reply) => {
       const { session } = await app.oauth.client.callback(
-        new URLSearchParams(request.query as Record<string, string>)
+        new URLSearchParams(request.query)
       );
       const { did } = session;
       request.log.info("Authenticated", { did });
