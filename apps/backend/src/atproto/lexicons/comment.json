@@ -1,12 +1,32 @@
 {
-  "$schema": "../json-schema.json",
+  "$schema": "https://prenaissance.github.io/atproto-lexicon-json-schema/v1.json",
   "lexicon": 1,
   "id": "com.omni-index.comment",
   "description": "Comment left by the user",
   "defs": {
     "main": {
       "type": "record",
-      "required": []
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 3000,
+            "maxGraphemes": 300,
+            "description": "The text of the comment"
+          },
+          "entryId": {
+            "type": "string",
+            "description": "The ObjectId of the entry this comment refers to"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        },
+        "required": ["text", "entryId", "createdAt"]
+      }
     }
   }
 }
