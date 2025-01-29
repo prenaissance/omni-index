@@ -37,7 +37,8 @@ export const schemaDict = {
       },
     },
   },
-} as const satisfies Record<string, LexiconDoc>;
+  // TODO: Remove intersection type after PR is merged in atproto
+} as const satisfies Record<string, LexiconDoc & { $schema: string }>;
 
 export const schemas = Object.values(schemaDict);
 export const lexicons: Lexicons = new Lexicons(schemas);

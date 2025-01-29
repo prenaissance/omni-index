@@ -41,6 +41,9 @@ importers:
       '@atproto/api':
         specifier: ^0.13.15
         version: 0.13.15
+      '@atproto/lexicon':
+        specifier: ^0.4.5
+        version: 0.4.5
       '@atproto/oauth-client-node':
         specifier: ^0.2.0
         version: 0.2.0
@@ -92,6 +95,9 @@ importers:
       mongodb:
         specifier: ^6.10.0
         version: 6.10.0
+      multiformats:
+        specifier: ^13.3.1
+        version: 13.3.1
       nanoid:
         specifier: ^5.0.9
         version: 5.0.9
@@ -283,9 +289,6 @@ packages:
   '@atproto/lex-cli@0.5.5':
     resolution: {integrity: sha512-QdeD5KSc5Qi9xasHPQzui2GDF5PZYpRUzFAHKa88inmBBtgx9MBOxw//O7x/Xfscgk5pql1Uou2yoNfomjBFbw==}
     hasBin: true
-
-  '@atproto/lexicon@0.4.2':
-    resolution: {integrity: sha512-CXoOkhcdF3XVUnR2oNgCs2ljWfo/8zUjxL5RIhJW/UNLp/FSl+KpF8Jm5fbk8Y/XXVPGRAsv9OYfxyU/14N/pw==}
 
   '@atproto/lexicon@0.4.5':
     resolution: {integrity: sha512-fljWqMGKn+XWtTprBcS3F1hGBREnQYh6qYHv2sjENucc7REms1gtmZXSerB9N6pVeHVNOnXiILdukeAcic5OEw==}
@@ -2810,6 +2813,9 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
+  multiformats@13.3.1:
+    resolution: {integrity: sha512-QxowxTNwJ3r5RMctoGA5p13w5RbRT2QDkoM+yFlqfLiioBp78nhDjnRLvmSBI9+KAqN4VdgOVWM9c0CHd86m3g==}
+
   multiformats@9.9.0:
     resolution: {integrity: sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==}
 
@@ -4023,7 +4029,7 @@ snapshots:
   '@atproto/api@0.13.15':
     dependencies:
       '@atproto/common-web': 0.3.1
-      '@atproto/lexicon': 0.4.2
+      '@atproto/lexicon': 0.4.5
       '@atproto/syntax': 0.3.0
       '@atproto/xrpc': 0.6.3
       await-lock: 2.2.2
@@ -4075,14 +4081,6 @@ snapshots:
       yesno: 0.4.0
       zod: 3.23.8
 
-  '@atproto/lexicon@0.4.2':
-    dependencies:
-      '@atproto/common-web': 0.3.1
-      '@atproto/syntax': 0.3.0
-      iso-datestring-validator: 2.2.2
-      multiformats: 9.9.0
-      zod: 3.23.8
-
   '@atproto/lexicon@0.4.5':
     dependencies:
       '@atproto/common-web': 0.3.2
@@ -4129,7 +4127,7 @@ snapshots:
 
   '@atproto/xrpc@0.6.3':
     dependencies:
-      '@atproto/lexicon': 0.4.2
+      '@atproto/lexicon': 0.4.5
       zod: 3.23.8
 
   '@babel/code-frame@7.26.2':
@@ -6877,6 +6875,8 @@ snapshots:
   ms@2.0.0: {}
 
   ms@2.1.3: {}
+
+  multiformats@13.3.1: {}
 
   multiformats@9.9.0: {}
 
