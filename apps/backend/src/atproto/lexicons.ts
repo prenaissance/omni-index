@@ -5,8 +5,6 @@ import { LexiconDoc, Lexicons } from "@atproto/lexicon";
 
 export const schemaDict = {
   "ComOmni-indexComment": {
-    $schema:
-      "https://prenaissance.github.io/atproto-lexicon-json-schema/v1.json",
     lexicon: 1,
     id: "com.omni-index.comment",
     description: "Comment left by the user",
@@ -37,8 +35,7 @@ export const schemaDict = {
       },
     },
   },
-  // TODO: Remove intersection type after PR is merged in atproto
-} as const satisfies Record<string, LexiconDoc & { $schema: string }>;
+} as const satisfies Record<string, LexiconDoc>;
 
 export const schemas = Object.values(schemaDict);
 export const lexicons: Lexicons = new Lexicons(schemas);

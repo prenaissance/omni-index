@@ -42,8 +42,8 @@ importers:
         specifier: ^0.13.15
         version: 0.13.15
       '@atproto/lexicon':
-        specifier: ^0.4.5
-        version: 0.4.5
+        specifier: ^0.4.6
+        version: 0.4.6
       '@atproto/oauth-client-node':
         specifier: ^0.2.0
         version: 0.2.0
@@ -109,8 +109,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@atproto/lex-cli':
-        specifier: ^0.5.5
-        version: 0.5.5
+        specifier: ^0.5.6
+        version: 0.5.7
       '@types/node':
         specifier: ^22.9.0
         version: 22.9.0
@@ -271,8 +271,8 @@ packages:
   '@atproto/common-web@0.3.1':
     resolution: {integrity: sha512-N7wiTnus5vAr+lT//0y8m/FaHHLJ9LpGuEwkwDAeV3LCiPif4m/FS8x/QOYrx1PdZQwKso95RAPzCGWQBH5j6Q==}
 
-  '@atproto/common-web@0.3.2':
-    resolution: {integrity: sha512-Vx0JtL1/CssJbFAb0UOdvTrkbUautsDfHNOXNTcX2vyPIxH9xOameSqLLunM1hZnOQbJwyjmQCt6TV+bhnanDg==}
+  '@atproto/common-web@0.4.0':
+    resolution: {integrity: sha512-ZYL0P9myHybNgwh/hBY0HaBzqiLR1B5/ie5bJpLQAg0whRzNA28t8/nU2vh99tbsWcAF0LOD29M8++LyENJLNQ==}
 
   '@atproto/did@0.1.3':
     resolution: {integrity: sha512-ULD8Gw/KRRwLFZ2Z2L4DjmdOMrg8IYYlcjdSc+GQ2/QJSVnD2zaJJVTLd3vls121wGt/583rNaiZTT2DpBze4w==}
@@ -286,12 +286,13 @@ packages:
   '@atproto/jwk@0.1.1':
     resolution: {integrity: sha512-6h/bj1APUk7QcV9t/oA6+9DB5NZx9SZru9x+/pV5oHFI9Xz4ZuM5+dq1PfsJV54pZyqdnZ6W6M717cxoC7q7og==}
 
-  '@atproto/lex-cli@0.5.5':
-    resolution: {integrity: sha512-QdeD5KSc5Qi9xasHPQzui2GDF5PZYpRUzFAHKa88inmBBtgx9MBOxw//O7x/Xfscgk5pql1Uou2yoNfomjBFbw==}
+  '@atproto/lex-cli@0.5.7':
+    resolution: {integrity: sha512-V5rsU95Th57KICxUGwTjudN5wmFBHL/fLkl7banl6izsQBiUrVvrj3EScNW/Wx2PnwlJwxtTpa1rTnP30+i5/A==}
+    engines: {node: '>=18.7.0'}
     hasBin: true
 
-  '@atproto/lexicon@0.4.5':
-    resolution: {integrity: sha512-fljWqMGKn+XWtTprBcS3F1hGBREnQYh6qYHv2sjENucc7REms1gtmZXSerB9N6pVeHVNOnXiILdukeAcic5OEw==}
+  '@atproto/lexicon@0.4.6':
+    resolution: {integrity: sha512-RbiwXcnTuLp9vQrNoQ7xly8HyifKkovqCYtbfXVwqdylWYKPhmRsYkRfcPNv/lILhT9Lm0GVnxNwGGwvvgIsfA==}
 
   '@atproto/oauth-client-node@0.2.0':
     resolution: {integrity: sha512-tvJJrMsZ0KXnwtW43zymsXauV9q8fl+Rfr+uRZwyOSi9t2wUIYQ3KqtdDB8hhWoU1I7clQId2yAYuWjSj0yP2w==}
@@ -305,8 +306,8 @@ packages:
   '@atproto/syntax@0.3.0':
     resolution: {integrity: sha512-Weq0ZBxffGHDXHl9U7BQc2BFJi/e23AL+k+i5+D9hUq/bzT4yjGsrCejkjq0xt82xXDjmhhvQSZ0LqxyZ5woxA==}
 
-  '@atproto/syntax@0.3.1':
-    resolution: {integrity: sha512-fzW0Mg1QUOVCWUD3RgEsDt6d1OZ6DdFmbKcDdbzUfh0t4rhtRAC05KbZYmxuMPWDAiJ4BbbQ5dkAc/mNypMXkw==}
+  '@atproto/syntax@0.3.2':
+    resolution: {integrity: sha512-JLMhTbXER1Im98RrozfsLAZARGIAzKCZEm+Inh1IF00XU6tHcoGKS+HOw0Uy4R2r04yvxoFs8fswmwAhmMpMdw==}
 
   '@atproto/xrpc@0.6.3':
     resolution: {integrity: sha512-S3tRvOdA9amPkKLll3rc4vphlDitLrkN5TwWh5Tu/jzk7mnobVVE3akYgICV9XCNHKjWM+IAPxFFI2qi+VW6nQ==}
@@ -4029,7 +4030,7 @@ snapshots:
   '@atproto/api@0.13.15':
     dependencies:
       '@atproto/common-web': 0.3.1
-      '@atproto/lexicon': 0.4.5
+      '@atproto/lexicon': 0.4.6
       '@atproto/syntax': 0.3.0
       '@atproto/xrpc': 0.6.3
       await-lock: 2.2.2
@@ -4044,7 +4045,7 @@ snapshots:
       uint8arrays: 3.0.0
       zod: 3.23.8
 
-  '@atproto/common-web@0.3.2':
+  '@atproto/common-web@0.4.0':
     dependencies:
       graphemer: 1.4.0
       multiformats: 9.9.0
@@ -4070,10 +4071,10 @@ snapshots:
       multiformats: 9.9.0
       zod: 3.23.8
 
-  '@atproto/lex-cli@0.5.5':
+  '@atproto/lex-cli@0.5.7':
     dependencies:
-      '@atproto/lexicon': 0.4.5
-      '@atproto/syntax': 0.3.1
+      '@atproto/lexicon': 0.4.6
+      '@atproto/syntax': 0.3.2
       chalk: 4.1.2
       commander: 9.5.0
       prettier: 3.3.3
@@ -4081,10 +4082,10 @@ snapshots:
       yesno: 0.4.0
       zod: 3.23.8
 
-  '@atproto/lexicon@0.4.5':
+  '@atproto/lexicon@0.4.6':
     dependencies:
-      '@atproto/common-web': 0.3.2
-      '@atproto/syntax': 0.3.1
+      '@atproto/common-web': 0.4.0
+      '@atproto/syntax': 0.3.2
       iso-datestring-validator: 2.2.2
       multiformats: 9.9.0
       zod: 3.23.8
@@ -4123,11 +4124,11 @@ snapshots:
 
   '@atproto/syntax@0.3.0': {}
 
-  '@atproto/syntax@0.3.1': {}
+  '@atproto/syntax@0.3.2': {}
 
   '@atproto/xrpc@0.6.3':
     dependencies:
-      '@atproto/lexicon': 0.4.5
+      '@atproto/lexicon': 0.4.6
       zod: 3.23.8
 
   '@babel/code-frame@7.26.2':
