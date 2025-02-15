@@ -1,0 +1,25 @@
+{
+  "lexicon": 1,
+  "id": "com.omni-index.comment.like",
+  "description": "Like to a user's comment",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "properties": {
+          "commentUri": {
+            "type": "string",
+            "format": "at-identifier"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        },
+        "required": ["commentUri", "createdAt"]
+      }
+    }
+  }
+}

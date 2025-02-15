@@ -4,6 +4,31 @@
 import { LexiconDoc, Lexicons } from "@atproto/lexicon";
 
 export const schemaDict = {
+  "ComOmni-indexCommentLike": {
+    lexicon: 1,
+    id: "com.omni-index.comment.like",
+    description: "Like to a user's comment",
+    defs: {
+      main: {
+        type: "record",
+        key: "tid",
+        record: {
+          type: "object",
+          properties: {
+            commentUri: {
+              type: "string",
+              format: "at-identifier",
+            },
+            createdAt: {
+              type: "string",
+              format: "datetime",
+            },
+          },
+          required: ["commentUri", "createdAt"],
+        },
+      },
+    },
+  },
   "ComOmni-indexComment": {
     lexicon: 1,
     id: "com.omni-index.comment",
@@ -18,19 +43,19 @@ export const schemaDict = {
             text: {
               type: "string",
               maxLength: 3000,
-              maxGraphemes: 300,
+              maxGraphemes: 1000,
               description: "The text of the comment",
             },
-            entryId: {
+            entrySlug: {
               type: "string",
-              description: "The ObjectId of the entry this comment refers to",
+              description: "The slug of the entry the comment is left on",
             },
             createdAt: {
               type: "string",
               format: "datetime",
             },
           },
-          required: ["text", "entryId", "createdAt"],
+          required: ["text", "entrySlug", "createdAt"],
         },
       },
     },
@@ -39,4 +64,7 @@ export const schemaDict = {
 
 export const schemas = Object.values(schemaDict);
 export const lexicons: Lexicons = new Lexicons(schemas);
-export const ids = { "ComOmni-indexComment": "com.omni-index.comment" };
+export const ids = {
+  "ComOmni-indexCommentLike": "com.omni-index.comment.like",
+  "ComOmni-indexComment": "com.omni-index.comment",
+};

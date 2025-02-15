@@ -74,7 +74,7 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
         new URLSearchParams(request.query)
       );
       const { did } = session;
-      request.log.info("Authenticated", { did });
+      request.log.info({ msg: "Authenticated", did });
       request.session.set("did", did);
 
       let user = await app.users.repository.getByDid(did);

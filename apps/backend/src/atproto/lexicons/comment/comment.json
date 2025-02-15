@@ -12,19 +12,19 @@
           "text": {
             "type": "string",
             "maxLength": 3000,
-            "maxGraphemes": 300,
+            "maxGraphemes": 1000,
             "description": "The text of the comment"
           },
-          "entryId": {
+          "entrySlug": {
             "type": "string",
-            "description": "The ObjectId of the entry this comment refers to"
+            "description": "The slug of the entry the comment is left on"
           },
           "createdAt": {
             "type": "string",
             "format": "datetime"
           }
         },
-        "required": ["text", "entryId", "createdAt"]
+        "required": ["text", "entrySlug", "createdAt"]
       }
     }
   }

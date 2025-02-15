@@ -12,6 +12,11 @@ export class EntryRepository {
     this.collection = Entry.getCollection(db);
   }
 
+  async has(id: ObjectId) {
+    const count = await this.collection.countDocuments({ _id: id });
+    return !!count;
+  }
+
   async findOne(id: ObjectId) {
     const document = await this.collection.findOne({ _id: id });
     if (!document) {

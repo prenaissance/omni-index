@@ -34,19 +34,20 @@ export class Entry extends Entity {
   media: Media[];
 
   private static calculateSlug(
-    entry: Pick<Entry, "title" | "year" | "language" | "meta">
+    entry: Pick<Entry, "title" | "author" | "year" | "language" | "meta">
   ) {
     const base = entry.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    const year = entry.year ? `-${entry.year}` : "";
+    const author = entry.author.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const year = entry.year ? `_${entry.year}` : "";
     const language =
       entry.language && !entry.language.includes("en")
-        ? `-${entry.language}`
+        ? `_${entry.language}`
         : "";
     const meta = Object.keys(entry.meta).length
-      ? `-${crypto.createHash("md5").update(JSON.stringify(entry.meta)).digest("hex").slice(6)}`
+      ? `_${crypto.createHash("md5").update(JSON.stringify(entry.meta)).digest("hex").slice(6)}`
       : "";
 
-    return `${base}${year}${language}${meta}`;
+    return `${base}_${author}${year}${language}${meta}`;
   }
 
   static getCollection(db: Db) {
