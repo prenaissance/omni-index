@@ -14,6 +14,7 @@ const mediaRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "",
     {
       schema: {
+        tags: ["Entries"],
         params: Type.Object({
           entryId: ObjectIdSchema({
             description: "ObjectId of the media entry",
@@ -47,6 +48,7 @@ const mediaRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "/:mediaId",
     {
       schema: {
+        tags: ["Entries"],
         params: Type.Object({
           entryId: ObjectIdSchema({
             description: "ObjectId of the media entry",

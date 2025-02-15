@@ -15,6 +15,7 @@ const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "",
     {
       schema: {
+        tags: ["Entries"],
         querystring: Type.Ref(PaginationQuery),
         response: {
           200: PaginatedResponse(Type.Ref(EntrySchema)),
@@ -45,6 +46,7 @@ const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "/:id",
     {
       schema: {
+        tags: ["Entries"],
         params: Type.Object({
           id: Type.String({
             description: "ObjectId of the media entry",
@@ -75,6 +77,7 @@ const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "",
     {
       schema: {
+        tags: ["Entries"],
         body: Type.Ref(CreateEntryRequest),
         response: {
           201: Type.Ref(EntrySchema),

@@ -14,6 +14,7 @@ const mirrorRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "",
     {
       schema: {
+        tags: ["Entries"],
         params: Type.Object({
           entryId: ObjectIdSchema({
             description: "ObjectId of the media entry",
@@ -58,6 +59,7 @@ const mirrorRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "/:mirrorId",
     {
       schema: {
+        tags: ["Entries"],
         params: Type.Object({
           entryId: ObjectIdSchema({
             description: "ObjectId of the media entry",

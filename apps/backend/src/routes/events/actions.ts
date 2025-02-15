@@ -12,6 +12,7 @@ const eventRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "",
     {
       schema: {
+        tags: ["Events"],
         querystring: Type.Ref(PaginationQuery),
         response: { 200: Type.Array(Type.Ref(StoredEventResponse)) },
       },

@@ -1,6 +1,6 @@
 import path from "node:path";
 import Fastify from "fastify";
-import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+import { Type, TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 
 import { fastifySwagger } from "@fastify/swagger";
 import { fastifySwaggerUi } from "@fastify/swagger-ui";
@@ -83,9 +83,20 @@ listeners.forEach((signal) => {
 });
 
 app.after(() => {
-  app.get("/shallow-ping", async () => {
-    return "pong";
-  });
+  app.get(
+    "/shallow-ping",
+    {
+      schema: {
+        tags: ["Health"],
+        response: {
+          200: Type.Literal("pong"),
+        },
+      },
+    },
+    async () => {
+      return "pong" as const;
+    }
+  );
 });
 
 app

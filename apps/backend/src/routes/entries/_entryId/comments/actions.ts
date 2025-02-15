@@ -18,6 +18,7 @@ const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
     {
       onRequest: app.auth([app.verifyAuthenticated]),
       schema: {
+        tags: ["Entries", "Comments"],
         params: Type.Object({
           entryId: ObjectIdSchema({
             description: "ObjectId of the media entry",

@@ -37,9 +37,17 @@ export const atprotoOAuthPlugin = fastifyPlugin(
       sessionStore,
       client: await createOAuthClient(sessionStore, stateStore),
     });
-    app.get("/client-metadata.json", () => {
-      return app.oauth.client.clientMetadata;
-    });
+    app.get(
+      "/client-metadata.json",
+      {
+        schema: {
+          tags: ["Atproto"],
+        },
+      },
+      () => {
+        return app.oauth.client.clientMetadata;
+      }
+    );
     app.decorateRequest("atproto", null!);
 
     app.addHook("onRequest", async (request) => {

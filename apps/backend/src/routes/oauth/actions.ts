@@ -22,7 +22,7 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "/login",
     {
       schema: {
-        tags: ["auth"],
+        tags: ["Auth"],
         body: Type.Ref(LoginRequestSchema),
         response: {
           302: Type.Null(),
@@ -58,7 +58,7 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
     "/callback",
     {
       schema: {
-        tags: ["auth"],
+        tags: ["Auth"],
         querystring: Type.Object(
           {
             code: Type.String(),
