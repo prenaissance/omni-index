@@ -1,6 +1,5 @@
 import { Collection, Db } from "mongodb";
-import { NodeSavedSessionStore } from "@atproto/oauth-client-node";
-import { Did } from "@atproto/api";
+import { AtprotoDid, NodeSavedSessionStore } from "@atproto/oauth-client-node";
 import { StoredUser, User } from "../entities/user";
 
 export const USERS_COLLECTION = "users";
@@ -15,7 +14,8 @@ export class UserRepository {
   }
 
   async save(user: User) {
-    const { _id, did, role } = user;
+    const { _id, did, role, displayName, description, avatarCid, bannerCid } =
+      user;
 
     await this.usersCollection.updateOne(
       { _id },
@@ -24,22 +24,22 @@ export class UserRepository {
           _id,
           did,
           role,
+          displayName,
+          description,
+          avatarCid,
+          bannerCid,
         },
       },
       { upsert: true }
     );
   }
 
-  async getByDid(did: Did) {
+  async getByDid(did: AtprotoDid) {
     const user = await this.usersCollection.findOne({ did });
     if (!user) {
       return null;
     }
 
-    const session = await this.sessionStore.get(did);
-    return new User({
-      ...user,
-      session,
-    });
+    return new User(user);
   }
 }

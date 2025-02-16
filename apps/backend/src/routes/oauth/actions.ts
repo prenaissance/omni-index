@@ -1,6 +1,7 @@
 import { Type } from "@sinclair/typebox";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { isValidHandle } from "@atproto/syntax";
+import { Agent } from "@atproto/api";
 import { env } from "~/common/config/env";
 import { User } from "~/common/auth/entities/user";
 import { UserRole } from "~/common/auth/entities/enums/user-role";
@@ -79,12 +80,22 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
       let user = await app.users.repository.getByDid(did);
       if (!user) {
+        const atprotoClient = new Agent(session);
+        const { value: profile } =
+          await atprotoClient.app.bsky.actor.profile.get({
+            repo: atprotoClient.assertDid,
+            rkey: "self",
+          });
         user = new User({
           did,
           role: UserRole.User,
+          displayName: profile.displayName,
+          description: profile.description,
+          avatarCid: profile.avatar?.ref.toString(),
+          bannerCid: profile.banner?.ref.toString(),
         });
         await app.users.repository.save(user);
-        request.log.info("Created user on first log in", { did });
+        request.log.info({ msg: "Created user on first log in", did });
       }
 
       return reply.redirect(env.FRONTEND_URL);

@@ -10,7 +10,7 @@
     "dev": "tsx watch --env-file=.env src/app.ts | pino-pretty",
     "build": "esbuild $(find src -name '*.ts') --platform=node --outdir=dist --sourcemap && tsc-alias",
     "lint": "tsc --noEmit",
-    "lexicon:codegen": "lex gen-server ./src/atproto ./src/atproto/lexicons/*/* && rm ./src/atproto/index.ts && eslint --fix ./src/atproto",
+    "lexicon:codegen": "lex gen-server ./src/atproto $(find ./src/atproto/lexicons -name '*.json') && rm ./src/atproto/index.ts && eslint --fix ./src/atproto",
     "db:seed": "tsx --env-file=.env scripts/seeding/seed.ts"
   },
   "dependencies": {
