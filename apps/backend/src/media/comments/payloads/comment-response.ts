@@ -6,6 +6,11 @@ export const CommentResponse = Type.Object(
     tid: Type.String(),
     text: Type.String(),
     createdAt: DateSchema(),
+    createdBy: Type.Object({
+      did: Type.String(),
+      displayName: Type.Optional(Type.String()),
+      avatarThumbnail: Type.Optional(Type.String({ format: "uri" })),
+    }),
     likes: Type.Number(),
   },
   {

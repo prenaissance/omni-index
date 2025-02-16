@@ -57,9 +57,6 @@ const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
         {
           skip,
           limit,
-          sort: {
-            createdAt: "desc",
-          },
         }
       );
 

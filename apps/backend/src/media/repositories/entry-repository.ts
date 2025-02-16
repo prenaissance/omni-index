@@ -2,6 +2,7 @@ import { Collection, Db, ObjectId } from "mongodb";
 import { Entry } from "../entities";
 import { EntryUpdatedEvent } from "../events/entry-events";
 import { DomainEventEmitter } from "~/common/events/typed-event-emitter";
+import { PaginatedSearch } from "~/common/types/paginated-search";
 
 export class EntryRepository {
   private readonly collection: Collection<Entry>;
@@ -25,7 +26,7 @@ export class EntryRepository {
     return Entry.fromDocument(document);
   }
 
-  async findMany({ skip, limit }: { skip: number; limit: number }) {
+  async findMany({ skip, limit }: PaginatedSearch) {
     const documents = await this.collection
       .find({})
       .skip(skip)
