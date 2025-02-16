@@ -1,4 +1,4 @@
-import { Collection, Db, ObjectId } from "mongodb";
+import { Collection, Db, Filter, FindOptions } from "mongodb";
 import { CommentEntity } from "./entities/comment";
 import { omit, pick } from "~/common/utilities/functional";
 
@@ -18,7 +18,14 @@ export class CommentRepository {
     );
   }
 
-  async getEntryComments(entryId: ObjectId) {
-    return this.collection.find({ entryId }).toArray();
+  async findMany(filters: Filter<CommentEntity>, options?: FindOptions) {
+    const documents = await this.collection.find(filters, options).toArray();
+    return documents.map((document) => new CommentEntity(document));
+  }
+
+  async deleteOne(filters: Filter<CommentEntity>) {
+    const result = await this.collection.deleteOne(filters);
+
+    return !!result.deletedCount;
   }
 }

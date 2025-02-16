@@ -8,10 +8,64 @@ import { AtprotoDid } from "@atproto/oauth-client-node";
 import * as Comment from "~/atproto/types/com/omni-index/comment";
 import { CommentEntity } from "~/media/comments/entities/comment";
 import { CreateCommentRequest } from "~/media/comments/payloads/create-comment-request";
-import { ObjectIdSchema } from "~/common/payloads";
+import { ExceptionSchema, ObjectIdSchema } from "~/common/payloads";
+import { CreateCommentResponse } from "~/media/comments/payloads";
+import { CommentResponse } from "~/media/comments/payloads/comment-response";
+import { PaginationQuery } from "~/common/payloads/pagination";
 
 const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.addSchema(CreateCommentRequest);
+  app.addSchema(CreateCommentResponse);
+  app.addSchema(CommentResponse);
+
+  app.get(
+    "",
+    {
+      schema: {
+        tags: ["Entries", "Comments"],
+        security: [],
+        querystring: Type.Ref(PaginationQuery),
+        params: Type.Object({
+          entryId: ObjectIdSchema({
+            description: "ObjectId of the media entry",
+          }),
+        }),
+        response: {
+          200: Type.Array(Type.Ref(CommentResponse)),
+          404: Type.Ref(ExceptionSchema),
+        },
+      },
+    },
+    async (request, reply) => {
+      const { page = 1, limit = 10 } = request.query;
+      const skip = (page - 1) * limit;
+
+      const entry = await app.mediaEntry.repository.findOne(
+        new ObjectId(request.params.entryId)
+      );
+
+      if (!entry) {
+        return reply.code(404).send({
+          message: "Entry not found",
+        });
+      }
+
+      const comments = await app.mediaEntry.comments.repository.findMany(
+        {
+          entrySlug: entry.slug,
+        },
+        {
+          skip,
+          limit,
+          sort: {
+            createdAt: "desc",
+          },
+        }
+      );
+
+      return comments;
+    }
+  );
 
   app.post(
     "",
@@ -25,6 +79,10 @@ const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
           }),
         }),
         body: Type.Ref(CreateCommentRequest),
+        response: {
+          201: Type.Ref(CreateCommentResponse),
+          400: Type.Ref(ExceptionSchema),
+        },
       },
     },
     async (request, reply) => {
@@ -41,7 +99,7 @@ const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
       const comment = new CommentEntity({
         tid,
-        entryId: request.params.entryId,
+        entrySlug: entry.slug,
         text: request.body.text,
         createdAt: new Date(),
         createdByDid: request.atproto.assertDid as AtprotoDid,
@@ -56,8 +114,7 @@ const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
       const validationResult = Comment.validateRecord(record);
       if (!validationResult.success) {
         return reply.code(400).send({
-          message: "Invalid comment",
-          error: validationResult.error.message,
+          message: validationResult.error.message,
         });
       }
 
@@ -72,6 +129,7 @@ const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
       });
       request.log.debug({
         msg: "Comment record created",
+        entrySlug: entry.slug,
         uri,
       });
 

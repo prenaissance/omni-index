@@ -1,14 +1,14 @@
 import { Type } from "@sinclair/typebox";
 import { DateSchema } from "~/common/payloads";
 
-export const CommentResponse = Type.Object(
+export const CreateCommentResponse = Type.Object(
   {
+    entrySlug: Type.String(),
     tid: Type.String(),
     text: Type.String(),
     createdAt: DateSchema(),
-    likes: Type.Number(),
   },
   {
-    $id: "CommentResponse",
+    $id: "CreateCommentResponse",
   }
 );
