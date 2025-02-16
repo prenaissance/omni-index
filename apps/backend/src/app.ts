@@ -88,6 +88,7 @@ app.after(() => {
     {
       schema: {
         tags: ["Health"],
+        security: [],
         response: {
           200: Type.Literal("pong"),
         },
