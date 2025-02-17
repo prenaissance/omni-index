@@ -23,7 +23,7 @@ export const mediaPlugin = fastifyPlugin(
     app.decorate("mediaEntry", {
       repository: new EntryRepository(app.db, app.eventEmitter),
       comments: {
-        repository: new CommentRepository(app.db),
+        repository: new CommentRepository(app.db, app.eventEmitter),
       },
     });
     app.register(mediaPayloadsPlugin);
