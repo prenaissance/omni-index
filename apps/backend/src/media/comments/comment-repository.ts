@@ -58,10 +58,23 @@ export class CommentRepository {
     }));
   }
 
-  async like(tid: string, userDid: AtprotoDid) {
-    const existingLike = await this.commentsCollection.countDocuments({
-      commentTid: tid,
+  async findLike(commentTid: string, userDid: AtprotoDid) {
+    const document = await this.commentLikesCollection.findOne({
+      commentTid,
       createdByDid: userDid,
+    });
+    return document ? new CommentLike(document) : null;
+  }
+
+  /** Adds a comment like associated with a comment */
+  async like({
+    did,
+    commentTid,
+    createdByDid,
+  }: Pick<CommentLike, "commentTid" | "tid" | "createdByDid">) {
+    const existingLike = await this.commentsCollection.countDocuments({
+      commentTid,
+      createdByDid,
     });
 
     if (existingLike) {
@@ -69,8 +82,9 @@ export class CommentRepository {
     }
 
     const commentLike = new CommentLike({
-      commentTid: tid,
-      createdByDid: userDid,
+      did,
+      commentTid,
+      createdByDid,
     });
 
     await this.commentLikesCollection.insertOne(commentLike);
@@ -84,6 +98,7 @@ export class CommentRepository {
     return true;
   }
 
+  /** Removes a comment like associated with a comment */
   async dislike(tid: string, userDid: AtprotoDid) {
     const result = await this.commentLikesCollection.deleteOne({
       commentTid: tid,
@@ -99,6 +114,14 @@ export class CommentRepository {
     }
 
     return deleted;
+  }
+
+  async incrementLikes(tid: string) {
+    await this.commentsCollection.updateOne({ tid }, { $inc: { likes: 1 } });
+  }
+
+  async decrementLikes(tid: string) {
+    await this.commentsCollection.updateOne({ tid }, { $inc: { likes: -1 } });
   }
 
   async deleteOne(filters: Filter<CommentEntity>) {

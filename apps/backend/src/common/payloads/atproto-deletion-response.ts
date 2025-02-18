@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Static, Type } from "@sinclair/typebox";
 
 export const AtprotoDeletionResponse = Type.Object(
   {
@@ -9,3 +9,5 @@ export const AtprotoDeletionResponse = Type.Object(
     $id: "AtprotoDeletionResponse",
   }
 );
+
+export type AtprotoDeletionResponse = Static<typeof AtprotoDeletionResponse>;
