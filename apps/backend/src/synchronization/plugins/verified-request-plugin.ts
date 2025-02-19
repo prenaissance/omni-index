@@ -3,7 +3,7 @@ import tls, { type PeerCertificate } from "node:tls";
 import { fastifyPlugin } from "fastify-plugin";
 import { Observable } from "rxjs";
 import { PEER_NODE_PLUGIN } from "./peer-node-plugin";
-import { env } from "~/common/config/env";
+import { ENV_PLUGIN } from "~/common/config/env-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -34,7 +34,7 @@ export const verifiedRequestPlugin = fastifyPlugin(
           headers: {
             Accept: "text/event-stream",
           },
-          ...(!env.DANGEROUS_SKIP_IDENTITY_VERIFICATION && {
+          ...(!app.env.DANGEROUS_SKIP_IDENTITY_VERIFICATION && {
             checkServerIdentity,
           }),
         });
@@ -49,6 +49,6 @@ export const verifiedRequestPlugin = fastifyPlugin(
   },
   {
     name: VERIFIED_REQUEST_PLUGIN,
-    dependencies: [PEER_NODE_PLUGIN],
+    dependencies: [PEER_NODE_PLUGIN, ENV_PLUGIN],
   }
 );

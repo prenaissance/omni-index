@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Static, Type } from "@sinclair/typebox";
 
 import { MediaSchema } from "../media/media-schema";
 import { BlobLinkSchema } from "../blob-link-schema";
@@ -30,3 +30,5 @@ export const EntrySchema = Type.Object(
     $id: "Entry",
   }
 ) satisfies { static: ClassProperties<Entry> };
+
+export type EntrySchema = Static<typeof EntrySchema>;

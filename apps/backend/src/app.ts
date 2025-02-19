@@ -9,7 +9,6 @@ import corsPlugin from "@fastify/cors";
 import authPlugin from "@fastify/auth";
 import fastifyRacingPlugin from "fastify-racing";
 import formbodyPlugin from "@fastify/formbody";
-import { env } from "./common/config/env";
 import { commonPayloadsPlugin } from "./common/payloads/_plugin";
 import { mediaPlugin } from "./media/_plugin";
 import { eventEmitterPlugin } from "./common/events/_plugin";
@@ -25,92 +24,78 @@ import {
   usersPlugin,
 } from "./common/auth/plugins";
 import { swaggerConfig } from "./common/config/boot/swagger-config";
+import { envPlugin } from "./common/config/env-plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
 
-const app = Fastify({
-  logger: {
-    level: env.NODE_ENV === "development" ? "debug" : "info",
-  },
-}).withTypeProvider<TypeBoxTypeProvider>();
+/**
+ * Builds the fastify application. Mainly used for e2e testing.
+ * @returns Fastify instance which is not listening on any port.
+ */
+export const build = async () => {
+  const app = Fastify({
+    logger: {
+      level: process.env.NODE_ENV === "development" ? "debug" : "info",
+    },
+  }).withTypeProvider<TypeBoxTypeProvider>();
 
-app.register(corsPlugin, {
-  origin: "https://prenaissance.github.io",
-  credentials: true,
-});
-
-app.register(formbodyPlugin);
-
-app.register(fastifyRacingPlugin, {
-  handleError: true,
-});
-
-await app.register(fastifySwagger, swaggerConfig);
-
-app.register(fastifySwaggerUi, {
-  routePrefix: "/swagger",
-});
-
-app.register(mongodbPlugin);
-app.register(configPlugin);
-app.register(sessionSetupPlugin);
-app.register(authPlugin);
-app.register(atprotoOAuthPlugin);
-app.register(authenticationStrategiesPlugin);
-
-app.register(commonPayloadsPlugin);
-app.register(eventEmitterPlugin);
-app.register(usersPlugin);
-app.register(mediaPlugin);
-app.register(peerNodePlugin);
-app.register(verifiedRequestPlugin);
-app.register(storedEventPlugin);
-
-app.register(autoLoadPlugin, {
-  dir: path.join(__dirname, "routes"),
-  routeParams: true,
-  options: { prefix: "/api" },
-});
-
-// graceful shutdown
-const listeners = ["SIGINT", "SIGTERM"] as const;
-listeners.forEach((signal) => {
-  process.on(signal, async () => {
-    await app.close();
-    process.exit(0);
+  app.register(corsPlugin, {
+    origin: "https://prenaissance.github.io",
+    credentials: true,
   });
-});
 
-app.after(() => {
-  app.get(
-    "/shallow-ping",
-    {
-      schema: {
-        tags: ["Health"],
-        security: [],
-        response: {
-          200: Type.Literal("pong"),
+  app.register(formbodyPlugin);
+
+  app.register(fastifyRacingPlugin, {
+    handleError: true,
+  });
+
+  await app.register(fastifySwagger, swaggerConfig);
+
+  app.register(fastifySwaggerUi, {
+    routePrefix: "/swagger",
+  });
+
+  app.register(envPlugin);
+  app.register(mongodbPlugin);
+  app.register(configPlugin);
+  app.register(sessionSetupPlugin);
+  app.register(authPlugin);
+  app.register(atprotoOAuthPlugin);
+  app.register(authenticationStrategiesPlugin);
+
+  app.register(commonPayloadsPlugin);
+  app.register(eventEmitterPlugin);
+  app.register(usersPlugin);
+  app.register(mediaPlugin);
+  app.register(peerNodePlugin);
+  app.register(verifiedRequestPlugin);
+  app.register(storedEventPlugin);
+
+  app.register(autoLoadPlugin, {
+    dir: path.join(__dirname, "routes"),
+    routeParams: true,
+    options: { prefix: "/api" },
+  });
+
+  app.after(() => {
+    app.get(
+      "/shallow-ping",
+      {
+        schema: {
+          tags: ["Health"],
+          security: [],
+          response: {
+            200: Type.Literal("pong"),
+          },
         },
       },
-    },
-    async () => {
-      return "pong" as const;
-    }
-  );
-});
-
-app
-  .listen({
-    port: env.PORT,
-  })
-  .then(() => {
-    const address = app.server.address();
-    if (typeof address !== "string") return;
-
-    app.log.info(`server listening on ${address}`);
+      async () => {
+        return "pong" as const;
+      }
+    );
   });
 
-await app.ready();
-
-app.swagger();
+  return app;
+};

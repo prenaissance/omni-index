@@ -68,7 +68,7 @@ export class CommentRepository {
 
   /** Adds a comment like associated with a comment */
   async like({
-    did,
+    tid,
     commentTid,
     createdByDid,
   }: Pick<CommentLike, "commentTid" | "tid" | "createdByDid">) {
@@ -82,7 +82,7 @@ export class CommentRepository {
     }
 
     const commentLike = new CommentLike({
-      did,
+      tid,
       commentTid,
       createdByDid,
     });
