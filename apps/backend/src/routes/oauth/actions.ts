@@ -2,7 +2,6 @@ import { Type } from "@sinclair/typebox";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { isValidHandle } from "@atproto/syntax";
 import { Agent } from "@atproto/api";
-import { env } from "~/common/config/env";
 import { User } from "~/common/auth/entities/user";
 import { UserRole } from "~/common/auth/entities/enums/user-role";
 
@@ -100,7 +99,7 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
         request.log.info({ msg: "Created user on first log in", did });
       }
 
-      return reply.redirect(env.FRONTEND_URL);
+      return reply.redirect(app.env.FRONTEND_URL);
     }
   );
 };

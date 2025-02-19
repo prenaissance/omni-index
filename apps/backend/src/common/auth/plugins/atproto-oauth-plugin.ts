@@ -8,6 +8,7 @@ import { fastifyPlugin } from "fastify-plugin";
 import { MongoSessionStore, MongoStateStore } from "../storage";
 import { createOAuthClient } from "~/common/auth/oauth-client";
 import { MONGODB_PLUGIN } from "~/common/mongodb/plugins/mongodb-plugin";
+import { ENV_PLUGIN } from "~/common/config/env-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -35,7 +36,7 @@ export const atprotoOAuthPlugin = fastifyPlugin(
     app.decorate("oauth", {
       stateStore,
       sessionStore,
-      client: await createOAuthClient(sessionStore, stateStore),
+      client: await createOAuthClient(sessionStore, stateStore, app.env),
     });
     app.get(
       "/client-metadata.json",
@@ -62,6 +63,6 @@ export const atprotoOAuthPlugin = fastifyPlugin(
   },
   {
     name: "atproto-oauth",
-    dependencies: [MONGODB_PLUGIN],
+    dependencies: [MONGODB_PLUGIN, ENV_PLUGIN],
   }
 );

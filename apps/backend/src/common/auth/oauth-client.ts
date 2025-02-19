@@ -3,11 +3,12 @@ import {
   NodeSavedSessionStore,
   NodeSavedStateStore,
 } from "@atproto/oauth-client-node";
-import { env } from "~/common/config/env";
+import { Env } from "../config/env";
 
 export const createOAuthClient = async (
   sessionStore: NodeSavedSessionStore,
-  stateStore: NodeSavedStateStore
+  stateStore: NodeSavedStateStore,
+  env: Env
 ) => {
   const url = env.FRONTEND_URL;
 

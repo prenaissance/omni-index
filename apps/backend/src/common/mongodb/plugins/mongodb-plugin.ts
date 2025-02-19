@@ -1,6 +1,6 @@
 import { fastifyPlugin } from "fastify-plugin";
 import { Db, MongoClient } from "mongodb";
-import { env } from "~/common/config/env";
+import { ENV_PLUGIN } from "~/common/config/env-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -13,16 +13,17 @@ export const MONGODB_PLUGIN = "mongodb";
 
 export const mongodbPlugin = fastifyPlugin(
   async (app) => {
-    const client = new MongoClient(env.MONGODB_URL, {});
+    const client = new MongoClient(app.env.MONGODB_URL, {});
 
     app.addHook("onClose", async () => {
       await client.close();
     });
     await client.connect();
     app.decorate("mongo", client);
-    app.decorate("db", client.db(env.MONGODB_DB));
+    app.decorate("db", client.db(app.env.MONGODB_DB));
   },
   {
     name: MONGODB_PLUGIN,
+    dependencies: [ENV_PLUGIN],
   }
 );

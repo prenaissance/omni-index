@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { fastifyPlugin } from "fastify-plugin";
 import { z } from "zod";
 import { ConfigStorage } from "./config-storage";
-import { env } from "./env";
+import { ENV_PLUGIN } from "./env-plugin";
 import { MONGODB_PLUGIN } from "~/common/mongodb/plugins/mongodb-plugin";
 
 const configSchema = z.object({
@@ -28,7 +28,7 @@ export const configPlugin = fastifyPlugin(
     let sessionSecret = await configStorage.get<string>("SESSION_SECRET");
     if (!sessionSecret) {
       sessionSecret =
-        env.INIT_SESSION_SECRET ?? crypto.randomBytes(32).toString("hex");
+        app.env.INIT_SESSION_SECRET ?? crypto.randomBytes(32).toString("hex");
       await configStorage.set("SESSION_SECRET", sessionSecret);
     }
 
@@ -39,6 +39,6 @@ export const configPlugin = fastifyPlugin(
   },
   {
     name: CONFIG_PLUGIN,
-    dependencies: [MONGODB_PLUGIN],
+    dependencies: [MONGODB_PLUGIN, ENV_PLUGIN],
   }
 );
