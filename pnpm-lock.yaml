@@ -107,9 +107,6 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
-      testcontainers:
-        specifier: ^10.18.0
-        version: 10.18.0
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -123,9 +120,6 @@ importers:
       '@golevelup/ts-vitest':
         specifier: ^0.5.2
         version: 0.5.2
-      '@testcontainers/mongodb':
-        specifier: ^10.18.0
-        version: 10.18.0
       '@types/node':
         specifier: ^22.9.0
         version: 22.9.0
@@ -135,6 +129,9 @@ importers:
       pino-pretty:
         specifier: ^13.0.0
         version: 13.0.0
+      testcontainers:
+        specifier: ^10.18.0
+        version: 10.18.0
       tsc-alias:
         specifier: ^1.8.10
         version: 1.8.10
@@ -1338,9 +1335,6 @@ packages:
 
   '@sinclair/typebox@0.33.22':
     resolution: {integrity: sha512-auUj4k+f4pyrIVf4GW5UKquSZFHJWri06QgARy9C0t9ZTjJLIuNIrr1yl9bWcJWJ1Gz1vOvYN1D+QPaIlNMVkQ==}
-
-  '@testcontainers/mongodb@10.18.0':
-    resolution: {integrity: sha512-KpcGo6r4vu+2zoYQE4rii9aj8Sv/lVyGnoSyvFtQjcpjOvQgF2U0BqwgpmyScJ5VqKHdY++ekLVAzPN5p6RYXg==}
 
   '@ts-morph/common@0.17.0':
     resolution: {integrity: sha512-RMSSvSfs9kb0VzkvQ2NWobwnj7TxCA9vI/IjR9bDHqgAyVbu2T0DN4wiKVqomyDWqO7dPr/tErSfq7urQ1Q37g==}
@@ -5470,13 +5464,6 @@ snapshots:
     optional: true
 
   '@sinclair/typebox@0.33.22': {}
-
-  '@testcontainers/mongodb@10.18.0':
-    dependencies:
-      testcontainers: 10.18.0
-    transitivePeerDependencies:
-      - bare-buffer
-      - supports-color
 
   '@ts-morph/common@0.17.0':
     dependencies:
