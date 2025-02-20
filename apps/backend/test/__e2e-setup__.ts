@@ -1,7 +1,3 @@
-import {
-  MongoDBContainer,
-  StartedMongoDBContainer,
-} from "@testcontainers/mongodb";
 import { AtprotoDid } from "@atproto/oauth-client-node";
 import { Agent } from "@atproto/api";
 import { faker } from "@faker-js/faker";
