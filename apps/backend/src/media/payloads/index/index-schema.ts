@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Static, Type } from "@sinclair/typebox";
 import { BlobLinkSchema } from "../blob-link-schema";
 import { Index } from "~/media/entities";
 import { MetadataSchema } from "~/common/payloads/metadata-schema";
@@ -28,3 +28,5 @@ export const IndexSchema = Type.Object(
   },
   { $id: "Index" }
 ) satisfies { static: ClassProperties<Index> };
+
+export type IndexSchema = Static<typeof IndexSchema>;
