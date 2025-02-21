@@ -77,7 +77,7 @@ export class Entry extends Entity {
     this.year = year;
     this.language = language;
     this.description = description;
-    this.thumbnail = thumbnail;
+    this.thumbnail = thumbnail ?? undefined;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.meta = meta;
