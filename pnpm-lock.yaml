@@ -135,6 +135,9 @@ importers:
 
   apps/frontends/omni-book:
     dependencies:
+      '@fontsource/montserrat':
+        specifier: ^5.1.1
+        version: 5.1.1
       '@radix-ui/react-label':
         specifier: ^2.1.1
         version: 2.1.1(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -989,6 +992,9 @@ packages:
     peerDependencies:
       '@sinclair/typebox': '>=0.26 <=0.33'
 
+  '@fontsource/montserrat@5.1.1':
+    resolution: {integrity: sha512-myTQCo0XWf5AXc3Pm5GFFTstueYTacE+gpL3G8Vf5ELpr/rBfW+zr7dKLPYXlq2r21HHwfyw6yueKWccWUtKBA==}
+
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
     engines: {node: '>=10.10.0'}
@@ -1548,6 +1554,7 @@ packages:
   bson@6.9.0:
     resolution: {integrity: sha512-X9hJeyeM0//Fus+0pc5dSUMhhrrmWwQUtdavaQeF3Ta6m69matZkGWV/MrBcnwUeLC8W9kwwc2hfkZgUuCX3Ig==}
     engines: {node: '>=16.20.1'}
+    deprecated: a critical bug affecting only useBigInt64=true deserialization usage is fixed in bson@6.10.3
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
@@ -4756,6 +4763,8 @@ snapshots:
   '@fastify/type-provider-typebox@5.0.1(@sinclair/typebox@0.33.22)':
     dependencies:
       '@sinclair/typebox': 0.33.22
+
+  '@fontsource/montserrat@5.1.1': {}
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
