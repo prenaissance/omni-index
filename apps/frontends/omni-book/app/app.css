@@ -1,10 +1,15 @@
+@import "@fontsource/montserrat/300.css"; /* Light */
+@import "@fontsource/montserrat/400.css"; /* Regular */
+@import "@fontsource/montserrat/500.css"; /* Medium */
+@import "@fontsource/montserrat/700.css"; /* Bold */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  @apply bg-white dark:bg-[#212121] text-[#212121] dark:text-white font-sans;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
