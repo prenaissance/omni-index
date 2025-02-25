@@ -1,32 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { FastifyInstance } from "fastify";
+import { createIntegrationEntry } from "./entry-mocks";
 import { build } from "~/app";
-import { CreateEntryRequest } from "~/media/payloads/entry/create-entry-request";
 import { EntrySchema } from "~/media/payloads/entry/entry-schema";
 import { CreateIndexRequest } from "~/media/payloads/index/create-index-request";
-
-const getMockEntry = (overrides?: Partial<CreateEntryRequest>) =>
-  ({
-    meta: {},
-    title: faker.lorem.word(),
-    author: faker.person.fullName(),
-    year: 2021,
-    genres: [faker.lorem.word()],
-    media: [
-      {
-        mirrors: [
-          {
-            blob: {
-              url: faker.internet.url(),
-            },
-            meta: {},
-          },
-        ],
-        meta: {},
-      },
-    ],
-    ...overrides,
-  }) satisfies CreateEntryRequest;
 
 describe("Media Entries", () => {
   let app: FastifyInstance;
@@ -39,14 +16,7 @@ describe("Media Entries", () => {
   });
 
   it("should upload and then retrieve a media entry", async () => {
-    const response = await app.inject({
-      method: "POST",
-      url: "/api/entries",
-      payload: getMockEntry() satisfies CreateEntryRequest,
-    });
-
-    expect(response.statusCode).toBe(201);
-    const body = response.json<EntrySchema>();
+    const body = await createIntegrationEntry(app);
     expect(body).toMatchObject({
       _id: expect.any(String),
       title: expect.any(String),
@@ -67,13 +37,7 @@ describe("Media Entries", () => {
   });
 
   it("should add a mirror then retrieve it from the media entry", async () => {
-    const entryResponse = await app.inject({
-      method: "POST",
-      url: "/api/entries",
-      payload: getMockEntry() satisfies CreateEntryRequest,
-    });
-    expect(entryResponse.statusCode).toBe(201);
-    const entryBody = entryResponse.json<EntrySchema>();
+    const entryBody = await createIntegrationEntry(app);
     const entryId = entryBody._id;
     const mediaId = entryBody.media[0]._id;
 
