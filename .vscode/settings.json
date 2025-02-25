@@ -4,5 +4,8 @@
       "fileMatch": ["lexicons/**/*.json"],
       "url": "https://prenaissance.github.io/atproto-lexicon-json-schema/v1.json"
     }
+  ],
+  "cSpell.words": [
+    "fontsource"
   ]
 }
