@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Static, Type } from "@sinclair/typebox";
 import { DateSchema } from "~/common/payloads";
 
 export const CommentResponse = Type.Object(
@@ -17,3 +17,5 @@ export const CommentResponse = Type.Object(
     $id: "CommentResponse",
   }
 );
+
+export type CommentResponse = Static<typeof CommentResponse>;
