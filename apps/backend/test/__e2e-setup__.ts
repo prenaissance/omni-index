@@ -10,6 +10,14 @@ export const mockAtprotoAgent = createMock<Agent>({
   did: mockDid,
 });
 
+export const setMockUserDid = (did: AtprotoDid) => {
+  const writableAtprotoAgent = mockAtprotoAgent as {
+    did: string;
+    assertDid: string;
+  };
+  writableAtprotoAgent.assertDid = writableAtprotoAgent.did = did;
+};
+
 vi.mock("@atproto/api", () => ({
   Agent: vi.fn().mockImplementation(() => mockAtprotoAgent),
 }));
