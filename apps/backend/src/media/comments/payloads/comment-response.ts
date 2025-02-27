@@ -12,6 +12,7 @@ export const CommentResponse = Type.Object(
       avatarThumbnail: Type.Optional(Type.String({ format: "uri" })),
     }),
     likes: Type.Number(),
+    liked: Type.Boolean(),
   },
   {
     $id: "CommentResponse",

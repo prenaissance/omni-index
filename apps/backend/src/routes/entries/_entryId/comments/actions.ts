@@ -14,10 +14,6 @@ import { CommentResponse } from "~/media/comments/payloads/comment-response";
 import { PaginationQuery } from "~/common/payloads/pagination";
 
 const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
-  app.addSchema(CreateCommentRequest);
-  app.addSchema(CreateCommentResponse);
-  app.addSchema(CommentResponse);
-
   app.get(
     "",
     {
@@ -57,6 +53,7 @@ const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
         {
           skip,
           limit,
+          userDid: request.atproto.did as AtprotoDid | undefined,
         }
       );
 
