@@ -10,17 +10,22 @@ import { DomainEventEmitter } from "~/common/events/typed-event-emitter";
 export const COMMENT_COLLECTION = "comments";
 export const COMMENT_LIKE_COLLECTION = "comment-likes";
 
-type CommentWithAuthor = CommentEntity & { createdBy: StoredUser };
+type CommentWithAuthor = CommentEntity & {
+  createdBy: StoredUser;
+  liked: boolean;
+};
 
 export class CommentRepository {
   private readonly commentsCollection: Collection<CommentEntity>;
   private readonly commentLikesCollection: Collection<CommentLike>;
+  private readonly usersCollection: Collection<StoredUser>;
   constructor(
     db: Db,
     private readonly eventEmitter: DomainEventEmitter
   ) {
     this.commentsCollection = db.collection(COMMENT_COLLECTION);
     this.commentLikesCollection = db.collection(COMMENT_LIKE_COLLECTION);
+    this.usersCollection = db.collection("users");
   }
 
   async save(comment: CommentEntity) {
@@ -31,9 +36,39 @@ export class CommentRepository {
     );
   }
 
+  async findOne(
+    filters: Filter<CommentEntity>,
+    userDid?: AtprotoDid
+  ): Promise<CommentWithAuthor | null> {
+    const comment = await this.commentsCollection.findOne(filters);
+    if (!comment) {
+      return null;
+    }
+
+    const author = await this.usersCollection.findOne({
+      did: comment.createdByDid,
+    });
+    if (!author) {
+      throw new Error("Comment author not found");
+    }
+    const like = userDid
+      ? await this.commentLikesCollection.findOne({
+          commentTid: comment.tid,
+          createdByDid: userDid,
+        })
+      : null;
+    const liked = !!like;
+
+    return {
+      ...comment,
+      createdBy: author,
+      liked,
+    };
+  }
+
   async findMany(
     filters: Filter<CommentEntity>,
-    { skip, limit }: PaginatedSearch
+    { skip, limit, userDid }: PaginatedSearch & { userDid?: AtprotoDid }
   ): Promise<CommentWithAuthor[]> {
     const documents = await this.commentsCollection
       .aggregate()
@@ -52,9 +87,22 @@ export class CommentRepository {
       })
       .toArray();
 
+    const likedComments = userDid
+      ? await this.commentLikesCollection
+          .find({
+            createdByDid: userDid,
+            commentTid: { $in: documents.map((doc) => doc.tid) },
+          })
+          .toArray()
+      : [];
+    const likedCommentTids = new Set(
+      likedComments.map((like) => like.commentTid)
+    );
+
     return documents.map((document) => ({
       ...document,
       createdBy: new User(document.createdBy),
+      liked: likedCommentTids.has(document.tid),
     }));
   }
 

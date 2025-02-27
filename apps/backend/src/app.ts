@@ -25,6 +25,7 @@ import {
 } from "./common/auth/plugins";
 import { swaggerConfig } from "./common/config/boot/swagger-config";
 import { envPlugin } from "./common/config/env-plugin";
+import { commentsPayloadsPlugin } from "./media/comments/comment-payloads-plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -66,6 +67,7 @@ export const build = async () => {
   app.register(authenticationStrategiesPlugin);
 
   app.register(commonPayloadsPlugin);
+  app.register(commentsPayloadsPlugin);
   app.register(eventEmitterPlugin);
   app.register(usersPlugin);
   app.register(mediaPlugin);

@@ -20,27 +20,28 @@ describe("Media Comments", () => {
     user = await createIntegrationUser(app);
     setMockUserDid(user.did);
   });
+  beforeEach(() => {
+    mockAtprotoAgent.com.atproto = createMock<ComAtprotoNS>({
+      repo: {
+        putRecord: vi.fn(),
+      },
+    });
+    vi.mocked(mockAtprotoAgent.com.atproto.repo.putRecord).mockResolvedValue({
+      success: true,
+      headers: {},
+      data: {
+        cid: faker.string.alphanumeric(24),
+        uri: faker.internet.url(),
+      },
+    });
+  });
+
   afterAll(async () => {
     await app.close();
   });
 
   describe("Creating comments", () => {
     it("should add a comment to a media entry", async () => {
-      mockAtprotoAgent.com.atproto = createMock<ComAtprotoNS>({
-        repo: {
-          putRecord: vi.fn(),
-        },
-      });
-      vi.mocked(
-        mockAtprotoAgent.com.atproto.repo.putRecord
-      ).mockResolvedValueOnce({
-        success: true,
-        headers: {},
-        data: {
-          cid: faker.string.alphanumeric(24),
-          uri: faker.internet.url(),
-        },
-      });
       const entry = await createIntegrationEntry(app);
       const commentText = faker.lorem.sentence();
 
@@ -98,7 +99,7 @@ describe("Media Comments", () => {
 
       let response = await app.inject({
         method: "POST",
-        url: `/api/${entryId}/comments/${commentTid}/like`,
+        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
       });
       expect(response.statusCode).toBe(201);
       // like with the original user
@@ -106,13 +107,13 @@ describe("Media Comments", () => {
 
       response = await app.inject({
         method: "POST",
-        url: `/api/${entryId}/comments/${commentTid}/like`,
+        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
       });
       expect(response.statusCode).toBe(201);
 
       response = await app.inject({
         method: "GET",
-        url: `/api/${entryId}/comments/${commentTid}`,
+        url: `/api/entries/${entryId}/comments/${commentTid}`,
       });
       const comment = response.json<CommentResponse>();
       expect(comment.likes).toBe(2);
@@ -124,7 +125,7 @@ describe("Media Comments", () => {
 
       let response = await app.inject({
         method: "POST",
-        url: `/api/${entryId}/comments/${commentTid}/like`,
+        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
       });
       expect(response.statusCode).toBe(201);
       // like with the original user
@@ -132,13 +133,13 @@ describe("Media Comments", () => {
 
       response = await app.inject({
         method: "POST",
-        url: `/api/${entryId}/comments/${commentTid}/like`,
+        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
       });
       expect(response.statusCode).toBe(201);
 
       response = await app.inject({
         method: "GET",
-        url: `/api/${entryId}/comments`,
+        url: `/api/entries/${entryId}/comments`,
         query: {
           page: "1",
           limit: "10",
