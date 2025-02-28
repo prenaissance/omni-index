@@ -4,10 +4,12 @@ import {
   NodeSavedStateStore,
 } from "@atproto/oauth-client-node";
 import { Env } from "../config/env";
+import { DistributedLockService } from "../distributed-lock/distributed-lock-service";
 
 export const createOAuthClient = async (
   sessionStore: NodeSavedSessionStore,
   stateStore: NodeSavedStateStore,
+  distributedLockService: DistributedLockService,
   env: Env
 ) => {
   const url = env.FRONTEND_URL;
@@ -32,5 +34,10 @@ export const createOAuthClient = async (
     },
     stateStore,
     sessionStore,
+    requestLock: (name, fn) =>
+      distributedLockService.acquireAndExecute(
+        { name, ttlSeconds: 3600 },
+        fn as never
+      ),
   });
 };

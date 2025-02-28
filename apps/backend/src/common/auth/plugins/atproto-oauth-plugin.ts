@@ -36,7 +36,12 @@ export const atprotoOAuthPlugin = fastifyPlugin(
     app.decorate("oauth", {
       stateStore,
       sessionStore,
-      client: await createOAuthClient(sessionStore, stateStore, app.env),
+      client: await createOAuthClient(
+        sessionStore,
+        stateStore,
+        app.distributedLock,
+        app.env
+      ),
     });
     app.get(
       "/client-metadata.json",
