@@ -27,6 +27,7 @@ import { swaggerConfig } from "./common/config/boot/swagger-config";
 import { envPlugin } from "./common/config/env-plugin";
 import { commentsPayloadsPlugin } from "./media/comments/comment-payloads-plugin";
 import type { PinoLoggerOptions } from "fastify/types/logger";
+import { distributedLockPlugin } from "./common/distributed-lock/distributed-lock-plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -86,6 +87,7 @@ export const build = async () => {
   app.register(envPlugin);
   app.register(mongodbPlugin);
   app.register(configPlugin);
+  app.register(distributedLockPlugin);
   app.register(sessionSetupPlugin);
   app.register(authPlugin);
   app.register(atprotoOAuthPlugin);
