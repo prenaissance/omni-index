@@ -9,6 +9,7 @@ import corsPlugin from "@fastify/cors";
 import authPlugin from "@fastify/auth";
 import fastifyRacingPlugin from "fastify-racing";
 import formbodyPlugin from "@fastify/formbody";
+import type { PinoLoggerOptions } from "fastify/types/logger";
 import { commonPayloadsPlugin } from "./common/payloads/_plugin";
 import { mediaPlugin } from "./media/_plugin";
 import { eventEmitterPlugin } from "./common/events/_plugin";
@@ -26,7 +27,6 @@ import {
 import { swaggerConfig } from "./common/config/boot/swagger-config";
 import { envPlugin } from "./common/config/env-plugin";
 import { commentsPayloadsPlugin } from "./media/comments/comment-payloads-plugin";
-import type { PinoLoggerOptions } from "fastify/types/logger";
 import { distributedLockPlugin } from "./common/distributed-lock/distributed-lock-plugin";
 
 const __filename = new URL(import.meta.url).pathname;

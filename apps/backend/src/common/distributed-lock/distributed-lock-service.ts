@@ -14,7 +14,7 @@ export class DistributedLockService {
     try {
       await this.locksCollection.insertOne(lock);
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }

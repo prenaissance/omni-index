@@ -1,6 +1,6 @@
-import fastifyPlugin from "fastify-plugin";
-import { DistributedLockService } from "./distributed-lock-service";
+import { fastifyPlugin } from "fastify-plugin";
 import { MONGODB_PLUGIN } from "../mongodb/plugins/mongodb-plugin";
+import { DistributedLockService } from "./distributed-lock-service";
 
 declare module "fastify" {
   interface FastifyInstance {
