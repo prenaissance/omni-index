@@ -6,7 +6,12 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 import importPlugin from "eslint-plugin-import-x";
 
 export default tseslint.config([
-  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
+  {
+    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+  },
+  {
+    ignores: ["**/.react-router/**/*.ts"],
+  },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   eslint.configs.recommended,
   ...tseslint.configs.strict,
