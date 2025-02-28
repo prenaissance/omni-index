@@ -26,9 +26,36 @@ import {
 import { swaggerConfig } from "./common/config/boot/swagger-config";
 import { envPlugin } from "./common/config/env-plugin";
 import { commentsPayloadsPlugin } from "./media/comments/comment-payloads-plugin";
+import type { PinoLoggerOptions } from "fastify/types/logger";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
+
+const loggerEnvConfigs: Record<string, PinoLoggerOptions> = {
+  development: {
+    level: "debug",
+    transport: {
+      target: "pino-pretty",
+      options: {
+        ignore: "pid,hostname",
+        translateTime: "HH:MM:ss",
+      },
+    },
+  },
+  test: {
+    level: "warn",
+    transport: {
+      target: "pino-pretty",
+      options: {
+        ignore: "pid,hostname",
+        translateTime: "HH:MM:ss",
+      },
+    },
+  },
+  production: {
+    level: "info",
+  },
+};
 
 /**
  * Builds the fastify application. Mainly used for e2e testing.
@@ -36,9 +63,7 @@ const __dirname = path.dirname(__filename);
  */
 export const build = async () => {
   const app = Fastify({
-    logger: {
-      level: process.env.NODE_ENV === "development" ? "debug" : "info",
-    },
+    logger: loggerEnvConfigs[process.env.NODE_ENV!],
   }).withTypeProvider<TypeBoxTypeProvider>();
 
   app.register(corsPlugin, {

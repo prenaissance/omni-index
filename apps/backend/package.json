@@ -6,8 +6,8 @@
   "type": "module",
   "main": "src/main.ts",
   "scripts": {
-    "start": "tsx --env-file=.env src/main.ts | pino-pretty",
-    "dev": "tsx watch --env-file=.env src/main.ts | pino-pretty",
+    "start": "tsx --env-file=.env src/main.ts",
+    "dev": "tsx watch --env-file=.env src/main.ts",
     "build": "esbuild $(find src -name '*.ts') --platform=node --outdir=dist --sourcemap && tsc-alias",
     "test:e2e": "NODE_OPTIONS='--import tsx' vitest run",
     "lint": "tsc --noEmit",
