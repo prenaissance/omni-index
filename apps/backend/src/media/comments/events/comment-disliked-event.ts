@@ -1,6 +1,6 @@
 import { AtprotoDid } from "@atproto/oauth-client-node";
 
-export type CommentDislikedEvent = {
+export type CommentLikeRemovedEvent = {
   commentTid: string;
   createdByDid: AtprotoDid;
 };
