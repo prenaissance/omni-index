@@ -1,9 +1,9 @@
-import { Type } from "@sinclair/typebox";
+import { Static, Type } from "@sinclair/typebox";
 import { IndexSchema } from "../index/index-schema";
-import { Media } from "~/media/entities";
 import { MetadataSchema } from "~/common/payloads/metadata-schema";
 import { ObjectIdSchema } from "~/common/payloads/object-id-schema";
 import { ClassProperties } from "~/common/utilities/serialization";
+import { Media } from "~/media/entities";
 
 export const MediaSchema = Type.Object(
   {
@@ -17,3 +17,5 @@ export const MediaSchema = Type.Object(
     $id: "Media",
   }
 ) satisfies { static: ClassProperties<Media> };
+
+export type MediaSchema = Static<typeof MediaSchema>;

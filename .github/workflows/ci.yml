@@ -9,13 +9,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Pre-pull docker images
+        run: |
+          docker pull mongo:8
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
+      - name: Node
+        run: |
+          pnpm env -g use 22
+          echo "Node version: $(node -v)"
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Lint
         run: pnpm lint
       - name: Build
         run: pnpm -r build
+      - name: E2E tests
+        run: pnpm -r test:e2e

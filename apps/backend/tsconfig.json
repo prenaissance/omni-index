@@ -1,6 +1,7 @@
 {
-  "include": ["src", "scripts"],
+  "include": ["src", "scripts", "test"],
   "compilerOptions": {
+    "types": ["vitest/globals"],
     "lib": ["ESNext"],
     "baseUrl": ".",
     "paths": {
@@ -15,6 +16,8 @@
     "strict": true,
     "noImplicitAny": true,
     "declaration": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   }
 }

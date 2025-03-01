@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Static, Type } from "@sinclair/typebox";
 import { DateSchema } from "~/common/payloads";
 
 export const CommentResponse = Type.Object(
@@ -12,8 +12,11 @@ export const CommentResponse = Type.Object(
       avatarThumbnail: Type.Optional(Type.String({ format: "uri" })),
     }),
     likes: Type.Number(),
+    liked: Type.Boolean(),
   },
   {
     $id: "CommentResponse",
   }
 );
+
+export type CommentResponse = Static<typeof CommentResponse>;
