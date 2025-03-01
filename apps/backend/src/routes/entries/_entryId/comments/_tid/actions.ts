@@ -1,4 +1,3 @@
-import { TID } from "@atproto/common";
 import { AtprotoDid } from "@atproto/oauth-client-node";
 import {
   FastifyPluginAsyncTypebox,
@@ -10,7 +9,6 @@ import {
   ExceptionSchema,
   ObjectIdSchema,
 } from "~/common/payloads";
-import * as CommentLike from "~/atproto/types/com/omni-index/comment/like";
 import { CommentLikeResponse } from "~/media/comments/payloads/comment-like-response";
 import { CommentResponse } from "~/media/comments/payloads";
 
@@ -93,28 +91,11 @@ const entryCommentTidRoutes: FastifyPluginAsyncTypebox = async (app) => {
         });
       }
 
-      const deleteLocally = () =>
-        app.mediaEntry.comments.repository.deleteOne({
-          entrySlug: entry.slug,
-          tid,
-          createdByDid: request.atproto.assertDid as AtprotoDid,
-        });
-
-      const deleteAtproto = async () => {
-        const response = await request.atproto.com.atproto.repo.deleteRecord({
-          repo: request.atproto.assertDid,
-          collection: "com.omni-index.comment",
-          rkey: tid,
-        });
-
-        return "commit" in response.data;
-      };
-
-      const [locallyDeleted, atprotoDeleted] = await Promise.all([
-        deleteLocally(),
-        deleteAtproto(),
-      ]);
-      return { locallyDeleted, atprotoDeleted };
+      return await app.mediaEntry.comments.service.deleteComment(
+        tid,
+        request.atproto,
+        request.log
+      );
     }
   );
 
@@ -154,6 +135,7 @@ const entryCommentTidRoutes: FastifyPluginAsyncTypebox = async (app) => {
         entrySlug: entry.slug,
         tid,
       });
+
       if (!comment) {
         return reply.code(404).send({
           message: "Comment not found",
@@ -166,39 +148,13 @@ const entryCommentTidRoutes: FastifyPluginAsyncTypebox = async (app) => {
         });
       }
 
-      const likeTid = TID.nextStr();
-      const commentUri = `at://${request.atproto.assertDid}/com.omni-index.comment/${tid}`;
-      const record: CommentLike.Record = {
-        commentUri,
-        createdAt: new Date().toISOString(),
-      };
-
-      const {
-        data: { uri },
-      } = await request.atproto.com.atproto.repo.putRecord({
-        repo: request.atproto.assertDid,
-        collection: "com.omni-index.comment.like",
-        record,
-        rkey: likeTid,
-        validate: false,
-      });
-      request.log.debug({
-        msg: "Comment like record created",
-        commentUri,
-        uri,
-      });
-
-      await app.mediaEntry.comments.repository.like({
-        tid: likeTid,
-        commentTid: tid,
-        createdByDid: request.atproto.assertDid as AtprotoDid,
-      });
-
+      const likeResponse = await app.mediaEntry.comments.service.like(
+        tid,
+        request.atproto,
+        request.log
+      );
       reply.code(201);
-      return {
-        tid: likeTid,
-        uri,
-      };
+      return likeResponse;
     }
   );
 
@@ -244,46 +200,11 @@ const entryCommentTidRoutes: FastifyPluginAsyncTypebox = async (app) => {
         });
       }
 
-      const commentLike = await app.mediaEntry.comments.repository.findLike(
+      return await app.mediaEntry.comments.service.dislike(
         tid,
-        request.atproto.assertDid as AtprotoDid
+        request.atproto,
+        request.log
       );
-      if (!commentLike) {
-        return {
-          locallyDeleted: false,
-          atprotoDeleted: false,
-        };
-      }
-
-      const deleteLocally = () =>
-        app.mediaEntry.comments.repository.removeLike(
-          tid,
-          request.atproto.assertDid as AtprotoDid
-        );
-
-      const deleteAtproto = async () => {
-        const response = await request.atproto.com.atproto.repo.deleteRecord({
-          repo: request.atproto.assertDid,
-          collection: "com.omni-index.comment.like",
-          rkey: commentLike.tid,
-        });
-
-        request.log.debug({
-          msg: "Comment like record deleted",
-          commentLike,
-        });
-
-        return "commit" in response.data;
-      };
-
-      const [locallyDeleted, atprotoDeleted] = await Promise.all([
-        deleteLocally(),
-        deleteAtproto(),
-      ]);
-      return {
-        locallyDeleted,
-        atprotoDeleted,
-      };
     }
   );
 };
