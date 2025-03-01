@@ -5,7 +5,7 @@ import {
 import { TID } from "@atproto/common";
 import { ObjectId } from "mongodb";
 import { AtprotoDid } from "@atproto/oauth-client-node";
-import * as Comment from "~/atproto/types/com/omni-index/comment";
+import { ValidationError } from "@atproto/lexicon";
 import { CommentEntity } from "~/media/comments/entities/comment";
 import { CreateCommentRequest } from "~/media/comments/payloads/create-comment-request";
 import { ExceptionSchema, ObjectIdSchema } from "~/common/payloads";
@@ -99,37 +99,22 @@ const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
         createdByDid: request.atproto.assertDid as AtprotoDid,
       });
 
-      const record: Comment.Record = {
-        entrySlug: entry.slug,
-        text: comment.text,
-        createdAt: comment.createdAt.toISOString(),
-      };
+      try {
+        await app.mediaEntry.comments.service.createComment(
+          comment,
+          request.atproto,
+          request.log
+        );
+        return reply.code(201).send(comment);
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          return reply.code(400).send({
+            message: error.message,
+          });
+        }
 
-      const validationResult = Comment.validateRecord(record);
-      if (!validationResult.success) {
-        return reply.code(400).send({
-          message: validationResult.error.message,
-        });
+        throw error;
       }
-
-      const {
-        data: { uri },
-      } = await request.atproto.com.atproto.repo.putRecord({
-        repo: request.atproto.assertDid,
-        collection: "com.omni-index.comment",
-        record,
-        rkey: tid,
-        validate: false,
-      });
-      request.log.debug({
-        msg: "Comment record created",
-        entrySlug: entry.slug,
-        uri,
-      });
-
-      await app.mediaEntry.comments.repository.save(comment);
-
-      return reply.code(201).send(comment);
     }
   );
 };

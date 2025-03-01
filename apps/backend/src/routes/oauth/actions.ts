@@ -2,8 +2,6 @@ import { Type } from "@sinclair/typebox";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { isValidHandle } from "@atproto/syntax";
 import { Agent } from "@atproto/api";
-import { User } from "~/common/auth/entities/user";
-import { UserRole } from "~/common/auth/entities/enums/user-role";
 
 const LoginRequestSchema = Type.Object(
   {
@@ -76,27 +74,22 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
         new URLSearchParams(request.query)
       );
       const { did } = session;
-      request.log.info({ msg: "Authenticated", did });
+      request.log.debug({ msg: "Authenticated", did });
       request.session.set("did", did);
 
       let user = await app.users.repository.getByDid(did);
       if (!user) {
         const atprotoClient = new Agent(session);
-        const { value: profile } =
-          await atprotoClient.app.bsky.actor.profile.get({
-            repo: atprotoClient.assertDid,
-            rkey: "self",
-          });
-        user = new User({
-          did,
-          role: UserRole.User,
-          displayName: profile.displayName,
-          description: profile.description,
-          avatarCid: profile.avatar?.ref.toString(),
-          bannerCid: profile.banner?.ref.toString(),
-        });
-        await app.users.repository.save(user);
+        user = await app.users.service.importUser(atprotoClient);
         request.log.info({ msg: "Created user on first log in", did });
+        await app.mediaEntry.comments.service.importCommentLikes(
+          atprotoClient,
+          request.log
+        );
+        await app.mediaEntry.comments.service.importComments(
+          atprotoClient,
+          request.log
+        );
       }
 
       return reply.redirect(app.env.FRONTEND_URL);
