@@ -5,7 +5,7 @@ import { Type, TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { fastifySwagger } from "@fastify/swagger";
 import { fastifySwaggerUi } from "@fastify/swagger-ui";
 import autoLoadPlugin from "@fastify/autoload";
-import corsPlugin from "@fastify/cors";
+// import corsPlugin from "@fastify/cors";
 import authPlugin from "@fastify/auth";
 import fastifyRacingPlugin from "fastify-racing";
 import formbodyPlugin from "@fastify/formbody";
@@ -67,10 +67,10 @@ export const build = async () => {
     logger: loggerEnvConfigs[process.env.NODE_ENV!],
   }).withTypeProvider<TypeBoxTypeProvider>();
 
-  app.register(corsPlugin, {
-    origin: "https://prenaissance.github.io",
-    credentials: true,
-  });
+  // app.register(corsPlugin, {
+  // origin: "https://prenaissance.github.io",
+  //   credentials: true,
+  // });
 
   app.register(formbodyPlugin);
 

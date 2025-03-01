@@ -167,7 +167,7 @@ const entryCommentTidRoutes: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       const likeTid = TID.nextStr();
-      const commentUri = `at://did:plc:${request.atproto.assertDid}/com.omni-index.comment/${tid}`;
+      const commentUri = `at://${request.atproto.assertDid}/com.omni-index.comment/${tid}`;
       const record: CommentLike.Record = {
         commentUri,
         createdAt: new Date().toISOString(),
@@ -177,7 +177,7 @@ const entryCommentTidRoutes: FastifyPluginAsyncTypebox = async (app) => {
         data: { uri },
       } = await request.atproto.com.atproto.repo.putRecord({
         repo: request.atproto.assertDid,
-        collection: "com.omni-index.comment-like",
+        collection: "com.omni-index.comment.like",
         record,
         rkey: likeTid,
         validate: false,
@@ -198,6 +198,91 @@ const entryCommentTidRoutes: FastifyPluginAsyncTypebox = async (app) => {
       return {
         tid: likeTid,
         uri,
+      };
+    }
+  );
+
+  app.delete(
+    "/like",
+    {
+      onRequest: app.auth([app.verifyAuthenticated]),
+      schema: {
+        description: "Remove a previous like from a comment",
+        tags: ["Entries", "Comments"],
+        params: Type.Object({
+          entryId: ObjectIdSchema({
+            description: "ObjectId of the media entry",
+          }),
+          tid: Type.String({
+            description: "Comment tid",
+          }),
+        }),
+        response: {
+          200: Type.Ref(AtprotoDeletionResponse),
+          404: Type.Ref(ExceptionSchema),
+        },
+      },
+    },
+    async (request, reply) => {
+      const { entryId, tid } = request.params;
+      const entry = await app.mediaEntry.repository.findOne(
+        new ObjectId(entryId)
+      );
+      if (!entry) {
+        return reply.code(404).send({
+          message: "Entry not found",
+        });
+      }
+
+      const comment = await app.mediaEntry.comments.repository.findOne({
+        entrySlug: entry.slug,
+        tid,
+      });
+      if (!comment) {
+        return reply.code(404).send({
+          message: "Comment not found",
+        });
+      }
+
+      const commentLike = await app.mediaEntry.comments.repository.findLike(
+        tid,
+        request.atproto.assertDid as AtprotoDid
+      );
+      if (!commentLike) {
+        return {
+          locallyDeleted: false,
+          atprotoDeleted: false,
+        };
+      }
+
+      const deleteLocally = () =>
+        app.mediaEntry.comments.repository.removeLike(
+          tid,
+          request.atproto.assertDid as AtprotoDid
+        );
+
+      const deleteAtproto = async () => {
+        const response = await request.atproto.com.atproto.repo.deleteRecord({
+          repo: request.atproto.assertDid,
+          collection: "com.omni-index.comment.like",
+          rkey: commentLike.tid,
+        });
+
+        request.log.debug({
+          msg: "Comment like record deleted",
+          commentLike,
+        });
+
+        return "commit" in response.data;
+      };
+
+      const [locallyDeleted, atprotoDeleted] = await Promise.all([
+        deleteLocally(),
+        deleteAtproto(),
+      ]);
+      return {
+        locallyDeleted,
+        atprotoDeleted,
       };
     }
   );

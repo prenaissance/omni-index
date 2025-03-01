@@ -10,6 +10,7 @@ import { CreateCommentRequest } from "~/media/comments/payloads";
 import { CommentResponse } from "~/media/comments/payloads/comment-response";
 import { mockAtprotoAgent, setMockUserDid } from "test/__e2e-setup__";
 import { User } from "~/common/auth/entities/user";
+import { AtprotoDeletionResponse } from "~/common/payloads";
 
 describe("Media Comments", () => {
   let app: FastifyInstance;
@@ -24,6 +25,7 @@ describe("Media Comments", () => {
     mockAtprotoAgent.com.atproto = createMock<ComAtprotoNS>({
       repo: {
         putRecord: vi.fn(),
+        deleteRecord: vi.fn(),
       },
     });
     vi.mocked(mockAtprotoAgent.com.atproto.repo.putRecord).mockResolvedValue({
@@ -153,6 +155,83 @@ describe("Media Comments", () => {
           liked: true,
         })
       );
+    });
+
+    it("should decrease the likes count of a comment when unliking it", async () => {
+      vi.mocked(
+        mockAtprotoAgent.com.atproto.repo.deleteRecord
+      ).mockResolvedValueOnce({
+        success: true,
+        headers: {},
+        data: {
+          cid: faker.string.alphanumeric(24),
+          uri: faker.internet.url(),
+          commit: {
+            cid: faker.string.alphanumeric(24),
+            rev: faker.string.alphanumeric(24),
+          },
+        },
+      });
+      // like with the other user
+      setMockUserDid(otherUser.did);
+
+      let response = await app.inject({
+        method: "POST",
+        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
+      });
+      expect(response.statusCode).toBe(201);
+      // like with the original user
+      setMockUserDid(user.did);
+
+      response = await app.inject({
+        method: "POST",
+        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
+      });
+      expect(response.statusCode).toBe(201);
+
+      response = await app.inject({
+        method: "GET",
+        url: `/api/entries/${entryId}/comments/${commentTid}`,
+      });
+      const commentBefore = response.json<CommentResponse>();
+      expect(commentBefore.likes).toBe(2);
+
+      response = await app.inject({
+        method: "DELETE",
+        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
+      });
+      expect(response.statusCode).toBe(200);
+      expect(response.json<AtprotoDeletionResponse>()).toEqual({
+        locallyDeleted: true,
+        atprotoDeleted: true,
+      });
+
+      response = await app.inject({
+        method: "GET",
+        url: `/api/entries/${entryId}/comments/${commentTid}`,
+      });
+      const comment = response.json<CommentResponse>();
+      expect(comment.likes).toBe(1);
+    });
+
+    it("should do nothing when unliking a comment that has not been liked", async () => {
+      vi.mocked(
+        mockAtprotoAgent.com.atproto.repo.deleteRecord
+      ).mockResolvedValue({
+        success: false,
+        headers: {},
+        data: {},
+      });
+
+      const response = await app.inject({
+        method: "DELETE",
+        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
+      });
+      expect(response.statusCode).toBe(200);
+      expect(response.json<AtprotoDeletionResponse>()).toEqual({
+        locallyDeleted: false,
+        atprotoDeleted: false,
+      });
     });
   });
 });

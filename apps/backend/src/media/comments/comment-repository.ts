@@ -147,7 +147,7 @@ export class CommentRepository {
   }
 
   /** Removes a comment like associated with a comment */
-  async dislike(tid: string, userDid: AtprotoDid) {
+  async removeLike(tid: string, userDid: AtprotoDid) {
     const result = await this.commentLikesCollection.deleteOne({
       commentTid: tid,
       createdByDid: userDid,
@@ -155,7 +155,7 @@ export class CommentRepository {
 
     const deleted = !!result.deletedCount;
     if (deleted) {
-      this.eventEmitter.emit("comment.disliked", {
+      this.eventEmitter.emit("comment.like-removed", {
         commentTid: tid,
         createdByDid: userDid,
       });

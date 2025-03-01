@@ -1,5 +1,5 @@
 import {
-  CommentDislikedEvent,
+  CommentLikeRemovedEvent,
   CommentLikedEvent,
 } from "~/media/comments/events";
 import {
@@ -13,7 +13,7 @@ export type EventMap = {
   "entry.deleted": EntryDeletedEvent;
   "entry.updated": EntryUpdatedEvent;
   "comment.liked": CommentLikedEvent;
-  "comment.disliked": CommentDislikedEvent;
+  "comment.like-removed": CommentLikeRemovedEvent;
 };
 
 export type EventType = keyof EventMap;
