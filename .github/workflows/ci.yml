@@ -9,6 +9,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Pre-pull docker images
+        run: |
+          docker pull mongo:8
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
