@@ -5,10 +5,10 @@ export const ProfileResponse = Type.Object(
   {
     did: Type.String(),
     role: Type.Enum(UserRole),
+    handle: Type.Optional(Type.String()),
     displayName: Type.Optional(Type.String()),
     description: Type.Optional(Type.String()),
-    avatar: Type.Optional(Type.String({ format: "uri" })),
-    avatarThumbnail: Type.Optional(Type.String({ format: "uri" })),
+    avatarUrl: Type.Optional(Type.String({ format: "uri" })),
   },
   {
     $id: "ProfileResponse",

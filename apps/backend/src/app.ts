@@ -39,7 +39,7 @@ const loggerEnvConfigs: Record<string, PinoLoggerOptions> = {
       target: "pino-pretty",
       options: {
         ignore: "pid,hostname",
-        translateTime: "HH:MM:ss",
+        translateTime: "SYS:HH:MM:ss",
       },
     },
   },
@@ -49,7 +49,7 @@ const loggerEnvConfigs: Record<string, PinoLoggerOptions> = {
       target: "pino-pretty",
       options: {
         ignore: "pid,hostname",
-        translateTime: "HH:MM:ss",
+        translateTime: "HH:MM:ss z",
       },
     },
   },

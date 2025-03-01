@@ -48,7 +48,7 @@ export const schemaDict = {
           properties: {
             commentUri: {
               type: "string",
-              format: "at-identifier",
+              format: "at-uri",
             },
             createdAt: {
               type: "string",

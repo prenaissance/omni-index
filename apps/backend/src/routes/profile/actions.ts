@@ -29,15 +29,15 @@ const profileRoutes: FastifyPluginAsyncTypebox = async (app) => {
           message: "User data not stored in the database",
         });
       }
-      const { role, displayName, description, avatar, avatarThumbnail } = user;
+      const { handle, role, displayName, description, avatarUrl } = user;
 
       return {
         did,
+        handle,
         role,
         displayName,
         description,
-        avatar: avatar ?? undefined,
-        avatarThumbnail: avatarThumbnail ?? undefined,
+        avatarUrl,
       } satisfies ProfileResponse;
     }
   );

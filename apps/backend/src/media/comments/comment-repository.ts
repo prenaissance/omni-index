@@ -1,7 +1,7 @@
 import { Collection, Db, Filter } from "mongodb";
 import { AtprotoDid } from "@atproto/oauth-client-node";
 import { CommentEntity } from "./entities/comment";
-import { CommentLike } from "./entities/comment-like";
+import { CommentLikeEntity } from "./entities/comment-like";
 import { omit, pick } from "~/common/utilities/functional";
 import { PaginatedSearch } from "~/common/types/paginated-search";
 import { StoredUser, User } from "~/common/auth/entities/user";
@@ -17,7 +17,7 @@ type CommentWithAuthor = CommentEntity & {
 
 export class CommentRepository {
   private readonly commentsCollection: Collection<CommentEntity>;
-  private readonly commentLikesCollection: Collection<CommentLike>;
+  private readonly commentLikesCollection: Collection<CommentLikeEntity>;
   private readonly usersCollection: Collection<StoredUser>;
   constructor(
     db: Db,
@@ -34,6 +34,37 @@ export class CommentRepository {
       { $set: pick(comment, ["text"]), $setOnInsert: omit(comment, ["text"]) },
       { upsert: true }
     );
+  }
+
+  async saveMany(comments: CommentEntity[]) {
+    if (!comments.length) {
+      return;
+    }
+    await this.commentsCollection.bulkWrite(
+      comments.map((comment) => ({
+        updateOne: {
+          filter: { tid: comment.tid },
+          update: {
+            $set: pick(comment, ["text"]),
+            $setOnInsert: omit(comment, ["text"]),
+          },
+          upsert: true,
+        },
+      }))
+    );
+  }
+
+  async countLikesForCommentTids(commentTids: string[]) {
+    return await this.commentLikesCollection
+      .aggregate()
+      .match({ commentTid: { $in: commentTids } })
+      .group({ _id: "$commentTid", count: { $sum: 1 } })
+      .project<{ commentTid: string; count: number }>({
+        _id: 0,
+        commentTid: "$_id",
+        count: 1,
+      })
+      .toArray();
   }
 
   async findOne(
@@ -111,7 +142,7 @@ export class CommentRepository {
       commentTid,
       createdByDid: userDid,
     });
-    return document ? new CommentLike(document) : null;
+    return document ? new CommentLikeEntity(document) : null;
   }
 
   /** Adds a comment like associated with a comment */
@@ -119,7 +150,7 @@ export class CommentRepository {
     tid,
     commentTid,
     createdByDid,
-  }: Pick<CommentLike, "commentTid" | "tid" | "createdByDid">) {
+  }: Pick<CommentLikeEntity, "commentTid" | "tid" | "createdByDid">) {
     const existingLike = await this.commentsCollection.countDocuments({
       commentTid,
       createdByDid,
@@ -129,7 +160,7 @@ export class CommentRepository {
       return false;
     }
 
-    const commentLike = new CommentLike({
+    const commentLike = new CommentLikeEntity({
       tid,
       commentTid,
       createdByDid,
@@ -144,6 +175,24 @@ export class CommentRepository {
     });
 
     return true;
+  }
+
+  async importLikes(likes: CommentLikeEntity[]) {
+    if (!likes.length) {
+      return;
+    }
+    await this.commentLikesCollection.bulkWrite(
+      likes.map((like) => ({
+        updateOne: {
+          filter: {
+            tid: like.tid,
+            createdByDid: like.createdByDid,
+          },
+          update: { $set: like },
+          upsert: true,
+        },
+      }))
+    );
   }
 
   /** Removes a comment like associated with a comment */
