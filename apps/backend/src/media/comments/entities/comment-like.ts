@@ -8,7 +8,7 @@ export type CommentLikeInit = EntityInit & {
   createdAt?: Date;
 };
 
-export class CommentLike extends Entity {
+export class CommentLikeEntity extends Entity {
   readonly tid: string;
   readonly commentTid: string;
   readonly createdByDid: AtprotoDid;

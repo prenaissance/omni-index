@@ -14,7 +14,7 @@ export class UserRepository {
   }
 
   async save(user: User) {
-    const { _id, did, role, displayName, description, avatarCid, bannerCid } =
+    const { _id, did, handle, role, displayName, description, avatarUrl } =
       user;
 
     await this.usersCollection.updateOne(
@@ -23,11 +23,11 @@ export class UserRepository {
         $set: {
           _id,
           did,
+          handle,
           role,
           displayName,
           description,
-          avatarCid,
-          bannerCid,
+          avatarUrl,
         },
       },
       { upsert: true }
