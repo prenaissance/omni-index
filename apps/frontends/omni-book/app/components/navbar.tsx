@@ -1,9 +1,7 @@
 import type { FC } from "react";
 import { Button } from "./ui/button";
 
-type NavbarProps = {};
-
-const Navbar: FC<NavbarProps> = ({}) => {
+const Navbar: FC = ({}) => {
   return (
     <nav>
       <div className=" py-5 px-10 flex flex-row items-center justify-between">

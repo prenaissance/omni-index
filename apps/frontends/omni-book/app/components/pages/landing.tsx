@@ -1,9 +1,8 @@
 import type { FC } from "react";
 import Navbar from "../navbar";
 import "../../app.css";
-type LandingProps = {};
 
-const Landing: FC<LandingProps> = ({}) => {
+const Landing: FC = ({}) => {
   return (
     <div>
       <Navbar />
