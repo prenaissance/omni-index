@@ -31,6 +31,6 @@ pnpm --filter=backend dev
 - [ ] Implement Gossip Protocol message deduplication
 - [ ] Implement Gossip Protocol conflict resolution
 - [ ] Implement firehose subscriptions
-- [ ] Implement user registration data migration
-- [ ] Implement comment likes and garbage collection
+- [x] Implement user registration data migration
+- [x] Implement comment likes and garbage collection
 - [ ] Add appropriate indices to the database using migrations
