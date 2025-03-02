@@ -28,7 +28,7 @@ export const configPlugin = fastifyPlugin(
     let sessionSecret = await configStorage.get<string>("SESSION_SECRET");
     if (!sessionSecret) {
       sessionSecret =
-        app.env.INIT_SESSION_SECRET ?? crypto.randomBytes(32).toString("hex");
+        app.env.INIT_SESSION_SECRET || crypto.randomBytes(32).toString("hex");
       await configStorage.set("SESSION_SECRET", sessionSecret);
     }
 
