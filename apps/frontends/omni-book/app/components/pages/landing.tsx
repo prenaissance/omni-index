@@ -1,12 +1,13 @@
 import type { FC } from "react";
 import Navbar from "../navbar";
 import "../../app.css";
+import Hero from "../hero";
 
 const Landing: FC = ({}) => {
   return (
     <div>
       <Navbar />
-      <h1>Landing Page</h1>
+      <Hero />
     </div>
   );
 };
