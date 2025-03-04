@@ -31,8 +31,8 @@ export class UserRepository {
     );
   }
 
-  async findOne(filter: Filter<StoredUser>) {
-    const user = await this.usersCollection.findOne(filter);
+  async findOne(filters: Filter<StoredUser>) {
+    const user = await this.usersCollection.findOne(filters);
     if (!user) {
       return null;
     }
