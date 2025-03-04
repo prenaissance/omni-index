@@ -14,6 +14,7 @@ export default defineConfig({
       API_URL: "http://localhost:8080",
       FRONTEND_URL: "http://127.0.0.1:3030",
       CALLBACK_URL: "http://127.0.0.1:3030/api/oauth/callback",
+      INIT_ADMIN_IDENTITY: "pnpm.io",
     },
     // Path to your setup script that we will go into detail below
     setupFiles: ["./test/__e2e-setup__.ts"],
