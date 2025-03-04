@@ -44,7 +44,6 @@ export class UserService {
         { handle: this.env.INIT_ADMIN_IDENTITY },
       ],
     });
-    console.log({ user, adminIdentity: this.env.INIT_ADMIN_IDENTITY });
 
     if (!user) {
       return;
