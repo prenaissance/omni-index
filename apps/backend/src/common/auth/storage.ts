@@ -10,7 +10,7 @@ export const OAUTH_STATES_COLLECTION = "oauth-states";
 
 export class MongoStateStore implements NodeSavedStateStore {
   private readonly collection: Collection<
-    WithId<NodeSavedState> & { key: string }
+    WithId<NodeSavedState> & { key: string; createdAt: Date }
   >;
   constructor(db: Db) {
     this.collection = db.collection(OAUTH_STATES_COLLECTION);
@@ -28,6 +28,7 @@ export class MongoStateStore implements NodeSavedStateStore {
         $set: {
           ...value,
           key,
+          createdAt: new Date(),
         },
       },
       { upsert: true }
@@ -46,9 +47,7 @@ export class MongoStateStore implements NodeSavedStateStore {
 export const OAUTH_SESSIONS_COLLECTION = "oauth-sessions";
 
 export class MongoSessionStore implements NodeSavedSessionStore {
-  private readonly collection: Collection<
-    WithId<NodeSavedSession> & { key: string }
-  >;
+  private readonly collection: Collection<WithId<NodeSavedSession>>;
 
   constructor(db: Db) {
     this.collection = db.collection(OAUTH_SESSIONS_COLLECTION);
