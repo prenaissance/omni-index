@@ -1,5 +1,5 @@
 {
-  "include": ["src", "scripts", "test"],
+  "include": ["src", "scripts", "test", "migrations"],
   "compilerOptions": {
     "types": ["vitest/globals"],
     "lib": ["ESNext"],
