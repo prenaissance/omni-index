@@ -14,6 +14,7 @@ export const EntrySchema = Type.Object(
       description: "ObjectId of the media entry",
     }),
     title: Type.String(),
+    description: Type.Optional(Type.String()),
     author: Type.String(),
     localizedTitle: Type.Optional(Type.String()),
     slug: Type.String(),
