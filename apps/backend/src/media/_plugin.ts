@@ -3,6 +3,7 @@ import { EntryRepository } from "./repositories/entry-repository";
 import { mediaPayloadsPlugin } from "./payloads/_plugin";
 import { CommentRepository } from "./comments/comment-repository";
 import { CommentService } from "./comments/comment-service";
+import { EntryExportService } from "./exports/entry-export-service";
 import { EVENT_EMITTER_PLUGIN } from "~/common/events/_plugin";
 import { MONGODB_PLUGIN } from "~/common/mongodb/plugins/mongodb-plugin";
 
@@ -13,6 +14,9 @@ declare module "fastify" {
       readonly comments: {
         readonly repository: CommentRepository;
         readonly service: CommentService;
+      };
+      readonly exports: {
+        readonly service: EntryExportService;
       };
     };
   }
@@ -33,6 +37,9 @@ export const mediaPlugin = fastifyPlugin(
       comments: {
         repository: commentRepository,
         service: commentService,
+      },
+      exports: {
+        service: new EntryExportService(app.db),
       },
     });
     app.register(mediaPayloadsPlugin);

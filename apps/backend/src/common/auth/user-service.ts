@@ -39,6 +39,7 @@ export class UserService {
 
   private async importAdminIfExists() {
     const user = await this.userRepository.findOne({
+      role: UserRole.User,
       $or: [
         { did: this.env.INIT_ADMIN_IDENTITY as AtprotoDid },
         { handle: this.env.INIT_ADMIN_IDENTITY },
