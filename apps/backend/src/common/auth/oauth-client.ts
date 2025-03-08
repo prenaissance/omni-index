@@ -34,10 +34,11 @@ export const createOAuthClient = async (
     },
     stateStore,
     sessionStore,
-    requestLock: (name, fn) =>
-      distributedLockService.acquireAndExecute(
-        { name, ttlSeconds: 3600 },
-        fn as never
-      ),
+    // defective in some situations. Applying this per-route, if possible, should solve the issue
+    // requestLock: (name, fn) =>
+    //   distributedLockService.acquireAndExecute(
+    //     { name, ttlSeconds: 3600 },
+    //     fn as never
+    //   ),
   });
 };
