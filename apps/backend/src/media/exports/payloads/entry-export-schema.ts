@@ -39,17 +39,22 @@ export const MediaExportSchema = Type.Object(
 );
 export type MediaExportSchema = Static<typeof MediaExportSchema>;
 
-export const EntryExportSchema = Type.Object({
-  _id: ObjectIdSchema(),
-  title: Type.String(),
-  localizedTitle: Type.Optional(Type.String()),
-  year: Type.Optional(Type.Number()),
-  language: Type.Optional(Type.String()),
-  thumbnail: Type.Optional(BlobLinkSchema),
-  createdAt: DateSchema(),
-  updatedAt: DateSchema(),
-  meta: Type.Ref(MetadataSchema),
-  genres: Type.Array(Type.String()),
-  media: Type.Array(Type.Ref(MediaExportSchema)),
-});
+export const EntryExportSchema = Type.Object(
+  {
+    _id: ObjectIdSchema(),
+    title: Type.String(),
+    localizedTitle: Type.Optional(Type.String()),
+    year: Type.Optional(Type.Number()),
+    language: Type.Optional(Type.String()),
+    thumbnail: Type.Optional(BlobLinkSchema),
+    createdAt: DateSchema(),
+    updatedAt: DateSchema(),
+    meta: Type.Ref(MetadataSchema),
+    genres: Type.Array(Type.String()),
+    media: Type.Array(Type.Ref(MediaExportSchema)),
+  },
+  {
+    $id: "EntryExport",
+  }
+);
 export type EntryExportSchema = Static<typeof EntryExportSchema>;
