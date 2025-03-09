@@ -2,7 +2,7 @@ import { Button } from "./ui/button";
 
 const Navbar = ({}) => {
   return (
-    <nav>
+    <nav className="sticky top-0 bg-background">
       <div className="py-5 px-10 flex flex-row items-center justify-between">
         <div className="flex flex-row space-x-14">
           <Button variant={"icon"} size={"icon"}>
