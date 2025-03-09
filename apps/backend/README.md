@@ -24,7 +24,7 @@ pnpm --filter=backend dev
 - [x] Add entry comments with atproto integration
 - [x] Add data seeding
 - [x] Implement admin initialization
-- [ ] Implement json data export
+- [x] Implement json data export
 - [ ] Implement json data import
 - [ ] Implement peer node data import
 - [ ] Implement the Gossip Protocol
@@ -33,4 +33,4 @@ pnpm --filter=backend dev
 - [ ] Implement firehose subscriptions
 - [x] Implement user registration data migration
 - [x] Implement comment likes and garbage collection
-- [ ] Add appropriate indices to the database using migrations
+- [x] Add appropriate indices to the database using migrations
