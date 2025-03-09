@@ -35,98 +35,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/auth/token": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody: {
-        content: {
-          "application/json": {
-            token: string;
-          };
-        };
-      };
-      responses: {
-        /** @description Default Response */
-        200: {
-          headers: Record<string, unknown>;
-          content: {
-            "application/json": components["schemas"]["TokenPair"];
-          };
-        };
-        /** @description Default Response */
-        400: {
-          headers: Record<string, unknown>;
-          content: {
-            "application/json": components["schemas"]["Exception"];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/auth/refresh": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody: {
-        content: {
-          "application/json": {
-            refreshToken: string;
-          };
-        };
-      };
-      responses: {
-        /** @description Default Response */
-        200: {
-          headers: Record<string, unknown>;
-          content: {
-            "application/json": components["schemas"]["TokenPair"];
-          };
-        };
-        /** @description Default Response */
-        400: {
-          headers: Record<string, unknown>;
-          content: {
-            "application/json": components["schemas"]["Exception"];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/entries": {
     parameters: {
       query?: never;
@@ -234,6 +142,259 @@ export interface paths {
     put?: never;
     post?: never;
     delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/entries/{entryId}/comments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: {
+      parameters: {
+        query?: {
+          /** @description Page number (1 indexed) */
+          page?: number;
+          /** @description Page size */
+          limit?: number;
+        };
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["CommentResponse"][];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "application/json": components["schemas"]["CreateCommentRequest"];
+        };
+      };
+      responses: {
+        /** @description Default Response */
+        201: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["CreateCommentResponse"];
+          };
+        };
+        /** @description Default Response */
+        400: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/entries/{entryId}/comments/{tid}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+          /** @description Comment tid */
+          tid: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["CommentResponse"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+          /** @description Comment tid */
+          tid: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["AtprotoDeletionResponse"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/entries/{entryId}/comments/{tid}/like": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+          /** @description Comment tid */
+          tid: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        201: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["CommentLikeResponse"];
+          };
+        };
+        /** @description Default Response */
+        400: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    /** @description Remove a previous like from a comment */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the media entry
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          entryId: string;
+          /** @description Comment tid */
+          tid: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["AtprotoDeletionResponse"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
     options?: never;
     head?: never;
     patch?: never;
@@ -451,6 +612,45 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/entries/exports/export": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": {
+              /** @example 0.0.1 */
+              appVersion: string;
+              /** Format: date-time */
+              exportedAt: string;
+              entries: components["schemas"]["EntryExport"][];
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/events": {
     parameters: {
       query?: never;
@@ -525,15 +725,6 @@ export interface paths {
             };
           };
         };
-        /** @description Default Response */
-        422: {
-          headers: Record<string, unknown>;
-          content: {
-            "application/json": {
-              message: string;
-            };
-          };
-        };
       };
     };
     delete?: never;
@@ -551,7 +742,11 @@ export interface paths {
     };
     get: {
       parameters: {
-        query?: never;
+        query: {
+          code: string;
+          state: string;
+          iss: string;
+        };
         header?: never;
         path?: never;
         cookie?: never;
@@ -738,6 +933,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/profile": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["ProfileResponse"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/shallow-ping": {
     parameters: {
       query?: never;
@@ -757,7 +992,9 @@ export interface paths {
         /** @description Default Response */
         200: {
           headers: Record<string, unknown>;
-          content?: never;
+          content: {
+            "application/json": "pong";
+          };
         };
       };
     };
@@ -797,6 +1034,44 @@ export interface components {
        * @default 10
        */
       limit: number;
+    };
+    /** AtprotoDeletionResponse */
+    AtprotoDeletionResponse: {
+      locallyDeleted: boolean;
+      atprotoDeleted: boolean;
+    };
+    /** CreateCommentRequest */
+    CreateCommentRequest: {
+      text: string;
+    };
+    /** CreateCommentResponse */
+    CreateCommentResponse: {
+      entrySlug: string;
+      tid: string;
+      text: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    /** CommentResponse */
+    CommentResponse: {
+      tid: string;
+      text: string;
+      /** Format: date-time */
+      createdAt: string;
+      createdBy: {
+        did: string;
+        displayName?: string;
+        /** Format: uri */
+        avatarThumbnail?: string;
+      };
+      likes: number;
+      liked: boolean;
+    };
+    /** CommentLikeResponse */
+    CommentLikeResponse: {
+      /** Format: uri */
+      uri: string;
+      tid: string;
     };
     /** BlobLink */
     BlobLink:
@@ -868,6 +1143,7 @@ export interface components {
        */
       _id: string;
       title: string;
+      description?: string;
       author: string;
       localizedTitle?: string;
       slug: string;
@@ -915,6 +1191,7 @@ export interface components {
     /** CreateEntryRequest */
     CreateEntryRequest: {
       title: string;
+      description?: string;
       author: string;
       localizedTitle?: string;
       year?: number;
@@ -945,12 +1222,75 @@ export interface components {
         mirrors: components["schemas"]["CreateIndexRequest"][];
       })[];
     };
-    /** TokenPair */
-    TokenPair: {
-      /** @description JWT access token */
-      accessToken: string;
-      /** @description JWT refresh token. Use on POST /api/auth/refresh to get a new token pair. */
-      refreshToken: string;
+    /** IndexExport */
+    IndexExport: {
+      /**
+       * @description ObjectId
+       * @example 5fdedb7c25ab1352eef88f60
+       */
+      _id: string;
+      /** @description The third party host of the media */
+      provider?: string;
+      /** @description The media type */
+      mimeType?: string;
+      /** @description Size of the media in bytes */
+      size?: number;
+      blob: components["schemas"]["BlobLink"];
+      meta: components["schemas"]["Metadata"];
+    };
+    /** MediaExport */
+    MediaExport: {
+      /**
+       * @description ObjectId
+       * @example 5fdedb7c25ab1352eef88f60
+       */
+      _id: string;
+      mirrors: components["schemas"]["IndexExport"][];
+      meta: components["schemas"]["Metadata"];
+    };
+    /** EntryExport */
+    EntryExport: {
+      /**
+       * @description ObjectId
+       * @example 5fdedb7c25ab1352eef88f60
+       */
+      _id: string;
+      title: string;
+      localizedTitle?: string;
+      year?: number;
+      language?: string;
+      thumbnail?:
+        | {
+            /**
+             * Format: uri
+             * @description Hot URL
+             */
+            url: string;
+          }
+        | {
+            /** @description IPFS CID */
+            cid: string;
+            /**
+             * Format: uri
+             * @description IPFS access URL
+             */
+            accessUrl: string;
+          };
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      meta: components["schemas"]["Metadata"];
+      genres: string[];
+      media: components["schemas"]["MediaExport"][];
+    };
+    /** EntryExportResponse */
+    EntryExportResponse: {
+      /** @example 0.0.1 */
+      appVersion: string;
+      /** Format: date-time */
+      exportedAt: string;
+      entries: components["schemas"]["EntryExport"][];
     };
     /** StoredEventResponse */
     StoredEventResponse: {
@@ -969,11 +1309,6 @@ export interface components {
     LoginRequestSchema: {
       /** @description User handle. Example: @example.bsky.social */
       handle: string;
-    };
-    /** LoginResponseSchema */
-    LoginResponseSchema: {
-      /** @description JWT token */
-      token: string;
     };
     /** CreatePeerNodeRequest */
     CreatePeerNodeRequest: {
@@ -1003,6 +1338,16 @@ export interface components {
     };
     /** PeerNodeListResponse */
     PeerNodeListResponse: components["schemas"]["PeerNodeResponse"][];
+    /** ProfileResponse */
+    ProfileResponse: {
+      did: string;
+      role: "owner" | "admin" | "user";
+      handle?: string;
+      displayName?: string;
+      description?: string;
+      /** Format: uri */
+      avatarUrl?: string;
+    };
   };
   responses: never;
   parameters: never;

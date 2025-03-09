@@ -4,7 +4,7 @@ type PopupProps = {
 
 const Popup: React.FC<PopupProps> = ({ content }: PopupProps) => {
   return (
-    <div className="relative group">
+    <div className="relative group h-7">
       <button className="p-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
