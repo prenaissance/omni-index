@@ -1,5 +1,3 @@
-import { useEffect, type FC } from "react";
-import { useLoaderData } from "react-router";
 import type { Route } from "./+types/book";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
@@ -30,21 +28,15 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
   return data;
 };
 
-const Book: FC = ({}) => {
-  const data = useLoaderData<typeof loader>();
-
-  useEffect(() => {
-    console.log("Book data", data);
-  }, [data]);
-
+const Book = ({ loaderData }: Route.ComponentProps) => {
   return (
     <div className="bg-[url('/gradient.jpg')] bg-cover bg-center h-[550px]">
       <div className="px-40 flex items-center justify-between h-full gap-10">
         <div className="h-full">
           <img
             src={
-              data.thumbnail && "url" in data.thumbnail
-                ? data.thumbnail.url
+              loaderData.thumbnail && "url" in loaderData.thumbnail
+                ? loaderData.thumbnail.url
                 : "./placeholder.jpg"
             }
             className="py-20 h-full w-auto object-cover"
@@ -52,19 +44,19 @@ const Book: FC = ({}) => {
           />
         </div>
         <div className="flex-1">
-          <h1 className="text-5xl font-semibold mb-2">{data.title}</h1>
+          <h1 className="text-5xl font-semibold mb-2">{loaderData.title}</h1>
           <div className="text-lg font-medium mb-3 flex gap-2 items-center">
-            <p>{data.author}</p>
-            {data.year !== null && data.year !== 0 && (
+            <p>{loaderData.author}</p>
+            {loaderData.year !== null && loaderData.year !== 0 && (
               <>
                 <div className="w-[2px] h-6 bg-white"></div>
-                <p>{data.year}</p>
+                <p>{loaderData.year}</p>
               </>
             )}
           </div>
 
           <div className="flex flex-row space-x-2 mb-3">
-            {data.genres.map((genre) => (
+            {loaderData.genres.map((genre) => (
               <span
                 key={genre}
                 className="bg-card px-2 py-1 rounded-md text-[0.8rem] font-medium"
@@ -74,7 +66,7 @@ const Book: FC = ({}) => {
             ))}
           </div>
           <p className="text-md text-white">
-            {data.description || "No description available"}
+            {loaderData.description || "No description available"}
           </p>
         </div>
         <div className="bg-[#ffffff33] h-full w-1/4 flex flex-col items-center justify-center p-10">
@@ -82,7 +74,7 @@ const Book: FC = ({}) => {
             Choose how to read this book
           </p>
           <div className="flex flex-col gap-3 w-full items-start">
-            {data.media.map((media) => (
+            {loaderData.media.map((media) => (
               <div key={media._id} className="w-full flex items-center gap-4">
                 <a
                   href={
@@ -104,7 +96,9 @@ const Book: FC = ({}) => {
                   </strong>{" "}
                   MB{" "}
                 </p>
-                <Popup content={FORMAT_INFO[media.meta.format ?? ""]} />
+                {media.meta.format && media.meta.format in FORMAT_INFO && (
+                  <Popup content={FORMAT_INFO[media.meta.format]} />
+                )}
               </div>
             ))}
           </div>
