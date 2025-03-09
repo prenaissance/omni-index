@@ -3,6 +3,9 @@ import { useLoaderData, useParams } from "react-router";
 import type { Route } from "./+types/book";
 import type { paths, components } from "~/lib/api-types";
 import { env } from "~/lib/env";
+import { Button } from "~/components/ui/button";
+import Popup from "~/components/ui/popup";
+import { FORMAT_INFO } from "~/lib/formats";
 
 type BookType = components["schemas"]["Entry"];
 type BookResponseType =
@@ -88,7 +91,7 @@ const Book: FC = ({}) => {
       "Utopian and dystopian fiction",
     ],
     localizedTitle: "The Republic",
-    year: 0,
+    year: 1938,
     language: "en",
     thumbnail: {
       url: "https://www.gutenberg.org/cache/epub/1497/pg1497.cover.medium.jpg",
@@ -110,16 +113,22 @@ const Book: FC = ({}) => {
           />
         </div>
         <div className="flex-1">
-          <h1 className="text-5xl font-semibold">{data.title}</h1>
+          <h1 className="text-5xl font-semibold mb-2">{data.title}</h1>
           <div className="text-lg font-medium mb-3 flex gap-2 items-center">
-            <p className="">{data.author}</p>
-            <p className="border-l-2 m-0 px-2 py-0 h-5">{data.year}</p>
+            <p>{data.author}</p>
+            {data.year !== null && data.year !== 0 && (
+              <>
+                <div className="w-[2px] h-6 bg-white"></div>
+                <p>{data.year}</p>
+              </>
+            )}
           </div>
-          <div className="flex flex-row space-x-2 mb-1">
+
+          <div className="flex flex-row space-x-2 mb-3">
             {data.genres.map((genre) => (
               <span
                 key={genre}
-                className="bg-card px-2 py-1 rounded-md text-[0.8rem]"
+                className="bg-card px-2 py-1 rounded-md text-[0.8rem] font-medium"
               >
                 {genre}
               </span>
@@ -134,7 +143,33 @@ const Book: FC = ({}) => {
             with the release of Letraset.
           </p>
         </div>
-        <div className=" bg-[#ffffff33] h-full w-1/4">sfsds</div>
+        <div className="bg-[#ffffff33] h-full w-1/4 flex flex-col items-center justify-center p-10">
+          <p className="text-xl font-medium mb-6">
+            Choose how to read this book
+          </p>
+          <div className="flex flex-col gap-2 w-full items-start">
+            {data.media.map((media) => (
+              <div key={media._id} className="w-full flex items-center gap-4">
+                <Button
+                  onClick={() => {
+                    window.open(media.mirrors[0].blob.url, "_blank");
+                  }}
+                  variant={"secondary"}
+                  className="w-2/5"
+                >
+                  {media.meta.format}
+                </Button>
+                <p>
+                  <strong>
+                    {(media.mirrors[0].size / 1000000).toPrecision(3)}
+                  </strong>{" "}
+                  MB{" "}
+                </p>
+                <Popup content={FORMAT_INFO[media.meta.format]} />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
