@@ -1,9 +1,8 @@
-import type { FC } from "react";
 import { Button } from "./ui/button";
 
-const Hero: FC = ({}) => {
+const Hero = ({}) => {
   return (
-    <div className="flex flex-col items-center justify-center h-96 bg-[url(./hero.jpg)] bg-cover bg-center">
+    <div className="flex flex-col items-center justify-center h-96 bg-[url('/hero.jpg')] bg-cover bg-center">
       <div className="flex flex-col items-center justify-center h-96 w-full bg-[#212121bf]">
         <h1 className="text-5xl  text-center text-white">
           Omni<strong>Book</strong>

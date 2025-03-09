@@ -16,6 +16,7 @@ body {
   :root {
     --background: 0 0% 13%;
     --foreground: 210 40% 98%;
+    --text-hover: 0 0% 72%;
     --card: 0 0% 17%;
     --card-foreground: 210 40% 98%;
     --popover: 0 0% 13%;
@@ -51,7 +52,8 @@ body {
     -webkit-text-fill-color: #f8fafc !important;
     color: #f8fafc !important;
     caret-color: #f8fafc !important;
-    transition: background-color 9999s ease-in-out 0s,
+    transition:
+      background-color 9999s ease-in-out 0s,
       color 9999s ease-in-out 0s;
   }
 }
