@@ -10,6 +10,7 @@
     "codegen": "openapi-typescript http://localhost:8080/swagger/json --output app/lib/api-types.ts && pnpm -w lint:fix"
   },
   "dependencies": {
+    "@fontsource/montserrat": "^5.1.1",
     "@radix-ui/react-label": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.1",
     "@react-router/node": "^7.1.1",

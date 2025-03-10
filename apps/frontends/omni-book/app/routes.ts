@@ -13,4 +13,5 @@ export default [
     route("/oauth/callback", "server/routes/oauth/callback.ts"),
     route("/oauth/login", "server/routes/oauth/login.ts"),
   ]),
+  route("books/:bookId", "routes/book.tsx"),
 ] satisfies RouteConfig;
