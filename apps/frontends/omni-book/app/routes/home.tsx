@@ -1,4 +1,3 @@
-import { useLoaderData } from "react-router";
 import type { Route } from "./+types/home";
 import Trending from "~/components/trending";
 import Hero from "~/components/hero";
@@ -28,9 +27,7 @@ export const loader = async () => {
   return books.data as BooksResponseType;
 };
 
-export default function Home() {
-  const loaderData: BooksResponseType = useLoaderData();
-
+export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <div>
       <Hero />
