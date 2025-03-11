@@ -1,8 +1,9 @@
 import { Collection, Db, ObjectId } from "mongodb";
 import { Entry } from "../entities";
-import { EntryUpdatedEvent } from "../events/entry-events";
+import { EntryUpdatedEvent } from "../events/entry";
 import { DomainEventEmitter } from "~/common/events/typed-event-emitter";
 import { PaginatedSearch } from "~/common/types/paginated-search";
+import { omit } from "~/common/utilities/functional";
 
 export class EntryRepository {
   private readonly collection: Collection<Entry>;
@@ -45,7 +46,8 @@ export class EntryRepository {
     if (!existingEntry) {
       await this.collection.insertOne(entry);
       this.eventEmitter.emit("entry.created", {
-        entry,
+        type: "entry.created",
+        entry: omit(entry, ["slug"]),
       });
       return;
     }
@@ -78,7 +80,7 @@ export class EntryRepository {
         const createdMirrorIds = newMirrors.difference(existingMirrors);
         return {
           mediaId: media._id,
-          fields: media.diff(existingMedia),
+          meta: media.metaDiff(existingMedia),
           createdMirrors: media.mirrors.filter((m) =>
             createdMirrorIds.has(m._id)
           ),
@@ -110,6 +112,7 @@ export class EntryRepository {
     );
 
     this.eventEmitter.emit("entry.updated", {
+      type: "entry.updated",
       entryId: entry._id,
       fields,
       deletedMediaIds: Array.from(deletedMediaIds),
@@ -125,6 +128,7 @@ export class EntryRepository {
     }
 
     this.eventEmitter.emit("entry.deleted", {
+      type: "entry.deleted",
       entryId: id,
     });
   }

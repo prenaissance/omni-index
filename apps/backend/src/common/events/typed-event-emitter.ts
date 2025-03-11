@@ -1,10 +1,13 @@
 // eslint-disable-next-line import-x/no-named-as-default
 import EventEmitter2 from "eventemitter2";
+import { MatchesPattern } from "../types/strings";
 import { EventMap } from "./event-map";
 
 export class TypedEventEmitter<Events extends Record<string, object>> {
   constructor(
-    private readonly eventEmitter: EventEmitter2 = new EventEmitter2()
+    private readonly eventEmitter: EventEmitter2 = new EventEmitter2({
+      wildcard: true,
+    })
   ) {}
 
   emit<K extends keyof Events>(event: K, payload: Events[K]) {
@@ -13,6 +16,24 @@ export class TypedEventEmitter<Events extends Record<string, object>> {
 
   on<K extends keyof Events>(event: K, listener: (payload: Events[K]) => void) {
     return this.eventEmitter.on(event as string, listener);
+  }
+
+  onPattern<Pattern extends string>(
+    pattern: Pattern,
+    listener: (
+      payload: Events[MatchesPattern<Pattern, keyof Events & string>]
+    ) => void
+  ) {
+    return this.eventEmitter.on(pattern, listener);
+  }
+
+  offPattern<Pattern extends string>(
+    pattern: Pattern,
+    listener: (
+      payload: Events[MatchesPattern<Pattern, keyof Events & string>]
+    ) => void
+  ) {
+    return this.eventEmitter.off(pattern, listener);
   }
 
   once<K extends keyof Events>(

@@ -58,12 +58,25 @@ export const atprotoOAuthPlugin = fastifyPlugin(
 
     app.addHook("onRequest", async (request) => {
       const did = request.session.get("did");
+      try {
+        const agent = did
+          ? new Agent(await app.oauth.client.restore(did))
+          : new Agent("https://bsky.social/xrpc");
 
-      const agent = did
-        ? new Agent(await app.oauth.client.restore(did))
-        : new Agent("https://bsky.social/xrpc");
-
-      (request as { atproto: Agent }).atproto = agent;
+        (request as { atproto: Agent }).atproto = agent;
+      } catch (error) {
+        request.log.warn({
+          msg: "Failed to restore user session",
+          did,
+          error:
+            error instanceof Error
+              ? {
+                  message: error.message,
+                  stack: error.stack,
+                }
+              : error,
+        });
+      }
     });
   },
   {
