@@ -10,6 +10,7 @@ import authPlugin from "@fastify/auth";
 import fastifyRacingPlugin from "fastify-racing";
 import formbodyPlugin from "@fastify/formbody";
 import type { PinoLoggerOptions } from "fastify/types/logger";
+import { FastifySSEPlugin } from "fastify-sse-v2";
 import { commonPayloadsPlugin } from "./common/payloads/_plugin";
 import { mediaPlugin } from "./media/_plugin";
 import { eventEmitterPlugin } from "./common/events/_plugin";
@@ -73,10 +74,10 @@ export const build = async () => {
   // });
 
   app.register(formbodyPlugin);
-
   app.register(fastifyRacingPlugin, {
     handleError: true,
   });
+  app.register(FastifySSEPlugin);
 
   await app.register(fastifySwagger, swaggerConfig);
 
