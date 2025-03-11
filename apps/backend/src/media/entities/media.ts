@@ -2,7 +2,6 @@ import { BlobLink } from "./blob-link";
 import { Entity, EntityInit } from "~/common/entities/entity";
 import { CreateMediaRequest } from "~/media/payloads/media/create-media-request";
 import { Metadata } from "~/common/entities/metadata";
-import { ClassProperties } from "~/common/utilities/serialization";
 import { omit } from "~/common/utilities/functional";
 
 export type IndexInit = {
@@ -90,13 +89,11 @@ export class Media extends Entity {
     );
   }
 
-  diff(other: Media) {
-    const diff: Partial<Omit<ClassProperties<Media>, "mirrors">> = {};
-
+  metaDiff(other: Media) {
     if (JSON.stringify(this.meta) !== JSON.stringify(other.meta)) {
-      diff.meta = this.meta;
+      return this.meta;
     }
 
-    return diff;
+    return undefined;
   }
 }
