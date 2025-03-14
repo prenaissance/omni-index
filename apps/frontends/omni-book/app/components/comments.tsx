@@ -1,5 +1,4 @@
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { TextArea } from "./ui/text-area";
 
 const Comments = ({}) => {
@@ -13,7 +12,8 @@ const Comments = ({}) => {
         />
         <Button className="absolute bottom-3 right-5">Submit</Button>
       </div>
-      <div className="bg-card p-4 rounded-md">
+      <div className="w-full h-[2px] bg-card"></div>
+      <div className="py-4 pl-8 rounded-md flex justify-between">
         <h2>Comments</h2>
       </div>
     </div>
