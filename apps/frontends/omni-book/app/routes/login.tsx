@@ -5,15 +5,58 @@ import { Label } from "~/components/ui/label";
 
 const Login = () => {
   return (
-    <Form className="p-2 w-80 block" action="/api/oauth/login" method="POST">
-      <title>Login</title>
-      <Label>
-        <Input name="handle" placeholder="alice.bsky.social" />
-      </Label>
-      <Button className="mt-2 w-full" type="submit">
-        Login
-      </Button>
-    </Form>
+    <div className="flex justify-between h-[calc(100vh-80px)] overflow-auto">
+      <div className="h-full flex-1 flex flex-col justify-center items-center">
+        <div className="h-full flex-1 flex flex-col justify-center items-center">
+          <h1 className="text-[2.2rem] font-bold">Welcome Back</h1>
+          <p className="text-[0.9rem] font-light mb-9">
+            Please, enter your details
+          </p>
+          <Form
+            className="w-80 flex flex-col gap-2 mb-9"
+            action="/api/oauth/login"
+            method="POST"
+          >
+            <title>Login</title>
+            <Label>
+              <Input
+                name="handle"
+                placeholder="alice.bsky.social"
+                className="bg-card border-card p-5"
+              />
+            </Label>
+            <Button className="mt-2 w-full" type="submit">
+              Login
+            </Button>
+          </Form>
+          <div className="w-full">
+            <div className="w-full flex justify-between items-center mb-2">
+              <div className="h-[1px] bg-[#ffffff59] w-full"></div>
+              <p className="bg-background px-3 text-sm text-[#ffffff80]">or</p>
+              <div className="h-[1px] bg-[#ffffff59] w-full"></div>
+            </div>
+            <div className="flex justify-center items-center">
+              <div className="text-sm text-[#ffffff80] flex gap-1">
+                <p>Don{"'"}t have an account?</p>
+                <a
+                  href="/register"
+                  className="text-primary font-semibold hover:underline duration-300 ease-in-out hover:opacity-70"
+                >
+                  Register
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-1/2">
+        <img
+          src="login.png"
+          alt="login-image"
+          className="h-full w-full object-cover"
+        />
+      </div>
+    </div>
   );
 };
 
