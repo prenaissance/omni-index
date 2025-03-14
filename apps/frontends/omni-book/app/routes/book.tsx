@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router";
 import type { Route } from "./+types/book";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
@@ -8,9 +9,17 @@ import Recommended from "~/components/recommended";
 
 type BookResponseType =
   paths["/api/entries/{id}"]["get"]["responses"]["200"]["content"]["application/json"];
+type CommentsResponse =
+  paths["/api/entries/{entryId}/comments"]["get"]["responses"]["200"]["content"]["application/json"];
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { bookId } = params;
+  const page = Number.parseInt(
+    new URL(request.url).searchParams.get("page") || "1"
+  );
+  const limit = Number.parseInt(
+    new URL(request.url).searchParams.get("limit") || "10"
+  );
 
   if (!bookId) {
     throw new Response(JSON.stringify({ error: "No bookId provided" }), {
@@ -18,7 +27,9 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
     });
   }
 
-  const response = await fetch(`${env.VITE_API_URL}/api/entries/${bookId}`);
+  const response = await fetch(`${env.VITE_API_URL}/api/entries/${bookId}`, {
+    headers: request.headers,
+  });
 
   if (!response.ok) {
     throw new Response(JSON.stringify({ error: "Book not found" }), {
@@ -26,11 +37,26 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
     });
   }
 
-  const data: BookResponseType = await response.json();
-  return data;
+  const query = {
+    page,
+    limit,
+  } satisfies paths["/api/entries/{entryId}/comments"]["get"]["parameters"]["query"];
+  const commentsResponse = await fetch(
+    `${env.VITE_API_URL}/api/entries/${bookId}/comments?${query.toString()}`,
+    {
+      headers: request.headers,
+    }
+  );
+
+  const entry: BookResponseType = await response.json();
+  const comments: CommentsResponse = await commentsResponse.json();
+  return { entry, comments };
 };
 
 const Book = ({ loaderData }: Route.ComponentProps) => {
+  const { entry, comments } = loaderData;
+  const [search, setSearch] = useSearchParams();
+
   return (
     <>
       <div className="bg-[url('/gradient.jpg')] bg-cover bg-center h-[550px]">
@@ -38,8 +64,8 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
           <div className="h-full">
             <img
               src={
-                loaderData.thumbnail && "url" in loaderData.thumbnail
-                  ? loaderData.thumbnail.url
+                entry.thumbnail && "url" in entry.thumbnail
+                  ? entry.thumbnail.url
                   : "./placeholder.jpg"
               }
               className="py-20 h-full w-auto object-cover"
@@ -47,19 +73,19 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
             />
           </div>
           <div className="flex-1">
-            <h1 className="text-5xl font-semibold mb-2">{loaderData.title}</h1>
+            <h1 className="text-5xl font-semibold mb-2">{entry.title}</h1>
             <div className="text-lg font-medium mb-3 flex gap-2 items-center">
-              <p>{loaderData.author}</p>
-              {loaderData.year !== null && loaderData.year !== 0 && (
+              <p>{entry.author}</p>
+              {entry.year !== null && entry.year !== 0 && (
                 <>
                   <div className="w-[2px] h-6 bg-white"></div>
-                  <p>{loaderData.year}</p>
+                  <p>{entry.year}</p>
                 </>
               )}
             </div>
 
             <div className="flex flex-row space-x-2 mb-3">
-              {loaderData.genres.map((genre) => (
+              {entry.genres.map((genre) => (
                 <span
                   key={genre}
                   className="bg-card px-2 py-1 rounded-md text-[0.8rem] font-medium"
@@ -69,7 +95,7 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
               ))}
             </div>
             <p className="text-md text-white">
-              {loaderData.description || "No description available"}
+              {entry.description || "No description available"}
             </p>
           </div>
           <div className="bg-[#ffffff33] h-full w-1/4 flex flex-col items-center justify-center p-10">
@@ -77,7 +103,7 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
               Choose how to read this book
             </p>
             <div className="flex flex-col gap-3 w-full items-start">
-              {loaderData.media.map((media) => (
+              {entry.media.map((media) => (
                 <div key={media._id} className="w-full flex items-center gap-4">
                   <a
                     href={
