@@ -18,6 +18,10 @@
     "declaration": true,
     "strictNullChecks": true,
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "resolveJsonModule": true
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true
   }
 }

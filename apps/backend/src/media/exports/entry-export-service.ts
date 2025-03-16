@@ -1,9 +1,11 @@
 import { Abortable } from "node:events";
 import { Collection, Db } from "mongodb";
 import { Entry, ENTRY_COLLECTION } from "../entities";
-import { version } from "~/../package.json";
+import packageJson from "~/../package.json" with { type: "json" };
 import { indent } from "~/common/utilities/strings";
 import { omit } from "~/common/utilities/functional";
+
+const { version } = packageJson;
 
 const JSON_STREAM_HEADER = `{
   "appVersion": "${version}",

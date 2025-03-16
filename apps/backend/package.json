@@ -52,7 +52,7 @@
     "@faker-js/faker": "^9.5.0",
     "@golevelup/ts-vitest": "^0.5.2",
     "@types/node": "^22.9.0",
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.25.1",
     "mongo-migrate-ts": "^1.6.2",
     "pino-pretty": "^13.0.0",
     "testcontainers": "^10.18.0",

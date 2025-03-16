@@ -10,7 +10,6 @@ export const envSchema = z.object({
     .transform((v) => parseInt(v)),
   MONGODB_URL: z.string(),
   MONGODB_DB: z.string(),
-  API_URL: z.string(),
   FRONTEND_URL: z.string().url(),
   CALLBACK_URL: z.string().url(),
   DANGEROUS_SKIP_IDENTITY_VERIFICATION: z
