@@ -7,7 +7,7 @@ import { omit } from "~/common/utilities/functional";
 
 const { version } = packageJson;
 
-const JSON_STREAM_HEADER = `{
+const getJsonStreamHeader = () => `{
   "appVersion": "${version}",
   "exportedAt": "${new Date().toISOString()}",
   "entries": [
@@ -27,7 +27,7 @@ export class EntryExportService {
   async *exportAllEntries({ signal }: Abortable) {
     const cursor = this.entries.find({}, { sort: { _id: 1 } });
 
-    yield JSON_STREAM_HEADER;
+    yield getJsonStreamHeader();
 
     let first = true;
     for await (const entry of cursor) {
