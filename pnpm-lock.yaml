@@ -86,6 +86,9 @@ importers:
       eventemitter2:
         specifier: ^6.4.9
         version: 6.4.9
+      eventsource-parser:
+        specifier: ^3.0.0
+        version: 3.0.0
       fastify:
         specifier: ^5.1.0
         version: 5.1.0
@@ -2346,6 +2349,10 @@ packages:
   events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
+
+  eventsource-parser@3.0.0:
+    resolution: {integrity: sha512-T1C0XCUimhxVQzW4zFipdx0SficT651NnkR0ZSH3yQwh+mFMdLfgjABVi4YtMTtaL4s168593DaoaRLMqryavA==}
+    engines: {node: '>=18.0.0'}
 
   exit-hook@2.2.1:
     resolution: {integrity: sha512-eNTPlAD67BmP31LDINZ3U7HSF8l57TxOY2PmBJ1shpCvpnxBF93mWCE8YHBnXs8qiUZJc9WDcWIeC3a2HIAMfw==}
@@ -6908,6 +6915,8 @@ snapshots:
   eventemitter2@6.4.9: {}
 
   events@3.3.0: {}
+
+  eventsource-parser@3.0.0: {}
 
   exit-hook@2.2.1: {}
 
