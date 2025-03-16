@@ -52,19 +52,21 @@ export class EntryRepository {
       return;
     }
 
-    const existingMediaIds = new Set(existingEntry.media.map((m) => m._id));
-    const newMediaIds = new Set(entry.media.map((m) => m._id));
+    const existingMediaIds = new Set(
+      existingEntry.media.map((m) => m._id.toString())
+    );
+    const newMediaIds = new Set(entry.media.map((m) => m._id.toString()));
     const deletedMediaIds = existingMediaIds.difference(newMediaIds);
     const addedMediaIds = newMediaIds.difference(existingMediaIds);
     const remainingMediaIds = newMediaIds.intersection(existingMediaIds);
 
     const updatedMedia = entry.media
-      .filter((media) => remainingMediaIds.has(media._id))
+      .filter((media) => remainingMediaIds.has(media._id.toString()))
       .filter((media) => {
         const existingMedia = existingEntry.media.find((m) =>
           m._id.equals(media._id)
         );
-        return !existingMedia?.equals(media);
+        return existingMedia && !media.equals(existingMedia);
       });
 
     const mediaUpdates: EntryUpdatedEvent["mediaUpdates"] = updatedMedia.map(
@@ -115,8 +117,12 @@ export class EntryRepository {
       type: "entry.updated",
       entryId: entry._id,
       fields,
-      deletedMediaIds: Array.from(deletedMediaIds),
-      createdMedia: entry.media.filter((m) => addedMediaIds.has(m._id)),
+      deletedMediaIds: Array.from(deletedMediaIds).map(
+        ObjectId.createFromHexString
+      ),
+      createdMedia: entry.media.filter((m) =>
+        addedMediaIds.has(m._id.toString())
+      ),
       mediaUpdates,
     });
   }
