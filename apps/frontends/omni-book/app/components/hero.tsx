@@ -11,7 +11,6 @@ const Hero = ({}) => {
           The best place to find your next read
         </p>
         <div className="flex flex-row space-x-4 mt-4">
-          <Button variant={"default"}>Register</Button>
           <Button variant={"secondary"}>Learn More</Button>
         </div>
       </div>
