@@ -1,3 +1,4 @@
+import { Form, Link } from "react-router";
 import { Button } from "./ui/button";
 
 const Navbar = ({}) => {
@@ -70,7 +71,9 @@ const Navbar = ({}) => {
           </div>
         </div>
         <div>
-          <Button>Login</Button>
+          <Form method="get" action="/login">
+            <Button>Login</Button>
+          </Form>
         </div>
       </div>
     </nav>

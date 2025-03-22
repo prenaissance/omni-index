@@ -29,24 +29,6 @@ const Login = () => {
               Login
             </Button>
           </Form>
-          <div className="w-full">
-            <div className="w-full flex justify-between items-center mb-2">
-              <div className="h-[1px] bg-[#ffffff59] w-full"></div>
-              <p className="bg-background px-3 text-sm text-[#ffffff80]">or</p>
-              <div className="h-[1px] bg-[#ffffff59] w-full"></div>
-            </div>
-            <div className="flex justify-center items-center">
-              <div className="text-sm text-[#ffffff80] flex gap-1">
-                <p>Don{"'"}t have an account?</p>
-                <a
-                  href="/register"
-                  className="text-primary font-semibold hover:underline duration-300 ease-in-out hover:opacity-70"
-                >
-                  Register
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div className="w-1/2">
