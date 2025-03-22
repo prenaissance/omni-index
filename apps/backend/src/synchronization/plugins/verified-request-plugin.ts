@@ -2,6 +2,8 @@ import { request } from "node:https";
 import tls, { type PeerCertificate } from "node:tls";
 import { fastifyPlugin } from "fastify-plugin";
 import { Observable } from "rxjs";
+import { createParser } from "eventsource-parser";
+import { FingerprintMismatchError } from "../errors/fingerprint-mismatch-error";
 import { PEER_NODE_PLUGIN } from "./peer-node-plugin";
 import { ENV_PLUGIN } from "~/common/config/env-plugin";
 
@@ -23,7 +25,7 @@ export const verifiedRequestPlugin = fastifyPlugin(
         return error;
       }
       if (app.peerNodes.service.fingerprints.has(cert.fingerprint256)) {
-        return new Error("Fingerprint mismatch");
+        return new FingerprintMismatchError();
       }
     };
 
@@ -40,9 +42,26 @@ export const verifiedRequestPlugin = fastifyPlugin(
         });
 
         return new Observable<TEvent>((subscriber) => {
-          response.on("data", subscriber.next.bind(subscriber));
-          response.on("end", subscriber.complete.bind(subscriber));
-          response.on("error", subscriber.error.bind(subscriber));
+          const parser = createParser({
+            onEvent(event) {
+              subscriber.next(event as TEvent);
+            },
+            onError(error) {
+              subscriber.error(error);
+            },
+          });
+
+          response.on("error", (error) => {
+            subscriber.error(error);
+          });
+
+          response.on("data", (chunk) => {
+            parser.feed(chunk);
+          });
+
+          response.on("end", () => {
+            subscriber.complete();
+          });
         });
       },
     });

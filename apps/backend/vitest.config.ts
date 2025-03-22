@@ -11,7 +11,6 @@ export default defineConfig({
       MONGODB_DB: "test",
       // MONGODB_URL: "mongodb://localhost:27017",
       DANGEROUS_SKIP_IDENTITY_VERIFICATION: "true",
-      API_URL: "http://localhost:8080",
       FRONTEND_URL: "http://127.0.0.1:3030",
       CALLBACK_URL: "http://127.0.0.1:3030/api/oauth/callback",
       INIT_ADMIN_IDENTITY: "pnpm.io",

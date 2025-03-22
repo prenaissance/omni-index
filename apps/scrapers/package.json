@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "scrapers",
+  "type": "module",
+  "scripts": {
+    "import:gutenberg": "tsx ./scripts/import-gutenberg.ts"
+  },
+  "packageManager": "pnpm@10.6.2",
+  "devDependencies": {
+    "@types/node": "^22.13.11",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.2"
+  }
+}

@@ -1,11 +1,10 @@
 {
   "include": ["src", "scripts", "test", "migrations"],
   "compilerOptions": {
-    "types": ["vitest/globals"],
     "lib": ["ESNext"],
     "baseUrl": ".",
     "paths": {
-      "~/*": ["src/*"]
+      "~/backend/*": ["../backend/src/*"]
     },
     "outDir": "dist",
     "module": "ESNext",

@@ -1,7 +1,9 @@
 import { Static, Type } from "@sinclair/typebox";
 import { EntryExportSchema } from "./entry-export-schema";
-import { version } from "~/../package.json";
+import packageJson from "~/../package.json" with { type: "json" };
 import { DateSchema } from "~/common/payloads";
+
+const { version } = packageJson;
 
 export const EntryExportResponse = Type.Object(
   {

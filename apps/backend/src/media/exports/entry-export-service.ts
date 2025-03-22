@@ -1,11 +1,13 @@
 import { Abortable } from "node:events";
 import { Collection, Db } from "mongodb";
 import { Entry, ENTRY_COLLECTION } from "../entities";
-import { version } from "~/../package.json";
+import packageJson from "~/../package.json" with { type: "json" };
 import { indent } from "~/common/utilities/strings";
 import { omit } from "~/common/utilities/functional";
 
-const JSON_STREAM_HEADER = `{
+const { version } = packageJson;
+
+const getJsonStreamHeader = () => `{
   "appVersion": "${version}",
   "exportedAt": "${new Date().toISOString()}",
   "entries": [
@@ -25,7 +27,7 @@ export class EntryExportService {
   async *exportAllEntries({ signal }: Abortable) {
     const cursor = this.entries.find({}, { sort: { _id: 1 } });
 
-    yield JSON_STREAM_HEADER;
+    yield getJsonStreamHeader();
 
     let first = true;
     for await (const entry of cursor) {

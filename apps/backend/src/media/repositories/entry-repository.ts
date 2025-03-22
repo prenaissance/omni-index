@@ -1,8 +1,9 @@
 import { Collection, Db, ObjectId } from "mongodb";
 import { Entry } from "../entities";
-import { EntryUpdatedEvent } from "../events/entry-events";
+import { EntryUpdatedEvent } from "../events/entry";
 import { DomainEventEmitter } from "~/common/events/typed-event-emitter";
 import { PaginatedSearch } from "~/common/types/paginated-search";
+import { omit } from "~/common/utilities/functional";
 
 export class EntryRepository {
   private readonly collection: Collection<Entry>;
@@ -15,6 +16,11 @@ export class EntryRepository {
 
   async has(id: ObjectId) {
     const count = await this.collection.countDocuments({ _id: id });
+    return !!count;
+  }
+
+  async hasSlug(slug: string) {
+    const count = await this.collection.countDocuments({ slug });
     return !!count;
   }
 
@@ -45,24 +51,27 @@ export class EntryRepository {
     if (!existingEntry) {
       await this.collection.insertOne(entry);
       this.eventEmitter.emit("entry.created", {
-        entry,
+        type: "entry.created",
+        entry: omit(entry, ["slug"]),
       });
       return;
     }
 
-    const existingMediaIds = new Set(existingEntry.media.map((m) => m._id));
-    const newMediaIds = new Set(entry.media.map((m) => m._id));
+    const existingMediaIds = new Set(
+      existingEntry.media.map((m) => m._id.toString())
+    );
+    const newMediaIds = new Set(entry.media.map((m) => m._id.toString()));
     const deletedMediaIds = existingMediaIds.difference(newMediaIds);
     const addedMediaIds = newMediaIds.difference(existingMediaIds);
     const remainingMediaIds = newMediaIds.intersection(existingMediaIds);
 
     const updatedMedia = entry.media
-      .filter((media) => remainingMediaIds.has(media._id))
+      .filter((media) => remainingMediaIds.has(media._id.toString()))
       .filter((media) => {
         const existingMedia = existingEntry.media.find((m) =>
           m._id.equals(media._id)
         );
-        return !existingMedia?.equals(media);
+        return existingMedia && !media.equals(existingMedia);
       });
 
     const mediaUpdates: EntryUpdatedEvent["mediaUpdates"] = updatedMedia.map(
@@ -78,7 +87,7 @@ export class EntryRepository {
         const createdMirrorIds = newMirrors.difference(existingMirrors);
         return {
           mediaId: media._id,
-          fields: media.diff(existingMedia),
+          meta: media.metaDiff(existingMedia),
           createdMirrors: media.mirrors.filter((m) =>
             createdMirrorIds.has(m._id)
           ),
@@ -110,10 +119,15 @@ export class EntryRepository {
     );
 
     this.eventEmitter.emit("entry.updated", {
+      type: "entry.updated",
       entryId: entry._id,
       fields,
-      deletedMediaIds: Array.from(deletedMediaIds),
-      createdMedia: entry.media.filter((m) => addedMediaIds.has(m._id)),
+      deletedMediaIds: Array.from(deletedMediaIds).map(
+        ObjectId.createFromHexString
+      ),
+      createdMedia: entry.media.filter((m) =>
+        addedMediaIds.has(m._id.toString())
+      ),
       mediaUpdates,
     });
   }
@@ -125,6 +139,7 @@ export class EntryRepository {
     }
 
     this.eventEmitter.emit("entry.deleted", {
+      type: "entry.deleted",
       entryId: id,
     });
   }

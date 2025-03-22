@@ -6,7 +6,7 @@ import {
   EntryCreatedEvent,
   EntryDeletedEvent,
   EntryUpdatedEvent,
-} from "~/media/events/entry-events";
+} from "~/media/events/entry";
 
 export type EventMap = {
   "entry.created": EntryCreatedEvent;
