@@ -14,8 +14,6 @@ jobs:
           docker pull mongo:8
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
       - name: Node
         run: |
           pnpm env -g use 22
