@@ -1,0 +1,26 @@
+{
+  "include": ["src", "scripts", "test", "migrations"],
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "baseUrl": ".",
+    "paths": {
+      "~/backend/*": ["../backend/src/*"]
+    },
+    "outDir": "dist",
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "declaration": true,
+    "strictNullChecks": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "resolveJsonModule": true
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true
+  }
+}
