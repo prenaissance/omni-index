@@ -83,11 +83,18 @@ const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
         body: Type.Ref(CreateEntryRequest),
         response: {
           201: Type.Ref(EntrySchema),
+          409: Type.Ref(ExceptionSchema),
         },
       },
     },
     async (request, reply) => {
       const entry = Entry.fromDocument(request.body);
+      const isDuplicate = await app.mediaEntry.repository.hasSlug(entry.slug);
+      if (isDuplicate) {
+        return reply.status(409).send({
+          message: `Entry ${entry.slug} already exists`,
+        });
+      }
       await app.mediaEntry.repository.save(entry);
       reply.status(201).send(entry);
     }

@@ -19,6 +19,11 @@ export class EntryRepository {
     return !!count;
   }
 
+  async hasSlug(slug: string) {
+    const count = await this.collection.countDocuments({ slug });
+    return !!count;
+  }
+
   async findOne(id: ObjectId) {
     const document = await this.collection.findOne({ _id: id });
     if (!document) {

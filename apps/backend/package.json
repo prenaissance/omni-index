@@ -14,10 +14,10 @@
     "lexicon:codegen": "lex gen-server ./src/atproto $(find ./src/atproto/lexicons -name '*.json') && rm ./src/atproto/index.ts && eslint --fix ./src/atproto",
     "db:seed": "tsx --env-file=.env scripts/seeding/seed.ts",
     "migration": "tsx --env-file=.env ./migrations/config.ts",
-    "migration:up": "pnpm migration up",
-    "migration:down": "pnpm migration down",
-    "migration:new": "pnpm migration new",
-    "migration:status": "pnpm migration status"
+    "migration:up": "tsx --env-file=.env ./migrations/config.ts up",
+    "migration:down": "tsx --env-file=.env ./migrations/config.ts down",
+    "migration:new": "tsx --env-file=.env ./migrations/config.ts new",
+    "migration:status": "tsx --env-file=.env ./migrations/config.ts status"
   },
   "dependencies": {
     "@atproto/api": "^0.13.15",
