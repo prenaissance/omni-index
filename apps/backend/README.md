@@ -25,8 +25,8 @@ pnpm --filter=backend dev
 - [x] Add data seeding
 - [x] Implement admin initialization
 - [x] Implement json data export
-- [ ] Implement json data import
-- [ ] Implement peer node data import
+- [x] Implement json data import
+- [x] Implement peer node data import
 - [ ] Implement the Gossip Protocol
 - [ ] Implement Gossip Protocol message deduplication
 - [ ] Implement Gossip Protocol conflict resolution
