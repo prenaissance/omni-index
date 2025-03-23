@@ -24,7 +24,7 @@ describe("Startup", () => {
 
     it("should generate a session secret if not provided", async () => {
       app = await build();
-      const sessionSecret = app.config.SESSION_SECRET;
+      const sessionSecret = app.config.schema.SESSION_SECRET;
       expect(sessionSecret).toBeDefined();
       expect(sessionSecret).toHaveLength(64);
     });
@@ -34,7 +34,7 @@ describe("Startup", () => {
       process.env.INIT_SESSION_SECRET = secretHex;
       app = await build();
 
-      expect(app.config.SESSION_SECRET).toEqual(secretHex);
+      expect(app.config.schema.SESSION_SECRET).toEqual(secretHex);
     });
 
     it("should not pass validation if the provided secret is less than 32 hex characters long", async () => {
