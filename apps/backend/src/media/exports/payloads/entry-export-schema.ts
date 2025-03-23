@@ -43,6 +43,7 @@ export const EntryExportSchema = Type.Object(
   {
     _id: ObjectIdSchema(),
     title: Type.String(),
+    author: Type.String(),
     localizedTitle: Type.Optional(Type.String()),
     year: Type.Optional(Type.Number()),
     language: Type.Optional(Type.String()),

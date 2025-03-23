@@ -3,8 +3,8 @@ import { ImportSourceType } from "./enum/import-source-type";
 
 export const parseImportType = (importSource: string): ImportSourceType => {
   if (!importSource) return ImportSourceType.MISSING;
-  // unix & Windows file path regex
-  if (/^([a-zA-Z]:\\|\/)/.test(importSource)) {
+  // Matches Unix absolute (/), Windows absolute (C:\), and relative (./, ../) paths
+  if (/^([a-zA-Z]:\\|\/|\.\.?\/)/.test(importSource)) {
     return ImportSourceType.FILE;
   }
   try {

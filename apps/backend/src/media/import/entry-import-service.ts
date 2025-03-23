@@ -1,6 +1,8 @@
 import fs from "node:fs/promises";
 import { FastifyBaseLogger } from "fastify";
 import { EntryRepository } from "../repositories/entry-repository";
+import { Entry } from "../entities";
+import { EntryExportResponse } from "../exports/payloads";
 import { ImportSourceType } from "./enum/import-source-type";
 import { isJsonExport, parseImportType } from "./utilities";
 import { Env } from "~/common/config/env";
@@ -24,7 +26,29 @@ export class EntryImportService {
       throw new Error("The JSON file is not a valid export.");
     }
 
-    // WIP
+    const { appVersion, entries, exportedAt } = jsonImport;
+
+    this.logger.info({
+      msg: "Importing entries from a file export.",
+      appVersion,
+      exportedAt,
+    });
+    for (const document of entries) {
+      const entry = Entry.fromDocument(document);
+      if (await this.entryRepository.hasSlug(entry.slug)) {
+        this.logger.warn({
+          msg: `Imported entry from file already exists`,
+          slug: entry.slug,
+        });
+        continue;
+      }
+
+      await this.entryRepository.save(entry);
+      this.logger.info({
+        msg: "Imported entry from file",
+        slug: entry.slug,
+      });
+    }
   }
 
   private async importUrl(url: string) {
@@ -34,12 +58,35 @@ export class EntryImportService {
       throw new Error(`Failed to fetch the URL: ${url}`);
     }
 
-    const jsonImport = await response.json();
+    const jsonImport = (await response.json()) as EntryExportResponse;
     if (!isJsonExport(jsonImport)) {
       throw new Error("The JSON file is not a valid export.");
     }
 
-    // WIP
+    const { appVersion, entries, exportedAt } = jsonImport;
+
+    this.logger.info({
+      msg: "Importing entries from another node",
+      url,
+      appVersion,
+      exportedAt,
+    });
+    for (const document of entries) {
+      const entry = Entry.fromDocument(document);
+      if (await this.entryRepository.hasSlug(entry.slug)) {
+        this.logger.warn({
+          msg: `Imported entry from another node already exists`,
+          slug: entry.slug,
+        });
+        continue;
+      }
+
+      await this.entryRepository.save(entry);
+      this.logger.info({
+        msg: "Imported entry from another node",
+        slug: entry.slug,
+      });
+    }
   }
 
   async init() {
@@ -47,11 +94,18 @@ export class EntryImportService {
       ENTRY_IMPORT_INITIALIZED
     );
     if (importInitialized) {
+      this.logger.info(
+        "Entry import already initialized. Skipping import attempts."
+      );
       return;
     }
     const importSource = this.env.INIT_IMPORT_SOURCE!;
     const importType = parseImportType(importSource);
-    if (importType === ImportSourceType.UNKNOWN) {
+    if (importType == ImportSourceType.MISSING) {
+      this.logger.info(
+        "No import source specified. Skipping the import initialization. Clear the configuration collection to re-enable the import."
+      );
+    } else if (importType === ImportSourceType.UNKNOWN) {
       throw new Error(
         "Could not parse the import type as neither a file nor a URL. Check the INIT_IMPORT_SOURCE environment variable."
       );
@@ -72,7 +126,7 @@ export class EntryImportService {
         .catch(() => false);
       if (!isFile) {
         throw new Error(
-          `The path specified in INIT_IMPORT_SOURCE is not a file: ${importSource}`
+          `The path specified in INIT_IMPORT_SOURCE does not match a file: ${importSource}`
         );
       }
       await this.importFile(importSource);

@@ -36,7 +36,13 @@ const entryExportsRoutes: FastifyPluginAsyncTypebox = async (app) => {
           signal: abortController.signal,
         })
       );
-      return reply.type("application/json").send(stream as never);
+      return reply
+        .type("application/json")
+        .header(
+          "content-disposition",
+          `attachment; filename="omni-index_${new Date().toISOString()}.json"`
+        )
+        .send(stream as never);
     }
   );
 };

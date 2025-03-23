@@ -30,6 +30,7 @@ import { envPlugin } from "./common/config/env-plugin";
 import { commentsPayloadsPlugin } from "./media/comments/comment-payloads-plugin";
 import { distributedLockPlugin } from "./common/distributed-lock/distributed-lock-plugin";
 import { Env } from "./common/config/env";
+import { entryImportPlugin } from "./media/import/entry-import-plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -100,6 +101,7 @@ export const build = async () => {
   app.register(eventEmitterPlugin);
   app.register(usersPlugin);
   app.register(mediaPlugin);
+  app.register(entryImportPlugin);
   app.register(peerNodePlugin);
   app.register(verifiedRequestPlugin);
   app.register(storedEventPlugin);
