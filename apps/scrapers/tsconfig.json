@@ -1,10 +1,11 @@
 {
-  "include": ["src", "scripts", "test", "migrations"],
+  "include": ["scripts", "common"],
   "compilerOptions": {
     "lib": ["ESNext"],
     "baseUrl": ".",
     "paths": {
-      "~/backend/*": ["../backend/src/*"]
+      "~/backend/*": ["../backend/src/*"],
+      "~/common/*": ["common/*"]
     },
     "outDir": "dist",
     "module": "ESNext",
