@@ -1,5 +1,5 @@
 {
-  "include": ["scripts", "common"],
+  "include": ["scripts", "common", "../backend/src/"],
   "compilerOptions": {
     "lib": ["ESNext"],
     "baseUrl": ".",
