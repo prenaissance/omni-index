@@ -29,11 +29,12 @@ import { swaggerConfig } from "./common/config/boot/swagger-config";
 import { envPlugin } from "./common/config/env-plugin";
 import { commentsPayloadsPlugin } from "./media/comments/comment-payloads-plugin";
 import { distributedLockPlugin } from "./common/distributed-lock/distributed-lock-plugin";
+import { Env } from "./common/config/env";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
 
-const loggerEnvConfigs: Record<string, PinoLoggerOptions> = {
+const loggerEnvConfigs: Record<Env["NODE_ENV"], PinoLoggerOptions> = {
   development: {
     level: "debug",
     transport: {
@@ -65,7 +66,7 @@ const loggerEnvConfigs: Record<string, PinoLoggerOptions> = {
  */
 export const build = async () => {
   const app = Fastify({
-    logger: loggerEnvConfigs[process.env.NODE_ENV!],
+    logger: loggerEnvConfigs[process.env.NODE_ENV! as Env["NODE_ENV"]],
   }).withTypeProvider<TypeBoxTypeProvider>();
 
   // app.register(corsPlugin, {
