@@ -15,7 +15,10 @@ export type ConfigSchema = z.infer<typeof configSchema>;
 
 declare module "fastify" {
   interface FastifyInstance {
-    config: ConfigSchema;
+    readonly config: {
+      readonly storage: ConfigStorage;
+      readonly schema: ConfigSchema;
+    };
   }
 }
 
@@ -32,10 +35,10 @@ export const configPlugin = fastifyPlugin(
       await configStorage.set("SESSION_SECRET", sessionSecret);
     }
 
-    app.decorate(
-      "config",
-      configSchema.parse({ SESSION_SECRET: sessionSecret })
-    );
+    app.decorate("config", {
+      storage: configStorage,
+      schema: configSchema.parse({ SESSION_SECRET: sessionSecret }),
+    });
   },
   {
     name: CONFIG_PLUGIN,

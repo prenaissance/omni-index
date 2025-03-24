@@ -3,7 +3,8 @@
   "name": "scrapers",
   "type": "module",
   "scripts": {
-    "import:gutenberg": "tsx ./scripts/import-gutenberg.ts"
+    "import:gutenberg": "tsx ./scripts/import-gutenberg.ts",
+    "import:gutenberg:batch": "tsx ./scripts/import-gutenberg-batch.ts"
   },
   "packageManager": "pnpm@10.6.2",
   "devDependencies": {

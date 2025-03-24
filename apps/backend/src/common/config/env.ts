@@ -36,6 +36,10 @@ export const envSchema = z.object({
           "The identity must be a valid handle or a DID"
         )
     ),
+  INIT_IMPORT_SOURCE: z
+    .string()
+    .transform((v) => v?.trim() || undefined)
+    .optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

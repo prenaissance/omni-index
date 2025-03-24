@@ -14,7 +14,10 @@ export const SECURE_SESSION_SETUP_PLUGIN = "secure-session-setup";
 export const sessionSetupPlugin = fastifyPlugin(
   (app) => {
     app.register(fastifySecureSession, {
-      key: Buffer.from(app.config.SESSION_SECRET, "utf-8").subarray(0, 32),
+      key: Buffer.from(app.config.schema.SESSION_SECRET, "utf-8").subarray(
+        0,
+        32
+      ),
       expiry: 60 * 60 * 24 * 7,
       cookie: {
         path: "/",

@@ -4,13 +4,14 @@ import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import importPlugin from "eslint-plugin-import-x";
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
 
 export default tseslint.config([
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
   },
   {
-    ignores: ["**/.react-router/**/*.ts"],
+    ignores: ["**/.react-router/**/*.ts", "**/dist/"],
   },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   eslint.configs.recommended,
@@ -25,16 +26,15 @@ export default tseslint.config([
       "import-x/parsers": {
         "@typescript-eslint/parser": [".ts", ".tsx", ".mts"],
       },
-      "import-x/resolver": [
-        {
-          typescript: {
-            project: [
-              "./apps/backend/tsconfig.json",
-              "./apps/frontends/omni-book/tsconfig.json",
-              "./proof-of-concept/tsconfig.json",
-            ],
-          },
-        },
+      "import-x/resolver-next": [
+        createTypeScriptImportResolver({
+          project: [
+            "./apps/backend/tsconfig.json",
+            "./apps/frontends/omni-book/tsconfig.json",
+            "./apps/scrapers/tsconfig.json",
+            "./proof-of-concept/tsconfig.json",
+          ],
+        }),
       ],
     },
     rules: {
