@@ -3,14 +3,19 @@ import type { Route } from "../components/+types/navbar";
 import { Button } from "./ui/button";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
+import { parseCookie } from "~/server/utils";
 
 type ProfileType =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const cookieHeader = request.headers.get("cookie");
+  if (!cookieHeader) {
+    return { user: null };
+  }
 
-  if (!cookieHeader || !cookieHeader.includes("session=")) {
+  const parsedCookie = parseCookie(cookieHeader);
+  if (!parsedCookie.session) {
     return { user: null };
   }
 
