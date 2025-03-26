@@ -12,7 +12,7 @@ import formbodyPlugin from "@fastify/formbody";
 import type { PinoLoggerOptions } from "fastify/types/logger";
 import { FastifySSEPlugin } from "fastify-sse-v2";
 import { commonPayloadsPlugin } from "./common/payloads/_plugin";
-import { mediaPlugin } from "./media/_plugin";
+import { mediaPlugin } from "./media/media-entry-plugin";
 import { eventEmitterPlugin } from "./common/events/_plugin";
 import { mongodbPlugin } from "./common/mongodb/plugins/mongodb-plugin";
 import { peerNodePlugin } from "./synchronization/plugins/peer-node-plugin";

@@ -2,6 +2,12 @@ import { Agent } from "@atproto/api";
 import { AtprotoDid } from "@atproto/oauth-client-node";
 import { FastifyBaseLogger } from "fastify";
 import { TID } from "@atproto/common";
+import { filter, Observable } from "rxjs";
+import {
+  Event as AtprotoEvent,
+  Create as AtprotoCreate,
+  Delete as AtprotoDelete,
+} from "@atproto/sync";
 import { CommentRepository } from "./comment-repository";
 import { CommentLikeRemovedEvent, CommentLikedEvent } from "./events";
 import { CommentEntity } from "./entities";
@@ -19,7 +25,9 @@ export class CommentService implements Disposable {
   private readonly unsubscribe: () => void;
   constructor(
     private readonly commentRepository: CommentRepository,
-    private readonly eventEmitter: DomainEventEmitter
+    private readonly eventEmitter: DomainEventEmitter,
+    events$: Observable<AtprotoEvent>,
+    private readonly logger: FastifyBaseLogger
   ) {
     const likeHandler = this.likedHandler.bind(this);
     const removeLikeHandler = this.removeLikeHandler.bind(this);
@@ -27,10 +35,135 @@ export class CommentService implements Disposable {
     this.eventEmitter.on("comment.liked", likeHandler);
     this.eventEmitter.on("comment.like-removed", removeLikeHandler);
 
+    const commentCreatedSubscription = events$
+      .pipe(
+        filter((event) => event.event === "create"),
+        filter((event) => event.collection === "com.omni-index.comment"),
+        filter((event): event is AtprotoCreate & { record: Comment.Record } =>
+          Comment.isRecord(event.record)
+        ),
+        filter((event) => Comment.validateRecord(event.record).success)
+      )
+      .subscribe((event) => this.handleCommentCreated(event));
+
+    const commentDeletedSubscription = events$
+      .pipe(
+        filter((event) => event.event === "delete"),
+        filter((event) => event.collection === "com.omni-index.comment")
+      )
+      .subscribe((event) => this.handleCommentDeleted(event));
+
+    const commentLikedSubscription = events$
+      .pipe(
+        filter((event) => event.event === "create"),
+        filter((event) => event.collection === "com.omni-index.comment.like"),
+        filter(
+          (event): event is AtprotoCreate & { record: CommentLike.Record } =>
+            CommentLike.isRecord(event?.record)
+        ),
+        filter((event) => CommentLike.validateRecord(event.record).success)
+      )
+      .subscribe((event) => this.handleCommentLikeCreated(event));
+
+    const commentUnlikedSubscription = events$
+      .pipe(
+        filter((event) => event.event === "delete"),
+        filter((event) => event.collection === "com.omni-index.comment.like")
+      )
+      .subscribe((event) => this.handleCommentLikeDeleted(event));
+
     this.unsubscribe = () => {
       this.eventEmitter.off("comment.liked", likeHandler);
       this.eventEmitter.off("comment.like-removed", removeLikeHandler);
+      commentCreatedSubscription.unsubscribe();
+      commentDeletedSubscription.unsubscribe();
+      commentLikedSubscription.unsubscribe();
+      commentUnlikedSubscription.unsubscribe();
     };
+  }
+
+  private async handleCommentCreated(
+    event: AtprotoEvent & { event: "create"; record: Comment.Record }
+  ) {
+    const existingComment = await this.commentRepository.findOne({
+      tid: event.rkey,
+    });
+
+    if (existingComment) {
+      return;
+    }
+
+    const comment = new CommentEntity({
+      tid: event.rkey,
+      entrySlug: event.record.entrySlug,
+      text: event.record.text,
+      createdByDid: event.did as AtprotoDid,
+      createdAt: new Date(event.record.createdAt),
+      likes: 0,
+    });
+    await this.commentRepository.save(comment);
+
+    this.logger.info({
+      msg: "Comment created based on atproto event",
+      tid: comment.tid,
+    });
+  }
+
+  private async handleCommentDeleted(event: AtprotoDelete) {
+    const existingComment = await this.commentRepository.findOne({
+      tid: event.rkey,
+    });
+
+    if (!existingComment) {
+      return;
+    }
+
+    await this.commentRepository.deleteOne({
+      tid: event.rkey,
+    });
+
+    this.logger.info({
+      msg: "Comment deleted based on atproto event",
+      tid: event.rkey,
+    });
+  }
+
+  private async handleCommentLikeCreated(
+    event: AtprotoEvent & { event: "create"; record: CommentLike.Record }
+  ) {
+    const existingCommentLike = await this.commentRepository.findLike(
+      event.record.commentUri.split("/").at(-1)!,
+      event.did as AtprotoDid
+    );
+
+    if (existingCommentLike) {
+      return;
+    }
+
+    const like = new CommentLikeEntity({
+      tid: event.rkey,
+      commentTid: event.record.commentUri.split("/").at(-1)!,
+      createdByDid: event.did as AtprotoDid,
+      createdAt: new Date(event.record.createdAt),
+    });
+
+    await this.commentRepository.like(like);
+  }
+
+  private async handleCommentLikeDeleted(event: AtprotoDelete) {
+    const existingCommentLike = await this.commentRepository.findLike(
+      event.rkey,
+      event.did as AtprotoDid
+    );
+
+    if (!existingCommentLike) {
+      return;
+    }
+
+    await this.commentRepository.removeLike(
+      existingCommentLike.commentTid,
+      event.did as AtprotoDid
+    );
   }
 
   /**
@@ -69,8 +202,6 @@ export class CommentService implements Disposable {
 
     await this.commentRepository.save(comment);
   }
-
-  // async importComments() {}
 
   async deleteComment(
     tid: string,

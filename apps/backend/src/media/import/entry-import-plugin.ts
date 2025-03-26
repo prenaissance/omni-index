@@ -1,5 +1,5 @@
 import { fastifyPlugin } from "fastify-plugin";
-import { MEDIA_PLUGIN } from "../_plugin";
+import { MEDIA_PLUGIN } from "../media-entry-plugin";
 import { EntryImportService } from "./entry-import-service";
 import { CONFIG_PLUGIN } from "~/common/config/config-plugin";
 import { ENV_PLUGIN } from "~/common/config/env-plugin";

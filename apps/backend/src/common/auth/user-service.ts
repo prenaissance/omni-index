@@ -61,7 +61,9 @@ export class UserService {
     user.description = event.record.description;
 
     if (event.record.avatar) {
-      user.avatarUrl = `https://cdn.bsky.app/img/avatar/plain/did:plc:m26jjlixdnubgzhnzxour6rp/${event.record.avatar.ref.toString()}@jpeg`;
+      user.avatarUrl = `https://cdn.bsky.app/img/avatar/plain/${
+        event.did
+      }/${event.record.avatar.ref.toString()}@jpeg`;
     }
     await this.userRepository.save(user);
     this.logger.info({
