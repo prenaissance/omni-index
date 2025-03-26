@@ -1,4 +1,4 @@
-import { Form, Outlet } from "react-router";
+import { Form, Link, Outlet } from "react-router";
 import type { Route } from "../components/+types/navbar";
 import { Button } from "./ui/button";
 import type { paths } from "~/lib/api-types";
@@ -8,6 +8,10 @@ type ProfileType =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  if (!request.headers.has("cookie")) {
+    return { user: null };
+  }
+
   const res = await fetch(`${env.VITE_API_URL}/api/profile`, {
     method: "GET",
     credentials: "include",
@@ -25,7 +29,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 const Navbar = ({ loaderData }: Route.ComponentProps) => {
-  console.log(loaderData);
   return (
     <>
       <nav className="sticky top-0 bg-background">
@@ -159,9 +162,9 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
             </div>
           ) : (
             <div>
-              <Form method="get" action="/login">
+              <Link to={"/login"}>
                 <Button>Login</Button>
-              </Form>
+              </Link>
             </div>
           )}
         </div>
