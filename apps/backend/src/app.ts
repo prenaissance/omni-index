@@ -31,6 +31,7 @@ import { commentsPayloadsPlugin } from "./media/comments/comment-payloads-plugin
 import { distributedLockPlugin } from "./common/distributed-lock/distributed-lock-plugin";
 import { Env } from "./common/config/env";
 import { entryImportPlugin } from "./media/import/entry-import-plugin";
+import { atprotoRelayPlugin } from "./synchronization/plugins/atproto-relay-plugin";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -95,6 +96,7 @@ export const build = async () => {
   app.register(authPlugin);
   app.register(atprotoOAuthPlugin);
   app.register(authenticationStrategiesPlugin);
+  app.register(atprotoRelayPlugin);
 
   app.register(commonPayloadsPlugin);
   app.register(commentsPayloadsPlugin);

@@ -21,7 +21,9 @@ export const usersPlugin = fastifyPlugin(
     const service = new UserService(
       repository,
       app.oauth.sessionStore,
-      app.env
+      app.relay.stream$,
+      app.env,
+      app.log
     );
     app.decorate("users", {
       repository,

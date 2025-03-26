@@ -48,4 +48,8 @@ export class UserRepository {
 
     return new User(user);
   }
+
+  async hasDid(did: AtprotoDid) {
+    return !!(await this.usersCollection.findOne({ did }));
+  }
 }
