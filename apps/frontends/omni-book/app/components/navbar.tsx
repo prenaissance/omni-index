@@ -1,4 +1,4 @@
-import { Form, Link, Outlet } from "react-router";
+import { Link, Outlet } from "react-router";
 import type { Route } from "../components/+types/navbar";
 import { Button } from "./ui/button";
 import type { paths } from "~/lib/api-types";
@@ -8,7 +8,9 @@ type ProfileType =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  if (!request.headers.has("cookie")) {
+  const cookieHeader = request.headers.get("cookie");
+
+  if (!cookieHeader || !cookieHeader.includes("session=")) {
     return { user: null };
   }
 
@@ -16,7 +18,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     method: "GET",
     credentials: "include",
     headers: {
-      cookie: request.headers.get("cookie") ?? "",
+      cookie: cookieHeader,
     },
   });
 
