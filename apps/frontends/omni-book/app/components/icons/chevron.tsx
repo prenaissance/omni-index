@@ -1,15 +1,15 @@
-type ChevronProps = {
+type ChevronIconProps = {
   direction: "up" | "down";
   size?: number;
 };
 
-const Chevron = ({ direction, size }: ChevronProps) => {
+const ChevronIcon = ({ direction, size }: ChevronIconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
-      className={`w-${size} h-${size} transform ${direction === "up" ? "rotate-180" : ""}`}
+      className={`w-${size ?? 6} h-${size ?? 6} transform ${direction === "up" ? "rotate-180" : ""}`}
     >
       <path
         fillRule="evenodd"
@@ -20,4 +20,4 @@ const Chevron = ({ direction, size }: ChevronProps) => {
   );
 };
 
-export default Chevron;
+export default ChevronIcon;

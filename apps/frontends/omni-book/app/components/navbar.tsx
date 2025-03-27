@@ -1,6 +1,9 @@
 import { Link, Outlet } from "react-router";
+import { LogOutIcon } from "lucide-react";
 import type { Route } from "../components/+types/navbar";
 import { Button } from "./ui/button";
+import MenuIcon from "./icons/menu";
+import SearchIcon from "./icons/search";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
 import { parseCookie } from "~/server/utils";
@@ -42,17 +45,7 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
         <div className="py-5 px-10 flex flex-row items-center justify-between">
           <div className="flex flex-row space-x-14">
             <Button variant={"icon"} size={"icon"}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <MenuIcon />
             </Button>
             <a className="flex flex-row space-x-2 items-center h-fit" href="/">
               <img
@@ -88,18 +81,7 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
                     size={"icon"}
                     className="absolute top-0 right-1"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-6"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <SearchIcon />
                   </Button>
                 </div>
               </form>
@@ -149,18 +131,7 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
                         className="px-4 py-2 hover:bg-popover flex items-center gap-2"
                       >
                         Logout
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="size-5 transform scale-x-[-1]"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6ZM5.78 8.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 0 0 0 1.06l3 3a.75.75 0 0 0 1.06-1.06l-1.72-1.72H15a.75.75 0 0 0 0-1.5H4.06l1.72-1.72a.75.75 0 0 0 0-1.06Z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
+                        <LogOutIcon size={15} />
                       </a>
                     </li>
                   </ul>

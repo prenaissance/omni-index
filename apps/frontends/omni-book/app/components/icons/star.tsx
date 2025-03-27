@@ -1,10 +1,14 @@
-const Star = () => {
+type StarIconProps = {
+  size?: number;
+};
+
+const StarIcon = ({ size }: StarIconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="#ffc348"
-      className="size-6 mr-1"
+      className={`w-${size ?? 6} h-${size ?? 6} mr-1`}
     >
       <path
         fillRule="evenodd"
@@ -15,4 +19,4 @@ const Star = () => {
   );
 };
 
-export default Star;
+export default StarIcon;

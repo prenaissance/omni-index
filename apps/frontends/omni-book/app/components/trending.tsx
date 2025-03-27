@@ -1,4 +1,4 @@
-import Star from "./icons/star";
+import StarIcon from "./icons/star";
 import type { paths } from "~/lib/api-types";
 
 type BooksResponseType =
@@ -44,7 +44,7 @@ const Trending = ({ loaderData }: TrendingProps) => {
                 {book.title}
               </a>
               <div className="flex items-center text-sm">
-                <Star />
+                <StarIcon />
                 <p className="pt-1 mr-2">4.5</p>
                 <div className="w-[1px] h-4 bg-white mr-2"></div>
                 <a
@@ -52,7 +52,7 @@ const Trending = ({ loaderData }: TrendingProps) => {
                   href={"#"}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-md pt-1 hover:text-textHover transition duration-300"
+                  className="text-md pt-1 hover:text-textHover transition duration-300 text-ellipsis overflow-hidden text-nowrap"
                 >
                   {book.author}
                 </a>

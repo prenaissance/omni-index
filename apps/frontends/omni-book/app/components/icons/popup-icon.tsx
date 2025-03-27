@@ -1,10 +1,14 @@
-const PopupIcon = () => {
+type PopupIconProps = {
+  size?: number;
+};
+
+const PopupIcon = ({ size }: PopupIconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="white"
-      className="size-6"
+      className={`w-${size ?? 6} h-${size ?? 6}`}
     >
       <path
         fillRule="evenodd"
