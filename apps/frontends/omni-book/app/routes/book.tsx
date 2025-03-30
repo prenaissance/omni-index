@@ -16,7 +16,7 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
     });
   }
 
-  const response = await fetch(`${env.VITE_API_URL}/api/entries/${bookId}`);
+  const response = await fetch(`${env.API_URL}/api/entries/${bookId}`);
 
   if (!response.ok) {
     throw new Response(JSON.stringify({ error: "Book not found" }), {
