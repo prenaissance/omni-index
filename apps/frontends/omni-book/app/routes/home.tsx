@@ -15,7 +15,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export const loader = async () => {
-  const response = await fetch(`${env.VITE_API_URL}/api/entries`);
+  const response = await fetch(`${env.API_URL}/api/entries`);
 
   if (!response.ok) {
     throw new Response(JSON.stringify({ error: "Books not found" }), {
