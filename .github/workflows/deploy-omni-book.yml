@@ -1,4 +1,4 @@
-name: Build and publish the Omni-Index Docker image
+name: Build and publish the Omni-Book Docker image
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
         type: string
 
 env:
-  IMAGE_NAME: prenaissance/omni-index
+  IMAGE_NAME: prenaissance/omni-book
   TARGET_PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
