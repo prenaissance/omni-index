@@ -59,20 +59,20 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
 
   return (
     <>
-      <div className="bg-[url('/gradient.jpg')] bg-cover bg-center h-[550px]">
-        <div className="px-40 flex items-center justify-between h-full gap-10">
-          <div className="h-full">
+      <div className="bg-[url('/gradient.jpg')] bg-cover bg-center h-full">
+        <div className="px-40 flex items-center gap-10">
+          <div className="h-full w-1/6">
             <img
               src={
                 entry.thumbnail && "url" in entry.thumbnail
                   ? entry.thumbnail.url
                   : "./placeholder.jpg"
               }
-              className="py-20 h-full w-auto object-cover"
+              className="py-20 h-full w-full object-cover"
               alt="thumbnail"
             />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 py-16">
             <h1 className="text-5xl font-semibold mb-2">{entry.title}</h1>
             <div className="text-lg font-medium mb-3 flex gap-2 items-center">
               <p>{entry.author}</p>
@@ -94,9 +94,9 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                 </span>
               ))}
             </div>
-            <p className="text-md text-white">
+            <div className="text-md text-white flex flex-col">
               {entry.description ? (
-                <div className="relative">
+                <div>
                   <input
                     type="checkbox"
                     id="read-more-toggle"
@@ -108,14 +108,14 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                   <label
                     tabIndex={0}
                     htmlFor="read-more-toggle"
-                    className="cursor-pointer inline-block peer-checked:hidden"
+                    className="mt-3 cursor-pointer peer-checked:hidden inline-flex items-center justify-center gap-2 whitespace-nowrap text-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover"
                   >
                     Read More
                   </label>
                   <label
                     tabIndex={0}
                     htmlFor="read-more-toggle"
-                    className="cursor-pointer hidden peer-checked:inline-block"
+                    className="mt-3 cursor-pointer hidden peer-checked:inline-block items-center justify-center gap-2 whitespace-nowrap text-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover"
                   >
                     Read Less
                   </label>
@@ -123,9 +123,9 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
               ) : (
                 <>No description available</>
               )}
-            </p>
+            </div>
           </div>
-          <div className="bg-[#ffffff33] min-w-fit h-full w-[28%] flex flex-col items-center justify-center p-10">
+          <div className="bg-[#ffffff33] min-w-fit w-[28%] flex flex-col items-center justify-center p-10 self-stretch">
             <p className="text-xl font-medium mb-6">
               Choose how to read this book
             </p>
