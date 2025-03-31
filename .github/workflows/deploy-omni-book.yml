@@ -1,3 +1,5 @@
+name: Deploy Omni-Book
+
 on:
   push:
     tags:

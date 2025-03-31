@@ -18,5 +18,5 @@ RUN pnpm deploy --filter=omni-book --prod ./prod/omni-book
 
 FROM base
 WORKDIR /app
-COPY --from=build-env /app/prod/omni-book ./
+COPY --from=build /app/prod/omni-book ./
 CMD ["pnpm", "start"]
