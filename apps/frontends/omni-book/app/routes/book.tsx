@@ -3,7 +3,6 @@ import type { Route } from "./+types/book";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
 import Popup from "~/components/ui/popup";
-import { FORMAT_INFO } from "~/lib/formats";
 import CommentsSection from "~/components/comments";
 import Recommended from "~/components/recommended";
 import { extractFormat } from "~/lib/utils";
@@ -96,16 +95,46 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
               ))}
             </div>
             <p className="text-md text-white">
-              {entry.description || "No description available"}
+              {entry.description ? (
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    id="read-more-toggle"
+                    className="peer hidden"
+                  />
+                  <p className="peer-checked:line-clamp-none line-clamp-5 transition-all duration-300">
+                    {entry.description}
+                  </p>
+                  <label
+                    tabIndex={0}
+                    htmlFor="read-more-toggle"
+                    className="cursor-pointer inline-block peer-checked:hidden"
+                  >
+                    Read More
+                  </label>
+                  <label
+                    tabIndex={0}
+                    htmlFor="read-more-toggle"
+                    className="cursor-pointer hidden peer-checked:inline-block"
+                  >
+                    Read Less
+                  </label>
+                </div>
+              ) : (
+                <>No description available</>
+              )}
             </p>
           </div>
-          <div className="bg-[#ffffff33] h-full w-[27%] flex flex-col items-center justify-center p-10">
+          <div className="bg-[#ffffff33] min-w-fit h-full w-[28%] flex flex-col items-center justify-center p-10">
             <p className="text-xl font-medium mb-6">
               Choose how to read this book
             </p>
             <div className="flex flex-col gap-3 w-full items-start">
               {entry.media.map((media) => (
-                <div key={media._id} className="w-full flex items-center gap-4">
+                <div
+                  key={media._id}
+                  className="w-full flex items-center gap-5 justify-between"
+                >
                   <a
                     href={
                       "url" in media.mirrors[0].blob
@@ -114,27 +143,27 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                     }
                     target="_blank"
                     rel="noreferrer"
-                    className="w-3/6 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-10 px-8 py-4"
+                    className="min-w-fit px-4 flex-1 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-10 py-4"
                   >
                     {media.meta.format ??
-                      extractFormat(media.mirrors[0].mimeType || "")}
+                      extractFormat(media.mirrors[0].mimeType || "").name}
                   </a>
-                  <p>
-                    <strong>
-                      {media.mirrors[0].size
-                        ? (media.mirrors[0].size / 1000000).toPrecision(3)
-                        : "0"}
-                    </strong>{" "}
-                    MB{" "}
-                  </p>
-                  <Popup
-                    content={
-                      FORMAT_INFO[
-                        media.meta.format ??
-                          extractFormat(media.mirrors[0].mimeType || "")
-                      ]
-                    }
-                  />
+                  <div className="flex gap-3 min-w-[110px] justify-between">
+                    <p className="">
+                      <strong>
+                        {media.mirrors[0].size
+                          ? (media.mirrors[0].size / 1000000).toPrecision(2)
+                          : "0"}
+                      </strong>{" "}
+                      MB{" "}
+                    </p>
+                    <Popup
+                      content={
+                        extractFormat(media.mirrors[0].mimeType || "")
+                          .description
+                      }
+                    />
+                  </div>
                 </div>
               ))}
             </div>
