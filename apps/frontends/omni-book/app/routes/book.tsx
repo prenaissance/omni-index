@@ -6,6 +6,7 @@ import Popup from "~/components/ui/popup";
 import { FORMAT_INFO } from "~/lib/formats";
 import CommentsSection from "~/components/comments";
 import Recommended from "~/components/recommended";
+import { extractFormat } from "~/lib/utils";
 
 type BookResponseType =
   paths["/api/entries/{id}"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -98,7 +99,7 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
               {entry.description || "No description available"}
             </p>
           </div>
-          <div className="bg-[#ffffff33] h-full w-1/4 flex flex-col items-center justify-center p-10">
+          <div className="bg-[#ffffff33] h-full w-[27%] flex flex-col items-center justify-center p-10">
             <p className="text-xl font-medium mb-6">
               Choose how to read this book
             </p>
@@ -115,7 +116,8 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                     rel="noreferrer"
                     className="w-3/6 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-10 px-8 py-4"
                   >
-                    {media.meta.format}
+                    {media.meta.format ??
+                      extractFormat(media.mirrors[0].mimeType || "")}
                   </a>
                   <p>
                     <strong>
@@ -125,9 +127,14 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                     </strong>{" "}
                     MB{" "}
                   </p>
-                  {media.meta.format && media.meta.format in FORMAT_INFO && (
-                    <Popup content={FORMAT_INFO[media.meta.format]} />
-                  )}
+                  <Popup
+                    content={
+                      FORMAT_INFO[
+                        media.meta.format ??
+                          extractFormat(media.mirrors[0].mimeType || "")
+                      ]
+                    }
+                  />
                 </div>
               ))}
             </div>

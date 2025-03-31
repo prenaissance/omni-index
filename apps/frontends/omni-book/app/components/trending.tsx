@@ -9,13 +9,15 @@ type TrendingProps = {
 };
 
 const Trending = ({ loaderData }: TrendingProps) => {
+  const trendingBooks = loaderData.slice(0, 7);
+
   return (
     <div className="flex flex-col px-14 items-start py-14">
       <h1 className="text-2xl text-center text-white font-semibold mb-3">
         Trending
       </h1>
-      <div className="flex flex-row space-x-12 ">
-        {loaderData.map((book) => (
+      <div className="flex flex-row w-full justify-between">
+        {trendingBooks.map((book) => (
           <div key={book._id} className="flex flex-col space-y-4 w-48">
             <a
               href={`/books/${book._id}`}
