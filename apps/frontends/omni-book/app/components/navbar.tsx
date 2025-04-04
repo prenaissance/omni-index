@@ -7,6 +7,7 @@ import SearchIcon from "./icons/search";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
 import { parseCookie } from "~/server/utils";
+import { AuthContext } from "~/context/auth-context";
 
 type ProfileType =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -40,7 +41,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 const Navbar = ({ loaderData }: Route.ComponentProps) => {
   return (
-    <>
+    <AuthContext.Provider value={{ user: loaderData.user }}>
       <nav className="sticky top-0 bg-background">
         <div className="py-5 px-10 flex flex-row items-center justify-between">
           <div className="flex flex-row space-x-14">
@@ -151,7 +152,7 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
         </div>
       </nav>
       <Outlet />
-    </>
+    </AuthContext.Provider>
   );
 };
 
