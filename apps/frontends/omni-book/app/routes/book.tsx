@@ -27,7 +27,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     });
   }
 
-  const response = await fetch(`${env.VITE_API_URL}/api/entries/${bookId}`, {
+  const response = await fetch(`${env.API_URL}/api/entries/${bookId}`, {
     headers: request.headers,
   });
 

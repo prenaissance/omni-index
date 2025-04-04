@@ -2,10 +2,14 @@
   "name": "omni-book",
   "private": true,
   "type": "module",
+  "files": [
+    "public",
+    "build"
+  ],
   "scripts": {
     "build": "cross-env NODE_ENV=production react-router build",
     "dev": "react-router dev",
-    "start": "cross-env NODE_ENV=production react-router-serve ./build/server/index.js",
+    "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "codegen": "openapi-typescript http://localhost:8080/swagger/json --output app/lib/api-types.ts && pnpm -w lint:fix"
   },

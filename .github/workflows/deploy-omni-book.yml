@@ -1,0 +1,67 @@
+name: Deploy Omni-Book
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to use for the Docker image. E.g., v0.1.0-alpha"
+        required: true
+        type: string
+
+env:
+  IMAGE_NAME: prenaissance/omni-book
+  TARGET_PLATFORMS: linux/amd64,linux/arm64
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get the version
+        id: get_version
+        run: |
+          FULL_VERSION=${{ github.event.inputs.tag }}
+          if [ -z "$FULL_VERSION" ]; then
+            FULL_VERSION=${{ github.ref_name }}
+          fi
+          echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_OUTPUT
+      - name: Get version fragments
+        id: get_version_fragments
+        run: |
+          echo "MAJOR_VERSION=$(echo ${{ steps.get_version.outputs.FULL_VERSION }} | cut -d. -f1 | sed 's/v//')" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo ${{ steps.get_version.outputs.FULL_VERSION }} | sed 's/v//')" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to container registry
+        run: docker login -u prenaissance -p ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Setup docker tags
+        id: docker_tags
+        run: |
+          TAGS=(
+            "${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.VERSION }}"
+          )
+          if [ "${{ github.event_name }}" == "push" ]; then
+            TAGS+=(
+              "${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.MAJOR_VERSION }}"
+              "${{ env.IMAGE_NAME }}:latest"
+            )
+          fi
+          echo "TAGS=$(IFS=,; echo ${TAGS[*]})" >> $GITHUB_OUTPUT
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./apps/frontends/omni-book/Dockerfile
+          push: true
+          platforms: ${{ env.TARGET_PLATFORMS }}
+          tags: ${{ steps.docker_tags.outputs.TAGS }}

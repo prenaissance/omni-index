@@ -22,7 +22,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     return { user: null };
   }
 
-  const res = await fetch(`${env.VITE_API_URL}/api/profile`, {
+  const res = await fetch(`${env.API_URL}/api/profile`, {
     method: "GET",
     credentials: "include",
     headers: {

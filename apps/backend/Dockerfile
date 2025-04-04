@@ -17,5 +17,4 @@ RUN pnpm deploy --filter=backend --prod ./prod/backend
 
 FROM base AS runner
 COPY --from=build /app/prod/backend ./
-COPY --from=build /app/node_modules ./node_modules
 CMD ["node", "dist/main"]
