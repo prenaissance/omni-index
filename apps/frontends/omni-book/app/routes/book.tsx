@@ -6,6 +6,7 @@ import Popup from "~/components/ui/popup";
 import CommentsSection from "~/components/comments";
 import Recommended from "~/components/recommended";
 import { extractFormat } from "~/lib/utils";
+import PopupIcon from "~/components/icons/popup-icon";
 
 type BookResponseType =
   paths["/api/entries/{id}"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -42,7 +43,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     limit,
   } satisfies paths["/api/entries/{entryId}/comments"]["get"]["parameters"]["query"];
   const commentsResponse = await fetch(
-    `${env.VITE_API_URL}/api/entries/${bookId}/comments?${query.toString()}`,
+    `${env.API_URL}/api/entries/${bookId}/comments?${query.toString()}`,
     {
       headers: request.headers,
     }
@@ -162,7 +163,11 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                         extractFormat(media.mirrors[0].mimeType || "")
                           .description
                       }
-                    />
+                    >
+                      <button className="p-0">
+                        <PopupIcon />
+                      </button>
+                    </Popup>
                   </div>
                 </div>
               ))}
@@ -171,7 +176,7 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
         </div>
       </div>
       <div className="px-10 py-8 flex gap-8 w-full">
-        <CommentsSection />
+        <CommentsSection comments={comments} />
         <Recommended />
       </div>
     </>
