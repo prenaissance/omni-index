@@ -176,7 +176,7 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
         </div>
       </div>
       <div className="px-10 py-8 flex gap-8 w-full">
-        <CommentsSection comments={comments} />
+        <CommentsSection comments={comments} bookId={entry._id} />
         <Recommended />
       </div>
     </>

@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router";
+import { Link, NavLink, Outlet } from "react-router";
 import { LogOutIcon } from "lucide-react";
 import type { Route } from "../components/+types/navbar";
 import { Button } from "./ui/button";
@@ -48,7 +48,10 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
             <Button variant={"icon"} size={"icon"}>
               <MenuIcon />
             </Button>
-            <a className="flex flex-row space-x-2 items-center h-fit" href="/">
+            <NavLink
+              className="flex flex-row space-x-2 items-center h-fit"
+              to="/"
+            >
               <img
                 src={"/ui-logo.svg"}
                 alt="ui-logo"
@@ -61,7 +64,7 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
                   <strong>Book</strong>
                 </h1>
               </div>
-            </a>
+            </NavLink>
             <div className="h-10">
               <form className="h-full">
                 <label

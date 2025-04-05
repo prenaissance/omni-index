@@ -14,6 +14,7 @@ export default [
     ...prefix("/api", [
       route("/oauth/callback", "server/routes/oauth/callback.ts"),
       route("/oauth/login", "server/routes/oauth/login.ts"),
+      route("/entries/:bookId/comments", "server/routes/comments.ts"),
     ]),
     route("books/:bookId", "routes/book.tsx"),
   ]),

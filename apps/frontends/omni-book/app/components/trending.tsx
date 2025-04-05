@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import StarIcon from "./icons/star";
 import type { paths } from "~/lib/api-types";
 
@@ -19,11 +20,9 @@ const Trending = ({ loaderData }: TrendingProps) => {
       <div className="flex flex-row w-full justify-between">
         {trendingBooks.map((book) => (
           <div key={book._id} className="flex flex-col space-y-4 w-48">
-            <a
-              href={`/books/${book._id}`}
+            <Link
+              to={`/books/${book._id}`}
               className="h-64 relative bock group"
-              target="_blank"
-              rel="noreferrer"
             >
               <img
                 src={
@@ -35,16 +34,14 @@ const Trending = ({ loaderData }: TrendingProps) => {
                 alt="thumbnail"
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300"></div>
-            </a>
+            </Link>
             <div className="flex flex-col">
-              <a
-                href={`/books/${book._id}`}
-                target="_blank"
-                rel="noreferrer"
+              <Link
+                to={`/books/${book._id}`}
                 className="text-lg font-semibold text-ellipsis overflow-hidden text-nowrap hover:text-textHover transition duration-300"
               >
                 {book.title}
-              </a>
+              </Link>
               <div className="flex items-center text-sm">
                 <StarIcon />
                 <p className="pt-1 mr-2">4.5</p>

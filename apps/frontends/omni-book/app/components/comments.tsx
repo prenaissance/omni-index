@@ -1,4 +1,5 @@
-import { Link } from "react-router";
+import { Form, Link, useSearchParams } from "react-router";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { TextArea } from "./ui/text-area";
 import { useAuth } from "~/context/auth-context";
@@ -9,23 +10,49 @@ type CommentsResponse =
 
 type CommentsProps = {
   comments: CommentsResponse;
+  bookId: string;
 };
 
-const Comments = ({ comments }: CommentsProps) => {
+const Comments = ({ comments, bookId }: CommentsProps) => {
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const [comment, setComment] = useState<string>("");
+  const [pageLoaded, setPageLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    setPageLoaded(true);
+  }, []);
+
+  const isButtonDisabled = comment.trim().length === 0 && pageLoaded;
   return (
     <div className="w-2/3 flex flex-col gap-5">
       <div className="w-full rounded-lg bg-card overflow-hidden group relative">
         <div className="relative pb-14">
-          <TextArea
-            className="w-full h-full resize-none px-10 py-8 text-sm"
-            rows={2}
-            placeholder="Add comment..."
-            disabled={!user}
-          />
-          <Button className="absolute bottom-3 right-5" disabled={!user}>
-            Submit
-          </Button>
+          <Form
+            className="w-80 flex flex-col gap-2 mb-9"
+            action={`/api/entries/${bookId}/comments`}
+            method="POST"
+            key={comments.length}
+          >
+            <TextArea
+              className="w-full h-full resize-none px-10 py-8 text-sm"
+              rows={2}
+              placeholder="Add comment..."
+              disabled={!user}
+              name="text"
+              onChange={(e) => {
+                setComment(e.target.value);
+              }}
+              value={comment}
+            />
+            <Button
+              type="submit"
+              className="absolute bottom-3 right-5"
+              disabled={!user || isButtonDisabled}
+            >
+              Submit
+            </Button>
+          </Form>
         </div>
         {!user && (
           <div className="absolute inset-0 bg-gradient-to-r from-stone-700/70 to-stone-800/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -45,6 +72,9 @@ const Comments = ({ comments }: CommentsProps) => {
           </div>
         )}
       </div>
+      {searchParams.get("error") === "empty" && (
+        <p className="text-red-500 text-sm">Comment cannot be empty</p>
+      )}
       <div className="w-full h-[2px] bg-card"></div>
       <div className="py-4 pl-8 rounded-md flex justify-between">
         <h2>Comments</h2>
