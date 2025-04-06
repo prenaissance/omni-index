@@ -1,8 +1,9 @@
-import { Form, Link, useSearchParams } from "react-router";
+import { Form, Link, useSearchParams, useNavigation } from "react-router";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { TextArea } from "./ui/text-area";
 import LikeButton from "./ui/like";
+import Spinner from "./icons/spinner";
 import { useAuth } from "~/context/auth-context";
 import type { paths } from "~/lib/api-types";
 
@@ -19,6 +20,8 @@ const Comments = ({ comments, bookId }: CommentsProps) => {
   const { user } = useAuth();
   const [comment, setComment] = useState<string>("");
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
 
   useEffect(() => {
     setPageLoaded(true);
@@ -56,10 +59,10 @@ const Comments = ({ comments, bookId }: CommentsProps) => {
             />
             <Button
               type="submit"
-              className="absolute bottom-3 right-5"
-              disabled={!user || isButtonDisabled}
+              className="absolute bottom-3 right-5 w-32"
+              disabled={!user || isButtonDisabled || isSubmitting}
             >
-              Submit
+              {isSubmitting ? <Spinner /> : "Submit"}
             </Button>
           </Form>
         </div>
