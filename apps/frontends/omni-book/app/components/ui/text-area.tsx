@@ -1,4 +1,4 @@
-import { type Ref, type TextareaHTMLAttributes } from "react";
+import { type TextareaHTMLAttributes } from "react";
 
 import { cn } from "~/lib/utils";
 

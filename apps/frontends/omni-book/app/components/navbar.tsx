@@ -42,7 +42,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 const Navbar = ({ loaderData }: Route.ComponentProps) => {
   return (
     <AuthContext.Provider value={{ user: loaderData.user }}>
-      <nav className="sticky top-0 bg-background">
+      <nav className="sticky top-0 bg-background z-50">
         <div className="py-5 px-10 flex flex-row items-center justify-between">
           <div className="flex flex-row space-x-14">
             <Button variant={"icon"} size={"icon"}>

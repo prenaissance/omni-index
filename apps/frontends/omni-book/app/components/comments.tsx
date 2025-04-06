@@ -2,6 +2,7 @@ import { Form, Link, useSearchParams } from "react-router";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { TextArea } from "./ui/text-area";
+import LikeButton from "./ui/like";
 import { useAuth } from "~/context/auth-context";
 import type { paths } from "~/lib/api-types";
 
@@ -21,21 +22,29 @@ const Comments = ({ comments, bookId }: CommentsProps) => {
 
   useEffect(() => {
     setPageLoaded(true);
+    setComment("");
   }, []);
 
   const isButtonDisabled = comment.trim().length === 0 && pageLoaded;
   return (
     <div className="w-2/3 flex flex-col gap-5">
       <div className="w-full rounded-lg bg-card overflow-hidden group relative">
-        <div className="relative pb-14">
+        <div className="pb-14">
           <Form
-            className="w-80 flex flex-col gap-2 mb-9"
+            className="w-full h-full flex flex-col gap-2 mb-2"
             action={`/api/entries/${bookId}/comments`}
             method="POST"
             key={comments.length}
+            onSubmit={() => {
+              setComment("");
+            }}
           >
             <TextArea
-              className="w-full h-full resize-none px-10 py-8 text-sm"
+              onInput={(e) => {
+                e.currentTarget.style.height = "auto";
+                e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+              }}
+              className="resize-none w-full px-10 pt-8 text-sm"
               rows={2}
               placeholder="Add comment..."
               disabled={!user}
@@ -86,6 +95,35 @@ const Comments = ({ comments, bookId }: CommentsProps) => {
           <p className="text-sm text-muted-foreground">No comments yet</p>
         )}
       </div>
+      {comments.map((comment) => (
+        <div
+          key={comment.tid}
+          className="w-full rounded-lg bg-card overflow-hidden group flex flex-col justify-between p-4"
+        >
+          <div className="flex gap-3 items-center mb-2">
+            <img
+              src={
+                comment.createdBy.avatarThumbnail ?? "/avatar-placeholder.png"
+              }
+              alt="avatar"
+              className="w-8 h-8 rounded-full"
+            />
+            <h2 className="text-sm font-semibold text-foreground">
+              {comment.createdBy.displayName ?? "Anonymous"}
+            </h2>
+          </div>
+          <p className="text-sm text-muted-foreground">{comment.text}</p>
+          <div className="self-end flex gap-3">
+            <div className="flex gap-1 items-center">
+              <LikeButton
+                initiallyLiked={comment.liked}
+                likes={comment.likes}
+              />
+              <span className="text-sm text-muted-foreground"></span>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
