@@ -2,7 +2,6 @@ import {
   FastifyPluginAsyncTypebox,
   Type,
 } from "@fastify/type-provider-typebox";
-import { ObjectId } from "mongodb";
 import { ExceptionSchema } from "~/common/payloads/exception-schema";
 import { PaginationQuery } from "~/common/payloads/pagination/pagination-query";
 import { PaginatedResponse } from "~/common/payloads/pagination/pagination-response";
@@ -40,38 +39,6 @@ const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
           limit,
         },
       };
-    }
-  );
-
-  app.get(
-    "/:id",
-    {
-      schema: {
-        tags: ["Entries"],
-        security: [],
-        params: Type.Object({
-          id: Type.String({
-            description: "ObjectId of the media entry",
-          }),
-        }),
-        response: {
-          200: Type.Ref(EntrySchema),
-          404: Type.Ref(ExceptionSchema),
-        },
-      },
-    },
-    async (request, reply) => {
-      const { id } = request.params;
-      const media = await app.mediaEntry.repository.findOne(new ObjectId(id));
-
-      if (!media) {
-        reply.status(404);
-        return {
-          message: "Media entry not found",
-        };
-      }
-
-      reply.send(media);
     }
   );
 

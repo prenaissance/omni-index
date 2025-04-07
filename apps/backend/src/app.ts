@@ -16,7 +16,6 @@ import { mediaPlugin } from "./media/media-entry-plugin";
 import { eventEmitterPlugin } from "./common/events/_plugin";
 import { mongodbPlugin } from "./common/mongodb/plugins/mongodb-plugin";
 import { peerNodePlugin } from "./synchronization/plugins/peer-node-plugin";
-import { verifiedRequestPlugin } from "./synchronization/plugins/verified-request-plugin";
 import { storedEventPlugin } from "./stored-events/stored-event-plugin";
 import { configPlugin } from "./common/config/config-plugin";
 import {
@@ -105,7 +104,6 @@ export const build = async () => {
   app.register(mediaPlugin);
   app.register(entryImportPlugin);
   app.register(peerNodePlugin);
-  app.register(verifiedRequestPlugin);
   app.register(storedEventPlugin);
 
   app.register(autoLoadPlugin, {

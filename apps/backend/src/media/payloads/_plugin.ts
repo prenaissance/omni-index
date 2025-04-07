@@ -1,4 +1,5 @@
 import { fastifyPlugin } from "fastify-plugin";
+import { UpdateEntryRequest } from "./entry/update-entry-request";
 import { COMMON_PAYLOADS_PLUGIN } from "~/common/payloads/_plugin";
 import { BlobLinkSchema } from "~/media/payloads/blob-link-schema";
 import { CreateEntryRequest } from "~/media/payloads/entry/create-entry-request";
@@ -18,6 +19,7 @@ export const mediaPayloadsPlugin = fastifyPlugin(
     app.addSchema(CreateIndexRequest);
     app.addSchema(CreateMediaRequest);
     app.addSchema(CreateEntryRequest);
+    app.addSchema(UpdateEntryRequest);
   },
   {
     dependencies: [COMMON_PAYLOADS_PLUGIN],

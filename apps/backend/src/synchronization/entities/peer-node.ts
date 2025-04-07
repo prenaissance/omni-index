@@ -10,27 +10,27 @@ export enum NodeTrustLevel {
 
 export type PeerNodeInit = EntityInit & {
   createdAt?: Date;
-  hostname: string;
+  url: string;
   trustLevel: NodeTrustLevel;
   pinnedCertificates?: PinnedCertificate[];
 };
 
 export class PeerNode extends Entity {
   createdAt: Date;
-  hostname: string;
+  url: string;
   trustLevel: NodeTrustLevel;
   pinnedCertificates: PinnedCertificate[];
 
   constructor({
     _id,
     createdAt,
-    hostname,
+    url,
     trustLevel,
     pinnedCertificates,
   }: PeerNodeInit) {
     super({ _id });
     this.createdAt = createdAt ?? new Date();
-    this.hostname = hostname;
+    this.url = url;
     this.trustLevel = trustLevel;
     this.pinnedCertificates = pinnedCertificates ?? [];
   }

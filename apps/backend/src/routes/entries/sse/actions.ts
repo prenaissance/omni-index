@@ -1,4 +1,3 @@
-import { once } from "node:events";
 import {
   FastifyPluginAsyncTypebox,
   Type,
@@ -36,21 +35,30 @@ const entriesSseRoutes: FastifyPluginAsyncTypebox = async (app) => {
       reply.raw.setHeader("Content-Type", "text/event-stream; charset=utf-8");
       reply.raw.setHeader("Connection", "keep-alive");
       reply.raw.setHeader("Cache-Control", "no-cache,no-transform");
-      reply.raw.setHeader("x-no-compression", 1);
+      reply.raw.setHeader("Access-Control-Allow-Origin", "*");
 
+      reply.raw.statusCode = 200;
+      reply.raw.flushHeaders();
       const callback = (
         event: EventMap[MatchesPattern<"entry.*", EventType>]
       ) => {
+        reply.log.debug({
+          msg: "SSE event sent",
+          event: event.type,
+          remoteAddress: reply.raw.socket?.remoteAddress,
+        });
         reply.sse({ data: JSON.stringify(event) });
       };
 
       app.eventEmitter.onPattern("entry.*", callback);
 
-      reply.raw.flushHeaders();
-
-      await once(reply.raw, "close");
-
-      app.eventEmitter.offPattern("entry.*", callback);
+      reply.raw.once("close", () => {
+        app.eventEmitter.offPattern("entry.*", callback);
+        reply.log.debug({
+          msg: "SSE connection closed",
+          remoteAddress: reply.raw.socket?.remoteAddress,
+        });
+      });
     }
   );
 };
