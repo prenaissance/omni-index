@@ -1,6 +1,6 @@
 import { redirect } from "react-router";
-import { parseCookie } from "../utils";
-import type { Route } from "./+types/comments";
+import { parseCookie } from "../../utils";
+import type { Route } from "./+types/add-comment";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/server/env";
 

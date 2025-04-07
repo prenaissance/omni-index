@@ -4,6 +4,8 @@ import { Button } from "./ui/button";
 import { TextArea } from "./ui/text-area";
 import LikeButton from "./ui/like";
 import Spinner from "./icons/spinner";
+import Confirmation from "./ui/confirmation";
+import TrashIcon from "./icons/trash";
 import { useAuth } from "~/context/auth-context";
 import type { paths } from "~/lib/api-types";
 
@@ -103,17 +105,46 @@ const Comments = ({ comments, bookId }: CommentsProps) => {
           key={comment.tid}
           className="w-full rounded-lg bg-card overflow-hidden group flex flex-col justify-between p-4"
         >
-          <div className="flex gap-3 items-center mb-2">
-            <img
-              src={
-                comment.createdBy.avatarThumbnail ?? "/avatar-placeholder.png"
-              }
-              alt="avatar"
-              className="w-8 h-8 rounded-full"
-            />
-            <h2 className="text-sm font-semibold text-foreground">
-              {comment.createdBy.displayName ?? "Anonymous"}
-            </h2>
+          <div className="flex justify-between items-center mb-2 w-full">
+            <div className="flex gap-3 items-center">
+              <img
+                src={
+                  comment.createdBy.avatarThumbnail ?? "/avatar-placeholder.png"
+                }
+                alt="avatar"
+                className="w-8 h-8 rounded-full"
+              />
+              <h2 className="text-sm font-semibold text-foreground">
+                {comment.createdBy.displayName ?? "Anonymous"}
+              </h2>
+            </div>
+            {user && comment.createdBy.did === user?.did && (
+              <div>
+                <input
+                  type="checkbox"
+                  id="delete-comment-button"
+                  className="peer hidden"
+                />
+                <label
+                  htmlFor="delete-comment-button"
+                  className="cursor-pointer flex items-center gap-4"
+                >
+                  <div className="text-destructive">
+                    <TrashIcon />
+                  </div>
+                </label>
+                <div className="hidden peer-checked:block">
+                  <Confirmation
+                    description="Are you sure you want to delete this comment?"
+                    title="Delete comment"
+                    confirmButtonText="Delete"
+                    cancelButtonText="Cancel"
+                    action={`/api/entries/${bookId}/comments/${comment.tid}`}
+                    htmlFor="delete-comment-button"
+                  ></Confirmation>
+                </div>
+              </div>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">{comment.text}</p>
           <div className="self-end flex gap-3">
