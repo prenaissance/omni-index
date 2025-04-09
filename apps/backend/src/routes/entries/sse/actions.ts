@@ -3,6 +3,7 @@ import {
   Type,
 } from "@fastify/type-provider-typebox";
 import { EventMap, EventType } from "~/common/events/event-map";
+import { HeartbeatEvent } from "~/common/events/heartbeat-event";
 import { MatchesPattern } from "~/common/types/strings";
 import {
   EntryCreatedEvent,
@@ -27,6 +28,7 @@ const entriesSseRoutes: FastifyPluginAsyncTypebox = async (app) => {
             Type.Ref(EntryCreatedEvent),
             Type.Ref(EntryUpdatedEvent),
             Type.Ref(EntryDeletedEvent),
+            Type.Ref(HeartbeatEvent),
           ]),
         },
       },
@@ -51,9 +53,13 @@ const entriesSseRoutes: FastifyPluginAsyncTypebox = async (app) => {
       };
 
       app.eventEmitter.onPattern("entry.*", callback);
+      const intervalId = setInterval(() => {
+        reply.sse({ data: JSON.stringify({ type: "heartbeat" }) });
+      }, 90_000);
 
       reply.raw.once("close", () => {
         app.eventEmitter.offPattern("entry.*", callback);
+        clearInterval(intervalId);
         reply.log.debug({
           msg: "SSE connection closed",
           remoteAddress: reply.raw.socket?.remoteAddress,
