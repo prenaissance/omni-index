@@ -16,14 +16,8 @@ export default [
       route("/oauth/login", "server/routes/oauth/login.ts"),
     ]),
     ...prefix("/api/entries/:bookId", [
-      route(
-        "/entries/:bookId/comments",
-        "server/routes/comments/add-comment.ts"
-      ),
-      route(
-        "/entries/:bookId/comments/:commentId",
-        "server/routes/comments/delete-comment.ts"
-      ),
+      route("/comments", "server/routes/comments/add-comment.ts"),
+      route("/comments/:commentId", "server/routes/comments/delete-comment.ts"),
     ]),
     route("books/:bookId", "routes/book.tsx"),
   ]),

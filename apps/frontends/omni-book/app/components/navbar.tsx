@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from "react-router";
 import { LogOutIcon } from "lucide-react";
+import { memo } from "react";
 import type { Route } from "../components/+types/navbar";
 import { Button } from "./ui/button";
 import MenuIcon from "./icons/menu";
@@ -41,7 +42,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 const Navbar = ({ loaderData }: Route.ComponentProps) => {
   return (
-    <AuthContext.Provider value={{ user: loaderData.user }}>
+    <AuthContext.Provider value={loaderData.user}>
       <nav className="sticky top-0 bg-background z-50">
         <div className="py-5 px-10 flex flex-row items-center justify-between">
           <div className="flex flex-row space-x-14">
@@ -159,4 +160,4 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
   );
 };
 
-export default Navbar;
+export default memo(Navbar);

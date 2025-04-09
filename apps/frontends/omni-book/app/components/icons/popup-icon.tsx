@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 type PopupIconProps = {
   size?: number;
 };
@@ -19,4 +21,4 @@ const PopupIcon = ({ size }: PopupIconProps) => {
   );
 };
 
-export default PopupIcon;
+export default memo(PopupIcon);

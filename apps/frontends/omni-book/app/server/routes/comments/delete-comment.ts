@@ -39,7 +39,6 @@ export const action = async ({ params, request }: Route.LoaderArgs) => {
     {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
         cookie: cookieHeader,
       },
     }

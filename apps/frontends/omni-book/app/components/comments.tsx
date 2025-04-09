@@ -17,9 +17,9 @@ type CommentsProps = {
   bookId: string;
 };
 
-const Comments = ({ comments, bookId }: CommentsProps) => {
+export const Comments = ({ comments, bookId }: CommentsProps) => {
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const user = useAuth();
   const [comment, setComment] = useState<string>("");
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
   const navigation = useNavigation();
@@ -141,6 +141,7 @@ const Comments = ({ comments, bookId }: CommentsProps) => {
                     cancelButtonText="Cancel"
                     action={`/api/entries/${bookId}/comments/${comment.tid}`}
                     htmlFor="delete-comment-button"
+                    method="DELETE"
                   ></Confirmation>
                 </div>
               </div>
@@ -161,5 +162,3 @@ const Comments = ({ comments, bookId }: CommentsProps) => {
     </div>
   );
 };
-
-export default Comments;

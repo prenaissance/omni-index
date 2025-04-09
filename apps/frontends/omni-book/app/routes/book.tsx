@@ -3,7 +3,7 @@ import type { Route } from "./+types/book";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
 import Popup from "~/components/ui/popup";
-import CommentsSection from "~/components/comments";
+import { Comments } from "~/components/comments";
 import Recommended from "~/components/recommended";
 import { extractFormat } from "~/lib/utils";
 import PopupIcon from "~/components/icons/popup-icon";
@@ -176,7 +176,7 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
         </div>
       </div>
       <div className="px-10 py-8 flex gap-8 w-full">
-        <CommentsSection comments={comments} bookId={entry._id} />
+        <Comments comments={comments} bookId={entry._id} />
         <Recommended />
       </div>
     </>

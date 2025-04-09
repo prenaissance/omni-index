@@ -1,4 +1,4 @@
-import { Form } from "react-router";
+import { Form, type HTMLFormMethod } from "react-router";
 import CloseIcon from "../icons/close";
 import { Button } from "./button";
 
@@ -9,6 +9,7 @@ type ConfirmationProps = {
   cancelButtonText?: string;
   htmlFor: string;
   action?: string;
+  method?: HTMLFormMethod;
 };
 
 const Confirmation = ({
@@ -18,8 +19,8 @@ const Confirmation = ({
   cancelButtonText,
   htmlFor,
   action,
+  method,
 }: ConfirmationProps) => {
-  console.log("action", action);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-card rounded-lg shadow-lg p-6 w-96">
@@ -41,26 +42,12 @@ const Confirmation = ({
             {cancelButtonText || "Cancel"}
           </label>
           {action && (
-            <Form
-              className="w-full h-full flex flex-col gap-2 mb-2"
-              action={action}
-              method="POST"
-            >
-              {/* <Button
-              type="submit"
-              className="absolute bottom-3 right-5 w-32"
-              disabled={!user || isButtonDisabled || isSubmitting}
-            >
-              {isSubmitting ? <Spinner /> : "Submit"}
-            </Button> */}
+            <Form action={action} method={method ?? "POST"}>
               <Button type="submit" variant="destructive">
                 {confirmButtonText || "Confirm"}
               </Button>
             </Form>
           )}
-          {/* <Button onClick={onConfirm} variant="destructive">
-            {confirmButtonText || "Confirm"}
-          </Button> */}
         </div>
       </div>
     </div>
