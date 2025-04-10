@@ -1,4 +1,10 @@
-import { Form, Link, useSearchParams, useNavigation } from "react-router";
+import {
+  Form,
+  Link,
+  useSearchParams,
+  useNavigation,
+  NavLink,
+} from "react-router";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { TextArea } from "./ui/text-area";
@@ -24,6 +30,8 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const page = Number.parseInt(searchParams.get("page") || "1");
+  const limit = Number.parseInt(searchParams.get("limit") || "10");
 
   useEffect(() => {
     setPageLoaded(true);
@@ -159,6 +167,33 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
           </div>
         </div>
       ))}
+      {comments.length > 0 && (
+        <div className="flex justify-center items-center mt-4">
+          <NavLink
+            to={`/books/${bookId}?page=${page - 1}&limit=${limit}`}
+            className={`${
+              page === 1
+                ? "hidden"
+                : "text-sm text-muted-foreground hover:text-primary"
+            }`}
+          >
+            Previous
+          </NavLink>
+          <span className="text-sm text-muted-foreground mx-2">
+            Page {page}
+          </span>
+          <NavLink
+            to={`/books/${bookId}?page=${page + 1}&limit=${limit}`}
+            className={`${
+              comments.length < limit
+                ? "hidden"
+                : "text-sm text-muted-foreground hover:text-primary"
+            }`}
+          >
+            Next
+          </NavLink>
+        </div>
+      )}
     </div>
   );
 };

@@ -7,9 +7,6 @@ import { parseCookie } from "~/server/utils";
 type CommentFail =
   paths["/api/entries/{entryId}/comments/{tid}"]["delete"]["responses"]["404"]["content"]["application/json"];
 
-type CommentSuccess =
-  paths["/api/entries/{entryId}/comments/{tid}"]["delete"]["responses"]["200"]["content"]["application/json"];
-
 export const action = async ({ params, request }: Route.LoaderArgs) => {
   const { bookId, commentId } = params;
   if (!bookId || !commentId) {
@@ -50,7 +47,6 @@ export const action = async ({ params, request }: Route.LoaderArgs) => {
       status: 404,
     });
   }
-  redirect(`/books/${bookId}?page=1&limit=10`);
-  const data: CommentSuccess = await response.json();
-  return data;
+
+  return redirect(`/books/${bookId}`);
 };

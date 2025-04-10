@@ -1,4 +1,3 @@
-import { useSearchParams } from "react-router";
 import type { Route } from "./+types/book";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
@@ -42,8 +41,11 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     page,
     limit,
   } satisfies paths["/api/entries/{entryId}/comments"]["get"]["parameters"]["query"];
+
+  const searchParams = new URLSearchParams(query as never);
+
   const commentsResponse = await fetch(
-    `${env.API_URL}/api/entries/${bookId}/comments?${query.toString()}`,
+    `${env.API_URL}/api/entries/${bookId}/comments?${searchParams}`,
     {
       headers: request.headers,
     }
@@ -56,7 +58,6 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
 const Book = ({ loaderData }: Route.ComponentProps) => {
   const { entry, comments } = loaderData;
-  const [search, setSearch] = useSearchParams();
 
   return (
     <>

@@ -51,5 +51,5 @@ export const action = async ({ params, request }: Route.LoaderArgs) => {
     });
   }
 
-  return redirect(`/books/${bookId}?page=1&limit=10`);
+  return redirect(`/books/${bookId}`);
 };
