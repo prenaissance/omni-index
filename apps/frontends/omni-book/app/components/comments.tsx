@@ -12,6 +12,7 @@ import LikeButton from "./ui/like";
 import Spinner from "./icons/spinner";
 import Confirmation from "./ui/confirmation";
 import TrashIcon from "./icons/trash";
+import ChevronIcon from "./icons/chevron";
 import { useAuth } from "~/context/auth-context";
 import type { paths } from "~/lib/api-types";
 
@@ -177,7 +178,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
                 : "text-sm text-muted-foreground hover:text-primary"
             }`}
           >
-            Previous
+            <ChevronIcon size={4} direction="left" />
           </NavLink>
           <span className="text-sm text-muted-foreground mx-2">
             Page {page}
@@ -190,7 +191,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
                 : "text-sm text-muted-foreground hover:text-primary"
             }`}
           >
-            Next
+            <ChevronIcon size={4} direction="right" />
           </NavLink>
         </div>
       )}
