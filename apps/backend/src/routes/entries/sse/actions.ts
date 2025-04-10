@@ -49,7 +49,7 @@ const entriesSseRoutes: FastifyPluginAsyncTypebox = async (app) => {
           event: event.type,
           remoteAddress: reply.raw.socket?.remoteAddress,
         });
-        reply.sse({ data: JSON.stringify(event) });
+        reply.sse({ id: event.id.toString(), data: JSON.stringify(event) });
       };
 
       app.eventEmitter.onPattern("entry.*", callback);

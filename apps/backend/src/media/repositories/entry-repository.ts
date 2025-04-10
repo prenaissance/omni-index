@@ -51,8 +51,9 @@ export class EntryRepository {
     if (!existingEntry) {
       await this.collection.insertOne(entry);
       this.eventEmitter.emit("entry.created", {
+        id: new ObjectId(),
         type: "entry.created",
-        entry: omit(entry, ["slug"]),
+        payload: { entry: omit(entry, ["slug"]) },
       });
       return;
     }
@@ -74,8 +75,8 @@ export class EntryRepository {
         return existingMedia && !media.equals(existingMedia);
       });
 
-    const mediaUpdates: EntryUpdatedEvent["mediaUpdates"] = updatedMedia.map(
-      (media) => {
+    const mediaUpdates: EntryUpdatedEvent["payload"]["mediaUpdates"] =
+      updatedMedia.map((media) => {
         const existingMedia = existingEntry.media.find((m) =>
           m._id.equals(media._id)
         )!;
@@ -93,8 +94,7 @@ export class EntryRepository {
           ),
           deletedMirrorIds: Array.from(deletedMirrorIds),
         };
-      }
-    );
+      });
 
     const fields = entry.diff(existingEntry);
     const hasChanges =
@@ -119,16 +119,19 @@ export class EntryRepository {
     );
 
     this.eventEmitter.emit("entry.updated", {
+      id: new ObjectId(),
       type: "entry.updated",
-      entryId: entry._id,
-      fields,
-      deletedMediaIds: Array.from(deletedMediaIds).map(
-        ObjectId.createFromHexString
-      ),
-      createdMedia: entry.media.filter((m) =>
-        addedMediaIds.has(m._id.toString())
-      ),
-      mediaUpdates,
+      payload: {
+        entryId: entry._id,
+        fields,
+        deletedMediaIds: Array.from(deletedMediaIds).map(
+          ObjectId.createFromHexString
+        ),
+        createdMedia: entry.media.filter((m) =>
+          addedMediaIds.has(m._id.toString())
+        ),
+        mediaUpdates,
+      },
     });
   }
 
@@ -139,8 +142,9 @@ export class EntryRepository {
     }
 
     this.eventEmitter.emit("entry.deleted", {
+      id: new ObjectId(),
       type: "entry.deleted",
-      entryId: id,
+      payload: { entryId: id },
     });
   }
 }

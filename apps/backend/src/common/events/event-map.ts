@@ -17,3 +17,4 @@ export type EventMap = {
 };
 
 export type EventType = keyof EventMap;
+export type DomainEvent = EventMap[EventType];

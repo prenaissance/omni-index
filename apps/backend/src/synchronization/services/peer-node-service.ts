@@ -1,8 +1,7 @@
-import * as https from "node:https";
-import * as http from "node:http";
 import * as tls from "node:tls";
+import { Readable } from "node:stream";
 import { ObjectId } from "mongodb";
-import { defer, Observable, repeat, Subscription, tap } from "rxjs";
+import { defer, Observable, repeat, Subscription } from "rxjs";
 import { FastifyBaseLogger } from "fastify";
 import { createParser } from "eventsource-parser";
 import { PeerNode, PeerNodeInit } from "../entities/peer-node";
@@ -49,64 +48,75 @@ export class PeerNodeService {
       }
     };
 
-    // should use https only, allowing http for dev testing purposes
-    const request =
-      this.env.DANGEROUS_SKIP_IDENTITY_VERIFICATION &&
-      new URL(url).protocol === "http:"
-        ? http.request
-        : https.request;
-
     return defer(() => {
-      const response = request(url, {
-        method: "GET",
-        headers: {
-          accept: "text/event-stream",
-          connection: "keep-alive",
-          "cache-control": "no-cache",
-        },
-        ...(!this.env.DANGEROUS_SKIP_IDENTITY_VERIFICATION && {
-          checkServerIdentity,
-        }),
-      });
-
       return new Observable<TEvent>((subscriber) => {
         const parser = createParser({
-          onEvent(event) {
-            subscriber.next(event as TEvent);
-            console.log({ event });
+          onEvent: (event) => {
+            try {
+              subscriber.next(JSON.parse(event.data) as TEvent);
+              console.log(JSON.parse(event.data));
+            } catch {
+              this.logger.debug({
+                msg: "Failed to deserialize SSE event",
+                url,
+                event: event.data,
+              });
+            }
           },
-          onError(error) {
+          onError: (error) => {
             subscriber.error(error);
           },
         });
 
-        response.on("response", (info) => {
-          if (info.statusCode === 200) {
-            this.logger.debug({
-              msg: "Peer node connection established",
-              url,
-              statusCode: info.statusCode,
-              statusMessage: info.statusMessage,
+        fetch(url, {
+          method: "GET",
+          headers: {
+            accept: "text/event-stream",
+            connection: "keep-alive",
+            "cache-control": "no-cache",
+          },
+          ...(!this.env.DANGEROUS_SKIP_IDENTITY_VERIFICATION && {
+            checkServerIdentity,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              return Promise.reject(new Error("Non-200 status code"));
+            } else {
+              this.logger.debug({
+                msg: "Peer node connection established",
+                url,
+                status: response.status,
+                statusMessage: response.statusText,
+              });
+            }
+            return response.body;
+          })
+          .then(async (body) => {
+            if (!body) {
+              return Promise.reject(new Error("No response body object"));
+            }
+
+            const stream = Readable.fromWeb(body as never, {
+              encoding: "utf-8",
             });
-          } else {
-            subscriber.error(new Error("Non-200 status code (response event)"));
-          }
-        });
-
-        response.on("error", (error) => {
-          subscriber.error(error);
-        });
-
-        response.on("data", (chunk) => {
-          parser.feed(chunk);
-          console.log({ chunk });
-        });
-
-        response.on("end", () => {
-          subscriber.complete();
-        });
-
-        response.end();
+            for await (const chunk of stream) {
+              parser.feed(chunk);
+            }
+            subscriber.complete();
+            this.logger.debug({
+              msg: "Peer node connection closed",
+              url,
+            });
+          })
+          .catch((error) => {
+            this.logger.debug({
+              msg: "Peer node connection error",
+              url,
+              error: "message" in error ? error.message : error,
+            });
+            subscriber.error(error);
+          });
       });
     });
   }
@@ -125,19 +135,7 @@ export class PeerNodeService {
     const url = new URL(nodeUrl);
     url.pathname = "/api/entries/sse";
     const subscription = this.sse<EntryEvent>(url.toString())
-      .pipe(
-        tap({
-          error: (error) => {
-            this.logger.debug({
-              msg: "Error during listening to SSE stream",
-              url: url.toString(),
-              error: "message" in error ? error.message : error,
-            });
-          },
-        }),
-        // repeat({ delay: 1000 }),
-        retryWithBackoff()
-      )
+      .pipe(retryWithBackoff(), repeat({ delay: 1000 }))
       .subscribe((event) => {
         console.log("TODO");
 
