@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Type, Static } from "@sinclair/typebox";
 import { CreateEntryRequest } from "./create-entry-request";
 
 export const UpdateEntryRequest = Type.Partial(CreateEntryRequest, {
@@ -6,4 +6,4 @@ export const UpdateEntryRequest = Type.Partial(CreateEntryRequest, {
   description: "Partial update of an entry",
 });
 
-export type UpdateEntryRequest = typeof UpdateEntryRequest;
+export type UpdateEntryRequest = Static<typeof UpdateEntryRequest>;

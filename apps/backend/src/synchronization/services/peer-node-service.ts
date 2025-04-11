@@ -13,6 +13,9 @@ import { retryWithBackoff } from "~/common/utilities/rxjs";
 import { EventMap, EventType } from "~/common/events/event-map";
 import { MatchesPattern } from "~/common/types/strings";
 import { Env } from "~/common/config/env";
+import { StoredEventRepository } from "~/stored-events/stored-event-repository";
+import { StoredEvent } from "~/stored-events/entities/stored-event";
+import { EntryService } from "~/media/entry-service";
 
 type EntryEvent = EventMap[MatchesPattern<"entry.*", EventType>];
 
@@ -30,6 +33,8 @@ export class PeerNodeService {
   }
   constructor(
     private readonly peerNodeRepository: PeerNodeRepository,
+    private readonly storedEventRepository: StoredEventRepository,
+    private readonly entryService: EntryService,
     private readonly env: Env,
     private readonly logger: FastifyBaseLogger
   ) {}
@@ -136,13 +141,36 @@ export class PeerNodeService {
     url.pathname = "/api/entries/sse";
     const subscription = this.sse<EntryEvent>(url.toString())
       .pipe(retryWithBackoff(), repeat({ delay: 1000 }))
-      .subscribe((event) => {
-        console.log("TODO");
+      .subscribe(async (event) => {
+        const eventProcessed = await this.storedEventRepository.existsId(
+          event.id
+        );
+        if (eventProcessed) {
+          this.logger.debug({
+            msg: "Received event echo. Skipping propagation.",
+            eventId: event.id,
+            eventType: event.type,
+            nodeUrl,
+          });
+          return;
+        }
+        const storedEvent = new StoredEvent({
+          _id: new ObjectId(event.id),
+          type: event.type,
+          payload: event.payload,
+        });
+        await this.storedEventRepository.add(storedEvent);
 
         switch (event.type) {
           case "entry.created":
+            await this.entryService.synchronizeCreation(event);
+            break;
           case "entry.updated":
+            await this.entryService.synchronizeUpdate(event, nodeUrl);
+            break;
           case "entry.deleted":
+            await this.entryService.synchronizeDeletion(event);
+            break;
         }
       });
     this.subscriptionMap.set(nodeUrl, subscription);

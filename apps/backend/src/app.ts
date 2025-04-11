@@ -103,8 +103,8 @@ export const build = async () => {
   app.register(usersPlugin);
   app.register(mediaPlugin);
   app.register(entryImportPlugin);
-  app.register(peerNodePlugin);
   app.register(storedEventPlugin);
+  app.register(peerNodePlugin);
 
   app.register(autoLoadPlugin, {
     dir: path.join(__dirname, "routes"),

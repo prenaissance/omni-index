@@ -49,7 +49,7 @@ const mirrorRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
       const newMirrors = request.body.map(Index.fromDocument);
       media.mirrors.push(...newMirrors);
-      await app.mediaEntry.repository.save(entry);
+      await app.mediaEntry.repository.update(entry);
       reply.status(201);
       return entry;
     }
@@ -104,7 +104,7 @@ const mirrorRoutes: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       media.mirrors.splice(mirrorIndex, 1);
-      await app.mediaEntry.repository.save(entry);
+      await app.mediaEntry.repository.update(entry);
       return entry;
     }
   );

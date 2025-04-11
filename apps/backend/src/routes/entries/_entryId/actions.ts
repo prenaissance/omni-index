@@ -73,7 +73,7 @@ const entryIdRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
       Object.assign(entry, request.body);
       entry.updatedAt = new Date();
-      await app.mediaEntry.repository.save(entry);
+      await app.mediaEntry.service.updateEntry(entry);
 
       return entry;
     }

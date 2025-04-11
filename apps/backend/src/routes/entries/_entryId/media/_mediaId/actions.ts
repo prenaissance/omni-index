@@ -43,7 +43,7 @@ const mediaRoutes: FastifyPluginAsyncTypebox = async (app) => {
         return { message: "Media not found" };
       }
       entry.media.splice(mediaIndex, 1);
-      await app.mediaEntry.repository.save(entry);
+      await app.mediaEntry.repository.update(entry);
       return entry;
     }
   );

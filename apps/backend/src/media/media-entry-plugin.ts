@@ -4,6 +4,7 @@ import { mediaPayloadsPlugin } from "./payloads/_plugin";
 import { CommentRepository } from "./comments/comment-repository";
 import { CommentService } from "./comments/comment-service";
 import { EntryExportService } from "./exports/entry-export-service";
+import { EntryService } from "./entry-service";
 import { EVENT_EMITTER_PLUGIN } from "~/common/events/_plugin";
 import { MONGODB_PLUGIN } from "~/common/mongodb/plugins/mongodb-plugin";
 
@@ -11,6 +12,7 @@ declare module "fastify" {
   interface FastifyInstance {
     readonly mediaEntry: {
       readonly repository: EntryRepository;
+      readonly service: EntryService;
       readonly comments: {
         readonly repository: CommentRepository;
         readonly service: CommentService;
@@ -34,8 +36,16 @@ export const mediaPlugin = fastifyPlugin(
       app.log
     );
 
+    const entryRepository = new EntryRepository(app.db);
+    const entryService = new EntryService(
+      entryRepository,
+      app.eventEmitter,
+      app.log
+    );
+
     app.decorate("mediaEntry", {
-      repository: new EntryRepository(app.db, app.eventEmitter),
+      repository: entryRepository,
+      service: entryService,
       comments: {
         repository: commentRepository,
         service: commentService,

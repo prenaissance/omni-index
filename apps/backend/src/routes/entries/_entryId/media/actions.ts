@@ -38,7 +38,7 @@ const mediaRoutes: FastifyPluginAsyncTypebox = async (app) => {
       }
       const newMedia = request.body.map(Media.fromDocument);
       entry.media.push(...newMedia);
-      await app.mediaEntry.repository.save(entry);
+      await app.mediaEntry.service.updateEntry(entry);
       reply.status(201);
       return entry;
     }
