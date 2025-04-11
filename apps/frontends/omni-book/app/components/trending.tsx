@@ -46,15 +46,15 @@ const Trending = ({ loaderData }: TrendingProps) => {
                 <StarIcon />
                 <p className="pt-1 mr-2">4.5</p>
                 <div className="w-[1px] h-4 bg-white mr-2"></div>
-                <a
-                  // href={`/authors/${book.author}`}
-                  href={"#"}
+                <Link
+                  // to={`/authors/${book.author}`}
+                  to={"#"}
                   target="_blank"
                   rel="noreferrer"
                   className="text-md pt-1 hover:text-textHover transition duration-300 text-ellipsis overflow-hidden text-nowrap"
                 >
                   {book.author}
-                </a>
+                </Link>
               </div>
             </div>
           </div>

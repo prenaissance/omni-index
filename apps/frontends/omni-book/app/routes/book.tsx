@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import type { Route } from "./+types/book";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
@@ -62,94 +63,98 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
   return (
     <>
       <div className="bg-[url('/gradient.jpg')] bg-cover bg-center h-full">
-        <div className="px-40 flex items-center gap-10">
-          <div className="h-full w-1/6">
-            <img
-              src={
-                entry.thumbnail && "url" in entry.thumbnail
-                  ? entry.thumbnail.url
-                  : "./placeholder.jpg"
-              }
-              className="py-20 h-full w-full object-cover"
-              alt="thumbnail"
-            />
-          </div>
-          <div className="flex-1 py-16">
-            <h1 className="text-5xl font-semibold mb-2">{entry.title}</h1>
-            <div className="text-lg font-medium mb-3 flex gap-2 items-center">
-              <p>{entry.author}</p>
-              {entry.year !== null && entry.year !== 0 && (
-                <>
-                  <div className="w-[2px] h-6 bg-white"></div>
-                  <p>{entry.year}</p>
-                </>
-              )}
+        <div className="flex justify-center items-center lg:px-10 lg:gap-8 lg:flex-row flex-col">
+          <div className="flex items-center w-fit gap-8 px-8 min-[525px]:px-10 lg:px-0">
+            <div className="h-full md:w-72 min-w-24 min-[525px]:min-w-44 md:min-w-52">
+              <img
+                src={
+                  entry.thumbnail && "url" in entry.thumbnail
+                    ? entry.thumbnail.url
+                    : "./placeholder.jpg"
+                }
+                className="py-12 min-[525px]:py-20 h-full w-full object-cover"
+                alt="thumbnail"
+              />
             </div>
+            <div className="py-10 min-[525px]:py-16 max-w-2xl">
+              <h1 className="text-2xl min-[525px]:text-5xl font-semibold mb-2">
+                {entry.title}
+              </h1>
+              <div className="text-lg font-medium mb-3 flex gap-2 items-center">
+                <p>{entry.author}</p>
+                {entry.year !== null && entry.year !== 0 && (
+                  <>
+                    <div className="w-[2px] h-6 bg-white"></div>
+                    <p>{entry.year}</p>
+                  </>
+                )}
+              </div>
 
-            <div className="flex flex-row space-x-2 mb-3">
-              {entry.genres.map((genre) => (
-                <span
-                  key={genre}
-                  className="bg-card px-2 py-1 rounded-md text-[0.8rem] font-medium"
-                >
-                  {genre}
-                </span>
-              ))}
-            </div>
-            <div className="text-md text-white flex flex-col">
-              {entry.description ? (
-                <div>
-                  <input
-                    type="checkbox"
-                    id="read-more-toggle"
-                    className="peer hidden"
-                  />
-                  <p className="peer-checked:line-clamp-none line-clamp-5 transition-all duration-300">
-                    {entry.description}
-                  </p>
-                  <label
-                    tabIndex={0}
-                    htmlFor="read-more-toggle"
-                    className="mt-3 cursor-pointer peer-checked:hidden inline-flex items-center justify-center gap-2 whitespace-nowrap text-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover"
+              <div className="flex flex-row space-x-2 mb-3">
+                {entry.genres.map((genre) => (
+                  <span
+                    key={genre}
+                    className="bg-card px-2 py-1 rounded-md text-[0.8rem] font-medium"
                   >
-                    Read More
-                  </label>
-                  <label
-                    tabIndex={0}
-                    htmlFor="read-more-toggle"
-                    className="mt-3 cursor-pointer hidden peer-checked:inline-block items-center justify-center gap-2 whitespace-nowrap text-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover"
-                  >
-                    Read Less
-                  </label>
-                </div>
-              ) : (
-                <>No description available</>
-              )}
+                    {genre}
+                  </span>
+                ))}
+              </div>
+              <div className="text-md text-white flex flex-col">
+                {entry.description ? (
+                  <div>
+                    <input
+                      type="checkbox"
+                      id="read-more-toggle"
+                      className="peer hidden"
+                    />
+                    <p className="peer-checked:line-clamp-none line-clamp-5 transition-all duration-300 text-sm min-[525px]:text-md">
+                      {entry.description}
+                    </p>
+                    <label
+                      tabIndex={0}
+                      htmlFor="read-more-toggle"
+                      className="mt-3 cursor-pointer peer-checked:hidden inline-flex items-center justify-center gap-2 whitespace-nowrap text-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover"
+                    >
+                      Read More
+                    </label>
+                    <label
+                      tabIndex={0}
+                      htmlFor="read-more-toggle"
+                      className="mt-3 cursor-pointer hidden peer-checked:inline-block items-center justify-center gap-2 whitespace-nowrap text-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover"
+                    >
+                      Read Less
+                    </label>
+                  </div>
+                ) : (
+                  <>No description available</>
+                )}
+              </div>
             </div>
           </div>
-          <div className="bg-[#ffffff33] min-w-fit w-[28%] flex flex-col items-center justify-center p-10 self-stretch">
+          <div className="bg-[#ffffff33] sm:min-w-fit lg:w-1/4 flex flex-col items-center justify-center p-10 self-stretch">
             <p className="text-xl font-medium mb-6">
               Choose how to read this book
             </p>
-            <div className="flex flex-col gap-3 w-full items-start">
+            <div className="flex flex-col gap-3 lg:w-full items-start">
               {entry.media.map((media) => (
                 <div
                   key={media._id}
                   className="w-full flex items-center gap-5 justify-between"
                 >
-                  <a
-                    href={
+                  <Link
+                    to={
                       "url" in media.mirrors[0].blob
                         ? media.mirrors[0].blob.url
                         : "#"
                     }
                     target="_blank"
                     rel="noreferrer"
-                    className="min-w-fit px-4 flex-1 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-10 py-4"
+                    className="min-w-52 sm:min-w-64 lg:min-w-fit px-4 lg:flex-1 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-10 py-4"
                   >
                     {media.meta.format ??
                       extractFormat(media.mirrors[0].mimeType || "").name}
-                  </a>
+                  </Link>
                   <div className="flex gap-3 min-w-[110px] justify-between">
                     <p className="">
                       <strong>
@@ -176,7 +181,7 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
           </div>
         </div>
       </div>
-      <div className="px-10 py-8 flex gap-8 w-full">
+      <div className="px-10 py-8 flex gap-8 w-full md:flex-row flex-col">
         <Comments comments={comments} bookId={entry._id} />
         <Recommended />
       </div>
