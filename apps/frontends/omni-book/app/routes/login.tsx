@@ -22,7 +22,7 @@ const Login = () => {
               <Input
                 name="handle"
                 placeholder="alice.bsky.social"
-                className="bg-card border-card p-5"
+                className="bg-card border-card px-5 py-3"
               />
             </Label>
             <Button className="mt-2 w-full" type="submit">

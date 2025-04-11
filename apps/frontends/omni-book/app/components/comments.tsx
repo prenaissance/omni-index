@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { TextArea } from "./ui/text-area";
-import LikeButton from "./ui/like";
+import LikeButton from "./like";
 import Spinner from "./icons/spinner";
 import Confirmation from "./ui/confirmation";
 import TrashIcon from "./icons/trash";
@@ -112,7 +112,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
       {comments.map((comment) => (
         <div
           key={comment.tid}
-          className="w-full rounded-lg bg-card overflow-hidden group flex flex-col justify-between p-4"
+          className="w-full rounded-lg bg-card overflow-hidden flex flex-col justify-between p-4"
         >
           <div className="flex justify-between items-center mb-2 w-full">
             <div className="flex gap-3 items-center">
@@ -131,11 +131,11 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
               <div>
                 <input
                   type="checkbox"
-                  id="delete-comment-button"
+                  id={`delete-comment-${comment.tid}`}
                   className="peer hidden"
                 />
                 <label
-                  htmlFor="delete-comment-button"
+                  htmlFor={`delete-comment-${comment.tid}`}
                   className="cursor-pointer flex items-center gap-4"
                 >
                   <div className="text-destructive">
@@ -149,7 +149,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
                     confirmButtonText="Delete"
                     cancelButtonText="Cancel"
                     action={`/api/entries/${bookId}/comments/${comment.tid}`}
-                    htmlFor="delete-comment-button"
+                    htmlFor={`delete-comment-${comment.tid}`}
                     method="DELETE"
                   ></Confirmation>
                 </div>
@@ -162,8 +162,10 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
               <LikeButton
                 initiallyLiked={comment.liked}
                 likes={comment.likes}
+                bookId={bookId}
+                commentId={comment.tid}
+                disabled={!user}
               />
-              <span className="text-sm text-muted-foreground"></span>
             </div>
           </div>
         </div>

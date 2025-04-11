@@ -18,6 +18,14 @@ export default [
     ...prefix("/api/entries/:bookId", [
       route("/comments", "server/routes/comments/add-comment.ts"),
       route("/comments/:commentId", "server/routes/comments/delete-comment.ts"),
+      route(
+        "/comments/:commentId/like",
+        "server/routes/comments/like-comment.ts"
+      ),
+      route(
+        "/comments/:commentId/dislike",
+        "server/routes/comments/dislike-comment.ts"
+      ),
     ]),
     route("books/:bookId", "routes/book.tsx"),
   ]),

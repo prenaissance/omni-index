@@ -1,12 +1,13 @@
 type LikeIconProps = {
   size?: number;
+  fill?: boolean;
 };
 
-const LikeIcon = ({ size }: LikeIconProps) => {
+const LikeIcon = ({ size, fill }: LikeIconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      className={`w-${size ?? 6} h-${size ?? 6} text-muted-foreground peer-checked:text-primary transition-colors`}
+      className={`w-${size ?? 6} h-${size ?? 6} ${fill ? "text-primary" : "text-muted-foreground"} peer-checked:text-primary transition-colors`}
       fill="currentColor"
       viewBox="0 0 24 24"
     >
