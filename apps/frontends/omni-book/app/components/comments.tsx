@@ -27,8 +27,8 @@ type CommentsProps = {
 export const Comments = ({ comments, bookId }: CommentsProps) => {
   const [searchParams] = useSearchParams();
   const user = useAuth();
-  const [comment, setComment] = useState<string>("");
-  const [pageLoaded, setPageLoaded] = useState<boolean>(false);
+  const [comment, setComment] = useState("");
+  const [pageLoaded, setPageLoaded] = useState(false);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const page = Number.parseInt(searchParams.get("page") || "1");
