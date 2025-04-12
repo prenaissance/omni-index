@@ -62,7 +62,11 @@ export class EntryService {
     });
   }
 
-  async synchronizeCreation(event: EntryCreatedEvent) {}
+  async synchronizeCreation(event: EntryCreatedEvent, nodeUrl: string) {
+    const entry = Entry.fromDocument(event.payload.entry);
+    this.logger.info("Synchronizing entry creation", { entry });
+    await this.entryRepository.create(entry);
+  }
   async synchronizeUpdate(event: EntryUpdatedEvent, nodeUrl: string) {}
-  async synchronizeDeletion(event: EntryDeletedEvent) {}
+  async synchronizeDeletion(event: EntryDeletedEvent, nodeUrl: string) {}
 }
