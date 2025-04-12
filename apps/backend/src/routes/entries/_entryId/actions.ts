@@ -78,6 +78,30 @@ const entryIdRoutes: FastifyPluginAsyncTypebox = async (app) => {
       return entry;
     }
   );
+
+  app.delete(
+    "",
+    {
+      schema: {
+        tags: ["Entries"],
+        params: Type.Object({
+          entryId: Type.String({
+            description: "ObjectId of the media entry",
+          }),
+        }),
+        response: {
+          204: Type.Null(),
+          404: Type.Ref(ExceptionSchema),
+        },
+      },
+    },
+    async (request, reply) => {
+      await app.mediaEntry.service.deleteEntry(
+        new ObjectId(request.params.entryId)
+      );
+      return reply.status(204).send();
+    }
+  );
 };
 
 export default entryIdRoutes;
