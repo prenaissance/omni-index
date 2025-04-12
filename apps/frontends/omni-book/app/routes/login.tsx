@@ -31,7 +31,7 @@ const Login = () => {
           </Form>
         </div>
       </div>
-      <div className="w-1/2">
+      <div className="w-1/2 hidden md:block">
         <img
           src="login.png"
           alt="login-image"
