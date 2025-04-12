@@ -132,7 +132,7 @@ export class CommentRepository {
 
     return documents.map((document) => ({
       ...document,
-      createdBy: new User(document.createdBy),
+      createdBy: document.createdBy ? new User(document.createdBy) : null!,
       liked: likedCommentTids.has(document.tid),
     }));
   }

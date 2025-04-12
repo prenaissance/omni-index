@@ -5,5 +5,12 @@
       "url": "https://prenaissance.github.io/atproto-lexicon-json-schema/v1.json"
     }
   ],
-  "cSpell.words": ["Buildx", "fontsource", "frontends", "Gutendex", "Unliked"]
+  "cSpell.words": [
+    "ereaders",
+    "Buildx", "fontsource", "frontends",
+    "Gutendex",
+    "IDPF",
+    "mobipocket",
+    "Unliked"
+  ]
 }
