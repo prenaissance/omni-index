@@ -17,44 +17,48 @@ const Trending = ({ loaderData }: TrendingProps) => {
       <h1 className="text-2xl text-center text-white font-semibold mb-3">
         Trending
       </h1>
-      <div className="flex flex-row w-full justify-between">
+      <div className="grid grid-cols-2 min-[500px]:grid-cols-3 sm:grid-cols-4 xl:grid-cols-7 w-full gap-4 md:gap-8 lg:gap-20 xl:gap-8 2xl:gap-16">
         {trendingBooks.map((book) => (
-          <div key={book._id} className="flex flex-col space-y-4 w-48">
+          <div key={book._id} className="flex flex-col space-y-2 lg:space-y-4">
             <Link
               to={`/books/${book._id}`}
-              className="h-64 relative bock group"
+              className="h-52 md:h-64 min-[2000px]:h-80 relative bock group"
             >
-              <img
-                src={
-                  book.thumbnail && "url" in book.thumbnail
-                    ? book.thumbnail.url
-                    : "./placeholder.jpg"
-                }
-                className="h-64 w-full"
-                alt="thumbnail"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300"></div>
+              <div
+                style={{
+                  backgroundImage: `url(${
+                    book.thumbnail && "url" in book.thumbnail
+                      ? book.thumbnail.url
+                      : "../../public/placeholder.png"
+                  })`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "top left",
+                }}
+                className={"h-full"}
+              ></div>
             </Link>
             <div className="flex flex-col">
               <Link
                 to={`/books/${book._id}`}
-                className="text-lg font-semibold text-ellipsis overflow-hidden text-nowrap hover:text-textHover transition duration-300"
+                className="lg:text-lg font-semibold text-ellipsis overflow-hidden text-nowrap hover:text-textHover transition duration-300"
               >
                 {book.title}
               </Link>
-              <div className="flex items-center text-sm">
-                <StarIcon />
+              <div className="flex items-center text-xs lg:text-sm">
+                <div>
+                  <StarIcon />
+                </div>
                 <p className="pt-1 mr-2">4.5</p>
                 <div className="w-[1px] h-4 bg-white mr-2"></div>
-                <a
-                  // href={`/authors/${book.author}`}
-                  href={"#"}
+                <Link
+                  // to={`/authors/${book.author}`}
+                  to={"#"}
                   target="_blank"
                   rel="noreferrer"
                   className="text-md pt-1 hover:text-textHover transition duration-300 text-ellipsis overflow-hidden text-nowrap"
                 >
                   {book.author}
-                </a>
+                </Link>
               </div>
             </div>
           </div>
