@@ -16,7 +16,9 @@ export class StoredEventService implements Disposable {
 
   async init() {
     const callback = async (_: EventType, event: DomainEvent) => {
-      const shouldBeStored = isGossipEvent(event);
+      const shouldBeStored =
+        isGossipEvent(event) &&
+        (await this.storedEventRepository.existsId(event.id));
       if (!shouldBeStored) {
         return;
       }

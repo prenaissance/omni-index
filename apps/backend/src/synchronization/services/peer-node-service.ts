@@ -1,7 +1,7 @@
 import * as tls from "node:tls";
 import { Readable } from "node:stream";
 import { ObjectId } from "mongodb";
-import { defer, Observable, repeat, Subscription } from "rxjs";
+import { defer, filter, Observable, repeat, Subscription } from "rxjs";
 import { FastifyBaseLogger } from "fastify";
 import { createParser } from "eventsource-parser";
 import { PeerNode, PeerNodeInit } from "../entities/peer-node";
@@ -16,6 +16,7 @@ import { Env } from "~/common/config/env";
 import { StoredEventRepository } from "~/stored-events/stored-event-repository";
 import { StoredEvent } from "~/stored-events/entities/stored-event";
 import { EntryService } from "~/media/entry-service";
+import { HeartbeatEvent } from "~/common/events/heartbeat-event";
 
 type EntryEvent = EventMap[MatchesPattern<"entry.*", EventType>];
 
@@ -59,7 +60,6 @@ export class PeerNodeService {
           onEvent: (event) => {
             try {
               subscriber.next(JSON.parse(event.data) as TEvent);
-              console.log(JSON.parse(event.data));
             } catch {
               this.logger.debug({
                 msg: "Failed to deserialize SSE event",
@@ -139,11 +139,15 @@ export class PeerNodeService {
   private subscribeToNodeChanges(nodeUrl: string) {
     const url = new URL(nodeUrl);
     url.pathname = "/api/entries/sse";
-    const subscription = this.sse<EntryEvent>(url.toString())
-      .pipe(retryWithBackoff(), repeat({ delay: 1000 }))
+    const subscription = this.sse<EntryEvent | HeartbeatEvent>(url.toString())
+      .pipe(
+        filter((event) => event.type !== "heartbeat"),
+        retryWithBackoff(),
+        repeat({ delay: 1000 })
+      )
       .subscribe(async (event) => {
         const eventProcessed = await this.storedEventRepository.existsId(
-          event.id
+          new ObjectId(event.id)
         );
         if (eventProcessed) {
           this.logger.debug({
@@ -163,13 +167,13 @@ export class PeerNodeService {
 
         switch (event.type) {
           case "entry.created":
-            await this.entryService.synchronizeCreation(event);
+            await this.entryService.synchronizeCreation(event, nodeUrl);
             break;
           case "entry.updated":
             await this.entryService.synchronizeUpdate(event, nodeUrl);
             break;
           case "entry.deleted":
-            await this.entryService.synchronizeDeletion(event);
+            await this.entryService.synchronizeDeletion(event, nodeUrl);
             break;
         }
       });
