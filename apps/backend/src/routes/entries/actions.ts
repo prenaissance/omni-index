@@ -62,8 +62,10 @@ const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
           message: `Entry ${entry.slug} already exists`,
         });
       }
-      await app.mediaEntry.service.createEntry(request.body);
-      reply.status(201).send(entry);
+      const createdEntry = await app.mediaEntry.service.createEntry(
+        request.body
+      );
+      reply.status(201).send(createdEntry);
     }
   );
 };
