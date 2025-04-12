@@ -49,7 +49,7 @@ export class EntryRepository {
   }
 
   async update(entry: Entry) {
-    this.collection.updateOne(
+    await this.collection.updateOne(
       {
         _id: entry._id,
       },

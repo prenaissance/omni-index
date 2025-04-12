@@ -38,7 +38,7 @@ export class EntryService {
     }
     const { fieldsDiff, createdMedia, deletedMediaIds, mediaUpdates } =
       entry.diff(existingEntry);
-    const {} = this.eventEmitter.emit("entry.updated", {
+    this.eventEmitter.emit("entry.updated", {
       id: new ObjectId(),
       type: "entry.updated",
       payload: {
