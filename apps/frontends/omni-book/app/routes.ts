@@ -28,5 +28,6 @@ export default [
       ),
     ]),
     route("books/:bookId", "routes/book.tsx"),
+    route("/admin/nodes-config", "routes/admin/nodes-config.tsx"),
   ]),
 ] satisfies RouteConfig;
