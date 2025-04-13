@@ -31,6 +31,8 @@ export const mediaPlugin = fastifyPlugin(
     const commentRepository = new CommentRepository(app.db, app.eventEmitter);
     const commentService = new CommentService(
       commentRepository,
+      app.users.service,
+      app.users.repository,
       app.eventEmitter,
       app.relay.stream$,
       app.log

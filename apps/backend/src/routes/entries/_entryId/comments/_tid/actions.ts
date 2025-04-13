@@ -131,10 +131,13 @@ const entryCommentTidRoutes: FastifyPluginAsyncTypebox = async (app) => {
         });
       }
 
-      const comment = await app.mediaEntry.comments.repository.findOne({
-        entrySlug: entry.slug,
-        tid,
-      });
+      const comment = await app.mediaEntry.comments.repository.findOne(
+        {
+          entrySlug: entry.slug,
+          tid,
+        },
+        request.atproto.did as AtprotoDid | undefined
+      );
 
       if (!comment) {
         return reply.code(404).send({
