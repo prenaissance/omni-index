@@ -103,12 +103,13 @@ export class CommentService implements Disposable {
     if (!userExists) {
       const atprotoClient = new Agent("https://bsky.social/xrpc");
       this.userService.importUser(atprotoClient);
+      await this.importCommentLikes(atprotoClient);
+      await this.importComments(atprotoClient);
       this.logger.info({
         msg: "Imported user upon synchronizing comment",
         did: event.did as AtprotoDid,
       });
-      await this.importCommentLikes(atprotoClient);
-      await this.importComments(atprotoClient);
+      return;
     }
 
     const comment = new CommentEntity({

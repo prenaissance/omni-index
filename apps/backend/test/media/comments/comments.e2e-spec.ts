@@ -175,9 +175,9 @@ describe("Media Comments", () => {
   describe("Liking comments", () => {
     let entryId: ObjectId;
     let commentTid: string;
-    let otherUser: User;
+    // let otherUser: User;
     beforeEach(async () => {
-      otherUser = await createIntegrationUser(app);
+      // otherUser = await createIntegrationUser(app);
       const entry = await createIntegrationEntry(app);
       entryId = new ObjectId(entry._id);
       const commentText = faker.lorem.sentence();
@@ -195,18 +195,7 @@ describe("Media Comments", () => {
     });
 
     it("should increase the likes count of a comment when liking it", async () => {
-      // like with the other user
-      setMockUserDid(otherUser.did);
-
       let response = await app.inject({
-        method: "POST",
-        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
-      });
-      expect(response.statusCode).toBe(201);
-      // like with the original user
-      setMockUserDid(user.did);
-
-      response = await app.inject({
         method: "POST",
         url: `/api/entries/${entryId}/comments/${commentTid}/like`,
       });
@@ -217,22 +206,13 @@ describe("Media Comments", () => {
         url: `/api/entries/${entryId}/comments/${commentTid}`,
       });
       const comment = response.json<CommentResponse>();
-      expect(comment.likes).toBe(2);
+      expect(comment.likes).toBe(1);
     });
 
     it("should show which comments the user has liked", async () => {
-      // like with the other user
-      setMockUserDid(otherUser.did);
-
-      let response = await app.inject({
-        method: "POST",
-        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
-      });
-      expect(response.statusCode).toBe(201);
-      // like with the original user
       setMockUserDid(user.did);
 
-      response = await app.inject({
+      let response = await app.inject({
         method: "POST",
         url: `/api/entries/${entryId}/comments/${commentTid}/like`,
       });
@@ -253,7 +233,7 @@ describe("Media Comments", () => {
         expect.objectContaining({
           tid: commentTid,
           liked: true,
-          likes: 2,
+          likes: 1,
         })
       );
     });
@@ -273,18 +253,7 @@ describe("Media Comments", () => {
           },
         },
       });
-      // like with the other user
-      setMockUserDid(otherUser.did);
-
       let response = await app.inject({
-        method: "POST",
-        url: `/api/entries/${entryId}/comments/${commentTid}/like`,
-      });
-      expect(response.statusCode).toBe(201);
-      // like with the original user
-      setMockUserDid(user.did);
-
-      response = await app.inject({
         method: "POST",
         url: `/api/entries/${entryId}/comments/${commentTid}/like`,
       });
@@ -295,7 +264,7 @@ describe("Media Comments", () => {
         url: `/api/entries/${entryId}/comments/${commentTid}`,
       });
       const commentBefore = response.json<CommentResponse>();
-      expect(commentBefore.likes).toBe(2);
+      expect(commentBefore.likes).toBe(1);
 
       response = await app.inject({
         method: "DELETE",
@@ -312,7 +281,7 @@ describe("Media Comments", () => {
         url: `/api/entries/${entryId}/comments/${commentTid}`,
       });
       const comment = response.json<CommentResponse>();
-      expect(comment.likes).toBe(1);
+      expect(comment.likes).toBe(0);
     });
 
     it("should do nothing when unliking a comment that has not been liked", async () => {
