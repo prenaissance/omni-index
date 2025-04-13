@@ -16,6 +16,8 @@ import { DomainEventEmitter } from "~/common/events/typed-event-emitter";
 import { AtprotoDeletionResponse } from "~/common/payloads";
 import * as Comment from "~/atproto/types/com/omni-index/comment";
 import * as CommentLike from "~/atproto/types/com/omni-index/comment/like";
+import { UserRepository } from "~/common/auth/repositories/user-repository";
+import { UserService } from "~/common/auth/user-service";
 
 type RepoListRecord = Awaited<
   ReturnType<Agent["com"]["atproto"]["repo"]["listRecords"]>
@@ -25,6 +27,8 @@ export class CommentService implements Disposable {
   private readonly unsubscribe: () => void;
   constructor(
     private readonly commentRepository: CommentRepository,
+    private readonly userService: UserService,
+    private readonly userRepository: UserRepository,
     private readonly eventEmitter: DomainEventEmitter,
     events$: Observable<AtprotoEvent>,
     private readonly logger: FastifyBaseLogger
@@ -93,6 +97,20 @@ export class CommentService implements Disposable {
       return;
     }
 
+    const userExists = await this.userRepository.hasDid(
+      event.did as AtprotoDid
+    );
+    if (!userExists) {
+      const atprotoClient = new Agent("https://bsky.social/xrpc");
+      this.userService.importUser(atprotoClient);
+      this.logger.info({
+        msg: "Imported user upon synchronizing comment",
+        did: event.did as AtprotoDid,
+      });
+      await this.importCommentLikes(atprotoClient);
+      await this.importComments(atprotoClient);
+    }
+
     const comment = new CommentEntity({
       tid: event.rkey,
       entrySlug: event.record.entrySlug,
@@ -138,6 +156,20 @@ export class CommentService implements Disposable {
 
     if (existingCommentLike) {
       return;
+    }
+
+    const userExists = await this.userRepository.hasDid(
+      event.did as AtprotoDid
+    );
+    if (!userExists) {
+      const atprotoClient = new Agent("https://bsky.social/xrpc");
+      this.userService.importUser(atprotoClient);
+      this.logger.info({
+        msg: "Imported user upon synchronizing comment like",
+        did: event.did as AtprotoDid,
+      });
+      await this.importCommentLikes(atprotoClient);
+      await this.importComments(atprotoClient);
     }
 
     const like = new CommentLikeEntity({
@@ -238,7 +270,7 @@ export class CommentService implements Disposable {
     return { locallyDeleted, atprotoDeleted };
   }
 
-  async importComments(userAtproto: Agent, logger: FastifyBaseLogger) {
+  async importComments(userAtproto: Agent) {
     const did = userAtproto.assertDid as AtprotoDid;
     const recordsResponse = await userAtproto.com.atproto.repo.listRecords({
       repo: did,
@@ -268,7 +300,7 @@ export class CommentService implements Disposable {
     }
 
     if (invalidRecords.length) {
-      logger.debug({
+      this.logger.debug({
         msg: "Several invalid comment records could not be imported",
         did,
         uris: invalidRecords.map((r) => r.uri),
@@ -294,14 +326,14 @@ export class CommentService implements Disposable {
     );
 
     await this.commentRepository.saveMany(comments);
-    logger.info({
+    this.logger.info({
       msg: "Imported comments for new user",
       did,
       count: comments.length,
     });
   }
 
-  async importCommentLikes(userAtproto: Agent, logger: FastifyBaseLogger) {
+  async importCommentLikes(userAtproto: Agent) {
     const did = userAtproto.assertDid as AtprotoDid;
     const recordsResponse = await userAtproto.com.atproto.repo.listRecords({
       repo: did,
@@ -330,7 +362,7 @@ export class CommentService implements Disposable {
     }
 
     if (invalidRecords.length) {
-      logger.debug({
+      this.logger.debug({
         msg: "Several invalid comment like records could not be imported",
         did,
         uris: invalidRecords.map((r) => r.uri),
@@ -347,7 +379,7 @@ export class CommentService implements Disposable {
         })
     );
     await this.commentRepository.importLikes(likes);
-    logger.info({
+    this.logger.info({
       msg: "Imported comment likes for new user",
       did,
       count: likes.length,
