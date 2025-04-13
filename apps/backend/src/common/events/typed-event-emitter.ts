@@ -18,6 +18,18 @@ export class TypedEventEmitter<Events extends Record<string, object>> {
     return this.eventEmitter.on(event as string, listener);
   }
 
+  onAny(
+    listener: (event: keyof Events, payload: Events[keyof Events]) => void
+  ) {
+    return this.eventEmitter.onAny(listener as never);
+  }
+
+  offAny(
+    listener: (event: keyof Events, payload: Events[keyof Events]) => void
+  ) {
+    return this.eventEmitter.offAny(listener);
+  }
+
   onPattern<Pattern extends string>(
     pattern: Pattern,
     listener: (

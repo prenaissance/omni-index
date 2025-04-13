@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Static, Type } from "@sinclair/typebox";
 import { StoredEvent } from "../entities/stored-event";
 import { ClassProperties } from "~/common/utilities/serialization";
 import { ObjectIdSchema } from "~/common/payloads/object-id-schema";
@@ -12,6 +12,16 @@ export const StoredEventResponse = Type.Object(
       description: "TODO: Constraint to possible events enum",
     }),
     payload: Type.Any(),
+    nodeUrl: Type.Union([
+      Type.String({
+        format: "uri",
+        description:
+          "The URL of the node that propagated the event. Null if event was created locally.",
+      }),
+      Type.Null(),
+    ]),
   },
   { $id: "StoredEventResponse" }
 ) satisfies { static: ClassProperties<StoredEvent> };
+
+export type StoredEventResponse = Static<typeof StoredEventResponse>;

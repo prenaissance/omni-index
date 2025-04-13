@@ -12,7 +12,7 @@ import {
   PeerNodeResponse,
 } from "~/synchronization/payloads/peer-node";
 import { getCertificate } from "~/synchronization/utilities";
-import { isValidHostname } from "~/synchronization/validators";
+import { isValidNodeUrl } from "~/synchronization/validators";
 
 const peerNodeRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.addSchema(CreatePeerNodeRequest);
@@ -52,35 +52,41 @@ const peerNodeRoutes: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     async (request, reply) => {
-      const { hostname, trustLevel } = request.body;
+      const { url, trustLevel } = request.body;
 
-      const isValid = isValidHostname(hostname);
+      const isValid = isValidNodeUrl(url);
       if (!isValid) {
         reply.status(400);
         return {
-          message: "Invalid hostname",
+          message: "Invalid url",
         };
       }
 
-      const exists = await app.peerNodes.service.exists(hostname);
+      const exists = await app.peerNodes.service.exists(url);
       if (exists) {
         reply.status(409);
         return {
-          message: `Peer node with hostname "${hostname}" already exists`,
+          message: `Peer node with url "${url}" already exists`,
         };
       }
 
       const peerNode = new PeerNode({
-        hostname,
+        url,
         trustLevel,
       });
 
-      const certificate = await getCertificate(hostname);
-      peerNode.pinnedCertificates.push(
-        new PinnedCertificate({
-          sha256: certificate.fingerprint256,
-        })
+      const certificate = await getCertificate(url).catch((error) =>
+        app.env.DANGEROUS_SKIP_IDENTITY_VERIFICATION
+          ? null
+          : Promise.reject(error)
       );
+      if (certificate) {
+        peerNode.pinnedCertificates.push(
+          new PinnedCertificate({
+            sha256: certificate.fingerprint256,
+          })
+        );
+      }
 
       await app.peerNodes.service.add(peerNode);
       reply.status(201);

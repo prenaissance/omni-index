@@ -3,7 +3,7 @@ import { PeerNode, PeerNodeInit } from "~/synchronization/entities/peer-node";
 
 export const CreatePeerNodeRequest = Type.Object(
   {
-    hostname: Type.String(),
+    url: Type.String(),
     trustLevel: Type.Enum(PeerNode.TrustLevel),
   },
   {

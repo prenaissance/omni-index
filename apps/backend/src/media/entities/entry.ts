@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { Db, WithoutId } from "mongodb";
+import { EntryUpdatedEvent } from "../events/entry";
 import { BlobLink } from "./blob-link";
 import { Media } from "./media";
 import { omit } from "~/common/utilities/functional";
@@ -102,35 +103,77 @@ export class Entry extends Entity {
   }
 
   diff(other: Entry) {
-    const diff: Partial<Omit<ClassProperties<Entry>, "media">> = {};
+    const fieldsDiff: Partial<Omit<ClassProperties<Entry>, "media">> = {};
 
-    if (this.title !== other.title) diff.title = this.title ?? null;
+    if (this.title !== other.title) fieldsDiff.title = this.title ?? null;
 
-    if (this.author !== other.author) diff.author = this.author;
+    if (this.author !== other.author) fieldsDiff.author = this.author;
 
-    if (this.genres.length !== other.genres.length) diff.genres = this.genres;
+    if (this.genres.length !== other.genres.length)
+      fieldsDiff.genres = this.genres;
 
     if (this.genres.some((genre) => !other.genres.includes(genre)))
-      diff.genres = this.genres;
+      fieldsDiff.genres = this.genres;
 
     if (this.localizedTitle !== other.localizedTitle)
-      diff.localizedTitle = this.localizedTitle;
+      fieldsDiff.localizedTitle = this.localizedTitle;
 
-    if (this.slug !== other.slug) diff.slug = this.slug;
+    if (this.slug !== other.slug) fieldsDiff.slug = this.slug;
 
-    if (this.year !== other.year) diff.year = this.year;
+    if (this.year !== other.year) fieldsDiff.year = this.year;
 
-    if (this.language !== other.language) diff.language = this.language;
+    if (this.language !== other.language) fieldsDiff.language = this.language;
 
     if (this.description !== other.description)
-      diff.description = this.description;
+      fieldsDiff.description = this.description;
 
     if (JSON.stringify(this.thumbnail) !== JSON.stringify(other.thumbnail))
-      diff.thumbnail = this.thumbnail;
+      fieldsDiff.thumbnail = this.thumbnail;
 
     if (JSON.stringify(this.meta) !== JSON.stringify(other.meta))
-      diff.meta = this.meta;
+      fieldsDiff.meta = this.meta;
 
-    return diff;
+    const existingMediaIds = new Set(this.media.map((m) => m._id.toString()));
+    const newMediaIds = new Set(other.media.map((m) => m._id.toString()));
+    const deletedMediaIds = existingMediaIds.difference(newMediaIds);
+    const addedMediaIds = newMediaIds.difference(existingMediaIds);
+    const remainingMediaIds = newMediaIds.intersection(existingMediaIds);
+
+    const updatedMedia = other.media
+      .filter((media) => remainingMediaIds.has(media._id.toString()))
+      .filter((media) => {
+        const existingMedia = this.media.find((m) => m._id.equals(media._id));
+        return existingMedia && !media.equals(existingMedia);
+      });
+
+    const mediaUpdates: EntryUpdatedEvent["payload"]["mediaUpdates"] =
+      updatedMedia.map((media) => {
+        const existingMedia = this.media.find((m) => m._id.equals(media._id))!;
+        const existingMirrors = new Set(
+          existingMedia.mirrors.map((m) => m._id)
+        );
+        const newMirrors = new Set(media.mirrors.map((m) => m._id));
+        const deletedMirrorIds = existingMirrors.difference(newMirrors);
+        const createdMirrorIds = newMirrors.difference(existingMirrors);
+        return {
+          mediaId: media._id,
+          meta: media.metaDiff(existingMedia),
+          createdMirrors: media.mirrors.filter((m) =>
+            createdMirrorIds.has(m._id)
+          ),
+          deletedMirrorIds: Array.from(deletedMirrorIds),
+        };
+      });
+
+    const createdMedia = other.media.filter((m) =>
+      addedMediaIds.has(m._id.toString())
+    );
+
+    return {
+      fieldsDiff,
+      deletedMediaIds: Array.from(deletedMediaIds),
+      createdMedia,
+      mediaUpdates,
+    };
   }
 }

@@ -1,9 +1,9 @@
-import { once } from "node:events";
 import {
   FastifyPluginAsyncTypebox,
   Type,
 } from "@fastify/type-provider-typebox";
 import { EventMap, EventType } from "~/common/events/event-map";
+import { HeartbeatEvent } from "~/common/events/heartbeat-event";
 import { MatchesPattern } from "~/common/types/strings";
 import {
   EntryCreatedEvent,
@@ -28,6 +28,7 @@ const entriesSseRoutes: FastifyPluginAsyncTypebox = async (app) => {
             Type.Ref(EntryCreatedEvent),
             Type.Ref(EntryUpdatedEvent),
             Type.Ref(EntryDeletedEvent),
+            Type.Ref(HeartbeatEvent),
           ]),
         },
       },
@@ -36,21 +37,34 @@ const entriesSseRoutes: FastifyPluginAsyncTypebox = async (app) => {
       reply.raw.setHeader("Content-Type", "text/event-stream; charset=utf-8");
       reply.raw.setHeader("Connection", "keep-alive");
       reply.raw.setHeader("Cache-Control", "no-cache,no-transform");
-      reply.raw.setHeader("x-no-compression", 1);
+      reply.raw.setHeader("Access-Control-Allow-Origin", "*");
 
+      reply.raw.statusCode = 200;
+      reply.raw.flushHeaders();
       const callback = (
         event: EventMap[MatchesPattern<"entry.*", EventType>]
       ) => {
-        reply.sse({ data: JSON.stringify(event) });
+        reply.log.debug({
+          msg: "SSE event sent",
+          event: event.type,
+          remoteAddress: reply.raw.socket?.remoteAddress,
+        });
+        reply.sse({ id: event.id.toString(), data: JSON.stringify(event) });
       };
 
       app.eventEmitter.onPattern("entry.*", callback);
+      const intervalId = setInterval(() => {
+        reply.sse({ data: JSON.stringify({ type: "heartbeat" }) });
+      }, 90_000);
 
-      reply.raw.flushHeaders();
-
-      await once(reply.raw, "close");
-
-      app.eventEmitter.offPattern("entry.*", callback);
+      reply.raw.once("close", () => {
+        app.eventEmitter.offPattern("entry.*", callback);
+        clearInterval(intervalId);
+        reply.log.debug({
+          msg: "SSE connection closed",
+          remoteAddress: reply.raw.socket?.remoteAddress,
+        });
+      });
     }
   );
 };

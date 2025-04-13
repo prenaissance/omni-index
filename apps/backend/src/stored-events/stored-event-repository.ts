@@ -1,12 +1,12 @@
 import { Collection, Db, Filter, FindOptions, ObjectId } from "mongodb";
 import { StoredEvent } from "./entities/stored-event";
 
-export const STORED_EVENT_COLLECTION = "stored_events";
+export const STORED_EVENTS_COLLECTION = "stored-events";
 
 export class StoredEventRepository {
   private readonly collection: Collection<StoredEvent>;
   constructor(db: Db) {
-    this.collection = db.collection(STORED_EVENT_COLLECTION);
+    this.collection = db.collection(STORED_EVENTS_COLLECTION);
   }
 
   /**
