@@ -2,6 +2,7 @@ import { Collection, Db, Filter } from "mongodb";
 import { AtprotoDid } from "@atproto/oauth-client-node";
 import { CommentEntity } from "./entities/comment";
 import { CommentLikeEntity } from "./entities/comment-like";
+import { PaginatedCommentsResponse } from "./payloads/paginated-comments-response";
 import { omit, pick } from "~/common/utilities/functional";
 import { PaginatedSearch } from "~/common/types/paginated-search";
 import { StoredUser, User } from "~/common/auth/entities/user";
@@ -100,13 +101,13 @@ export class CommentRepository {
   async findMany(
     filters: Filter<CommentEntity>,
     { skip, limit, userDid }: PaginatedSearch & { userDid?: AtprotoDid }
-  ): Promise<CommentWithAuthor[]> {
-    const documents = await this.commentsCollection
+  ): Promise<PaginatedCommentsResponse> {
+    const pipeline = this.commentsCollection
       .aggregate()
       .match(filters)
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 })
       .lookup({
         from: "users",
         localField: "createdByDid",
@@ -115,8 +116,12 @@ export class CommentRepository {
       })
       .addStage<CommentWithAuthor>({
         $addFields: { createdBy: { $arrayElemAt: ["$createdBy", 0] } },
-      })
-      .toArray();
+      });
+
+    const [documents, count] = await Promise.all([
+      pipeline.toArray(),
+      this.commentsCollection.countDocuments(filters),
+    ]);
 
     const likedComments = userDid
       ? await this.commentLikesCollection
@@ -130,11 +135,16 @@ export class CommentRepository {
       likedComments.map((like) => like.commentTid)
     );
 
-    return documents.map((document) => ({
+    const commentsWithUsers = documents.map((document) => ({
       ...document,
       createdBy: document.createdBy ? new User(document.createdBy) : null!,
       liked: likedCommentTids.has(document.tid),
     }));
+
+    return {
+      comments: commentsWithUsers,
+      total: count,
+    };
   }
 
   async findLike(commentTid: string, userDid: AtprotoDid) {
@@ -225,5 +235,11 @@ export class CommentRepository {
     const result = await this.commentsCollection.deleteOne(filters);
 
     return !!result.deletedCount;
+  }
+
+  async deleteMany(filters?: Filter<CommentEntity>) {
+    const result = await this.commentsCollection.deleteMany(filters);
+
+    return result.deletedCount;
   }
 }

@@ -11,6 +11,8 @@ import { CommentResponse } from "~/media/comments/payloads/comment-response";
 import { mockAtprotoAgent, setMockUserDid } from "test/__e2e-setup__";
 import { User } from "~/common/auth/entities/user";
 import { AtprotoDeletionResponse } from "~/common/payloads";
+import { CommentEntity } from "~/media/comments/entities";
+import { PaginatedCommentsResponse } from "~/media/comments/payloads/paginated-comments-response";
 
 describe("Media Comments", () => {
   let app: FastifyInstance;
@@ -42,6 +44,103 @@ describe("Media Comments", () => {
     await app.close();
   });
 
+  describe("Pagination & sorting", () => {
+    afterAll(async () => {
+      await app.mediaEntry.comments.repository.deleteMany({});
+    });
+
+    it("should paginate comments & sort by creation date", async () => {
+      const entry = await createIntegrationEntry(app);
+      await app.mediaEntry.comments.repository.save(
+        new CommentEntity({
+          tid: "1",
+          entrySlug: entry.slug,
+          text: faker.lorem.sentence(),
+          createdByDid: user.did,
+          createdAt: new Date("2023-01-01T00:00:00Z"),
+        })
+      );
+      await app.mediaEntry.comments.repository.save(
+        new CommentEntity({
+          tid: "2",
+          entrySlug: entry.slug,
+          text: faker.lorem.sentence(),
+          createdByDid: user.did,
+          createdAt: new Date("2023-01-03T00:00:00Z"),
+        })
+      );
+      await app.mediaEntry.comments.repository.save(
+        new CommentEntity({
+          tid: "3",
+          entrySlug: entry.slug,
+          text: faker.lorem.sentence(),
+          createdByDid: user.did,
+          createdAt: new Date("2023-01-02T00:00:00Z"),
+        })
+      );
+
+      const firstPageResponse = await app.inject({
+        method: "GET",
+        url: `/api/entries/${entry._id}/comments`,
+        query: {
+          page: "1",
+          limit: "2",
+        },
+      });
+      expect(firstPageResponse.statusCode).toBe(200);
+      const firstPageComments =
+        firstPageResponse.json<PaginatedCommentsResponse>();
+      expect(firstPageComments.total).toBe(3);
+      expect(firstPageComments.comments).toEqual([
+        {
+          tid: "2",
+          text: expect.any(String),
+          createdBy: expect.objectContaining({
+            did: user.did,
+          }),
+          createdAt: "2023-01-03T00:00:00.000Z" as never,
+          likes: 0,
+          liked: false,
+        },
+        {
+          tid: "3",
+          text: expect.any(String),
+          createdBy: expect.objectContaining({
+            did: user.did,
+          }),
+          createdAt: "2023-01-02T00:00:00.000Z" as never,
+          likes: 0,
+          liked: false,
+        },
+      ] satisfies CommentResponse[]);
+
+      const secondPageResponse = await app.inject({
+        method: "GET",
+        url: `/api/entries/${entry._id}/comments`,
+        query: {
+          page: "2",
+          limit: "2",
+        },
+      });
+      expect(secondPageResponse.statusCode).toBe(200);
+      const secondPageComments =
+        secondPageResponse.json<PaginatedCommentsResponse>();
+      expect(secondPageComments.total).toBe(3);
+      expect(secondPageComments.comments).toEqual([
+        {
+          tid: "1",
+          text: expect.any(String),
+          createdBy: expect.objectContaining({
+            did: user.did,
+          }),
+          createdAt: "2023-01-01T00:00:00.000Z" as never,
+          likes: 0,
+          liked: false,
+        },
+      ] satisfies CommentResponse[]);
+    });
+  });
+
   describe("Creating comments", () => {
     it("should add a comment to a media entry", async () => {
       const entry = await createIntegrationEntry(app);
@@ -61,8 +160,8 @@ describe("Media Comments", () => {
         url: `/api/entries/${entry._id}/comments`,
       });
       expect(response.statusCode).toBe(200);
-      const comments = response.json<CommentResponse[]>();
-      expect(comments).toContainEqual(
+      const comments = response.json<PaginatedCommentsResponse>();
+      expect(comments.comments).toContainEqual(
         expect.objectContaining({
           text: commentText,
           createdBy: expect.objectContaining({
@@ -149,10 +248,12 @@ describe("Media Comments", () => {
       });
       expect(response.statusCode).toBe(200);
 
-      const comments = response.json<CommentResponse[]>();
-      expect(comments).toContainEqual(
+      const comments = response.json<PaginatedCommentsResponse>();
+      expect(comments.comments).toContainEqual(
         expect.objectContaining({
+          tid: commentTid,
           liked: true,
+          likes: 2,
         })
       );
     });

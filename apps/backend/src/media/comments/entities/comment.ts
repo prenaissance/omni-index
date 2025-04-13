@@ -6,7 +6,7 @@ export type CommentInit = EntityInit & {
   entrySlug: string;
   tid: string;
   text: string;
-  createdAt: Date;
+  createdAt?: Date;
   createdByDid: AtprotoDid;
   likes?: number;
 };
@@ -35,7 +35,7 @@ export class CommentEntity
     this.tid = tid;
     this.entrySlug = entrySlug;
     this.text = text;
-    this.createdAt = new Date(createdAt);
+    this.createdAt = createdAt ?? new Date();
     this.createdByDid = createdByDid;
     this.likes = likes ?? 0;
   }

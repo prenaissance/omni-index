@@ -10,8 +10,8 @@ import { CommentEntity } from "~/media/comments/entities/comment";
 import { CreateCommentRequest } from "~/media/comments/payloads/create-comment-request";
 import { ExceptionSchema, ObjectIdSchema } from "~/common/payloads";
 import { CreateCommentResponse } from "~/media/comments/payloads";
-import { CommentResponse } from "~/media/comments/payloads/comment-response";
 import { PaginationQuery } from "~/common/payloads/pagination";
+import { PaginatedCommentsResponse } from "~/media/comments/payloads/paginated-comments-response";
 
 const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.get(
@@ -27,7 +27,7 @@ const entryCommentRoutes: FastifyPluginAsyncTypebox = async (app) => {
           }),
         }),
         response: {
-          200: Type.Array(Type.Ref(CommentResponse)),
+          200: Type.Ref(PaginatedCommentsResponse),
           404: Type.Ref(ExceptionSchema),
         },
       },
