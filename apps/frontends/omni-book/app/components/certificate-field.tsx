@@ -2,12 +2,18 @@ import PopupIcon from "./icons/popup-icon";
 import RegenerateIcon from "./icons/regen";
 import { Button } from "./ui/button";
 import Popup from "./ui/popup";
+import type { paths } from "~/lib/api-types";
+
+type Node =
+  paths["/api/peer-nodes"]["get"]["responses"]["200"]["content"]["application/json"];
+
+type PinnedCertificate = Node[number]["pinnedCertificates"][number];
 
 type CertificateFieldProps = {
-  value: string;
+  certificate: PinnedCertificate;
 };
 
-export const CertificateField = ({ value }: CertificateFieldProps) => {
+export const CertificateField = ({ certificate }: CertificateFieldProps) => {
   return (
     <div
       className={
@@ -15,8 +21,8 @@ export const CertificateField = ({ value }: CertificateFieldProps) => {
       }
     >
       <div className="flex items-center gap-x-2">
-        <p>{value}</p>
-        <Popup content={"full certificate"}>
+        <p>{"..." + certificate.sha256.slice(-8)}</p>
+        <Popup content={certificate.sha256} className="w-40 break-all">
           <PopupIcon className="w-5 h-5" />
         </Popup>
       </div>

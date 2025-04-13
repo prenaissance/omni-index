@@ -33,16 +33,6 @@ export const TrustedLevelField = ({ value }: TrustedLevelFieldProps) => {
             </button>
           </form>
         </div>
-        <div className="py-1">
-          <form action="#" method="POST">
-            <button
-              type="submit"
-              className="block w-full px-4 py-2 text-left text-sm hover:bg-accent"
-            >
-              Untrusted
-            </button>
-          </form>
-        </div>
       </div>
     </details>
   );

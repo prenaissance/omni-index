@@ -9,11 +9,13 @@ import Popup from "~/components/ui/popup";
 import TrashIcon from "~/components/icons/trash";
 import { CertificateField } from "~/components/certificate-field";
 import { TrustedLevelField } from "~/components/trusted-level-field";
+import Confirmation from "~/components/ui/confirmation";
+import { AddNodeForm } from "~/components/add-node-form";
 
-type ProfileType =
+type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
 
-type NodeType =
+type Node =
   paths["/api/peer-nodes"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -39,7 +41,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     throw new Response("Unauthorized", { status: 401 });
   }
 
-  const user = (await res.json()) as ProfileType;
+  const user = (await res.json()) as Profile;
 
   if (user.role !== "admin" && user.role !== "owner") {
     throw new Response("Forbidden", { status: 403 });
@@ -57,7 +59,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     throw new Response("Unauthorized", { status: 401 });
   }
 
-  const nodes = (await nodesResponse.json()) as NodeType;
+  const nodes = (await nodesResponse.json()) as Node;
   if (!nodes) {
     throw new Response("Unauthorized", { status: 401 });
   }
@@ -74,14 +76,34 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-2xl font-bold">Nodes Configuration</h1>
         <Popup content={"Add a node"} className="w-32" bg={"accent"}>
-          <Button variant={"icon"} size={"icon"}>
-            <PlusIcon size={7} />
-          </Button>
+          <div>
+            <input
+              type="checkbox"
+              id={"add-node-button"}
+              className="peer hidden"
+            />
+            <label
+              htmlFor={"add-node-button"}
+              className="cursor-pointer flex items-center gap-4"
+            >
+              <PlusIcon size={8} />
+            </label>
+            <div className="hidden peer-checked:block">
+              <Confirmation
+                title="Add a peer node"
+                confirmButtonText="Delete"
+                htmlFor={"add-node-button"}
+                className="xl:w-[30%] lg:w-[40%]"
+              >
+                <AddNodeForm />
+              </Confirmation>
+            </div>
+          </div>
         </Popup>
       </div>
       <table className="w-full table-auto">
         <thead>
-          <tr className="text-md font-medium text-accent">
+          <tr className="text-md font-medium text-accent border-collapse">
             <th className="text-left">Hostname</th>
             <th className="text-left">Created At</th>
             <th className="text-left">Trust Level</th>
@@ -89,11 +111,11 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
             <th className="text-left"></th>
           </tr>
         </thead>
-        {nodes &&
-          nodes.length > 0 &&
-          nodes.map((node) => (
-            <tbody key={node._id}>
-              <tr className="">
+        <tbody className="divide-y-2 divide-card-secondary">
+          {nodes &&
+            nodes.length > 0 &&
+            nodes.map((node) => (
+              <tr className="h-16" key={node._id}>
                 <td className="w-[25%]">
                   <div
                     className={"bg-card-secondary rounded-lg pl-4 py-2 mr-5"}
@@ -107,7 +129,7 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
                   >
                     {new Date(node.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
-                      month: "2-digit",
+                      month: "long",
                       day: "2-digit",
                     })}
                   </div>
@@ -116,7 +138,13 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
                   <TrustedLevelField value={"Options"} />
                 </td>
                 <td className="w-[25%]">
-                  <CertificateField value={"...kmdfkkl"} />
+                  <CertificateField
+                    certificate={
+                      node.pinnedCertificates[
+                        node.pinnedCertificates.length - 1
+                      ]
+                    }
+                  />
                 </td>
                 <td>
                   <Button
@@ -128,8 +156,8 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
                   </Button>
                 </td>
               </tr>
-            </tbody>
-          ))}
+            ))}
+        </tbody>
       </table>
     </div>
   );

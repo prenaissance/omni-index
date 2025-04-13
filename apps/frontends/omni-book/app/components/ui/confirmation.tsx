@@ -4,12 +4,14 @@ import { Button } from "./button";
 
 type ConfirmationProps = {
   title: string;
-  description: string;
+  description?: string;
   confirmButtonText?: string;
   cancelButtonText?: string;
   htmlFor: string;
   action?: string;
   method?: HTMLFormMethod;
+  children?: React.ReactNode;
+  className?: string;
 };
 
 const Confirmation = ({
@@ -20,10 +22,12 @@ const Confirmation = ({
   htmlFor,
   action,
   method,
+  children,
+  className,
 }: ConfirmationProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-card rounded-lg shadow-lg p-6 w-96">
+      <div className={`bg-card rounded-lg shadow-lg p-6 w-96 ${className}`}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">{title}</h2>
           <label
@@ -34,21 +38,24 @@ const Confirmation = ({
           </label>
         </div>
         <p className="mt-2 text-sm text-foreground">{description}</p>
-        <div className="mt-4 flex justify-end gap-2">
-          <label
-            htmlFor={htmlFor}
-            className="cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-8 py-4"
-          >
-            {cancelButtonText || "Cancel"}
-          </label>
-          {action && (
+        {children}
+        {action && (
+          <div className="mt-4 flex justify-end gap-2">
             <Form action={action} method={method ?? "POST"}>
               <Button type="submit" variant="destructive">
                 {confirmButtonText || "Confirm"}
               </Button>
             </Form>
-          )}
-        </div>
+            {cancelButtonText && (
+              <label
+                htmlFor={htmlFor}
+                className="cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-8 py-4"
+              >
+                {cancelButtonText}
+              </label>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
