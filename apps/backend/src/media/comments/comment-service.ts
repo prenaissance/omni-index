@@ -102,7 +102,7 @@ export class CommentService implements Disposable {
     );
     if (!userExists) {
       const atprotoClient = new Agent("https://bsky.social/xrpc");
-      this.userService.importUser(atprotoClient);
+      await this.userService.importUser(atprotoClient);
       await this.importCommentLikes(atprotoClient);
       await this.importComments(atprotoClient);
       this.logger.info({
@@ -164,7 +164,7 @@ export class CommentService implements Disposable {
     );
     if (!userExists) {
       const atprotoClient = new Agent("https://bsky.social/xrpc");
-      this.userService.importUser(atprotoClient);
+      await this.userService.importUser(atprotoClient);
       this.logger.info({
         msg: "Imported user upon synchronizing comment like",
         did: event.did as AtprotoDid,
