@@ -1,3 +1,4 @@
+import { useActionData } from "react-router";
 import type { Route } from "./+types/nodes-config";
 import { parseCookie } from "~/server/utils";
 import type { paths } from "~/lib/api-types";
@@ -67,8 +68,9 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   return { user, nodes };
 };
 
-const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
+export default function NodesConfig({ loaderData }: Route.ComponentProps) {
   const { nodes } = loaderData;
+
   return !loaderData ? (
     <NotAuthorized />
   ) : (
@@ -94,6 +96,7 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
                 confirmButtonText="Delete"
                 htmlFor={"add-node-button"}
                 className="xl:w-[30%] lg:w-[40%]"
+                closeIcon={false}
               >
                 <AddNodeForm />
               </Confirmation>
@@ -120,7 +123,7 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
                   <div
                     className={"bg-card-secondary rounded-lg pl-4 py-2 mr-5"}
                   >
-                    {node.hostname}
+                    {node.url}
                   </div>
                 </td>
                 <td className="w-[25%]">
@@ -137,7 +140,7 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
                 <td className="w-[25%]">
                   <TrustedLevelField value={"Options"} />
                 </td>
-                <td className="w-[25%]">
+                {/* <td className="w-[25%]">
                   <CertificateField
                     certificate={
                       node.pinnedCertificates[
@@ -145,7 +148,7 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
                       ]
                     }
                   />
-                </td>
+                </td> */}
                 <td>
                   <Button
                     variant={"icon"}
@@ -161,6 +164,4 @@ const NodesConfig = ({ loaderData }: Route.ComponentProps) => {
       </table>
     </div>
   );
-};
-
-export default NodesConfig;
+}

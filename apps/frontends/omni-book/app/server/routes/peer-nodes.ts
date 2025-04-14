@@ -9,22 +9,15 @@ type NodeFail =
 
 export const action = async ({ request }: Route.LoaderArgs) => {
   const formData = await request.formData();
-  const hostname = formData.get("hostname") as string;
+  const url = formData.get("url") as string;
   const trustLevel = formData.get("trustLevel") as "trusted" | "semi-trusted";
 
-  console.log("hostname", hostname);
-  console.log("trustLevel", trustLevel);
-
-  if (!hostname) {
-    throw new Response(JSON.stringify({ error: "No hostname provided" }), {
-      status: 400,
-    });
+  if (!url) {
+    return redirect("/admin/nodes-config?error=URL is required");
   }
 
   if (!trustLevel) {
-    throw new Response(JSON.stringify({ error: "No trustLevel provided" }), {
-      status: 400,
-    });
+    return redirect("/admin/nodes-config?error=Trust level is required");
   }
 
   const cookieHeader = request.headers.get("cookie");
@@ -43,14 +36,14 @@ export const action = async ({ request }: Route.LoaderArgs) => {
       "Content-Type": "application/json",
       cookie: cookieHeader,
     },
-    body: JSON.stringify({ hostname, trustLevel }),
+    body: JSON.stringify({ url, trustLevel }),
   });
 
   if (!response.ok) {
     const error: NodeFail = await response.json();
-    throw new Response(JSON.stringify(error), {
-      status: 400,
-    });
+    return redirect(
+      `/admin/nodes-config?error=${error.message || "Error adding node"}`
+    );
   }
 
   return redirect(`/admin/nodes-config`);

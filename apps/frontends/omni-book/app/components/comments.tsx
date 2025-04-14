@@ -48,7 +48,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
             className="w-full h-full flex flex-col gap-2 mb-2"
             action={`/api/entries/${bookId}/comments`}
             method="POST"
-            key={comments.length}
+            key={comments.comments.length}
             onSubmit={() => {
               setComment("");
             }}
@@ -101,15 +101,15 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
       <div className="w-full h-[2px] bg-card"></div>
       <div className="py-4 pl-8 rounded-md flex justify-between">
         <h2>Comments</h2>
-        {comments.length > 0 ? (
+        {comments.comments.length > 0 ? (
           <p className="text-sm text-muted-foreground">
-            {comments.length} comments
+            {comments.comments.length} comments
           </p>
         ) : (
           <p className="text-sm text-muted-foreground">No comments yet</p>
         )}
       </div>
-      {comments.map((comment) => (
+      {comments.comments.map((comment) => (
         <div
           key={comment.tid}
           className="w-full rounded-lg bg-card overflow-hidden flex flex-col justify-between p-4"
@@ -170,7 +170,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
           </div>
         </div>
       ))}
-      {comments.length > 0 && (
+      {comments.comments.length > 0 && (
         <div className="flex justify-center items-center mt-4">
           <NavLink
             to={`/books/${bookId}?page=${page - 1}&limit=${limit}`}
@@ -188,7 +188,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
           <NavLink
             to={`/books/${bookId}?page=${page + 1}&limit=${limit}`}
             className={`${
-              comments.length < limit
+              comments.comments.length < limit
                 ? "hidden"
                 : "text-sm text-muted-foreground hover:text-primary"
             }`}

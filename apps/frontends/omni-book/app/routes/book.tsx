@@ -9,7 +9,7 @@ import { extractFormat } from "~/lib/utils";
 import PopupIcon from "~/components/icons/popup-icon";
 
 type BookResponseType =
-  paths["/api/entries/{id}"]["get"]["responses"]["200"]["content"]["application/json"];
+  paths["/api/entries/{entryId}"]["get"]["responses"]["200"]["content"]["application/json"];
 type CommentsResponse =
   paths["/api/entries/{entryId}/comments"]["get"]["responses"]["200"]["content"]["application/json"];
 

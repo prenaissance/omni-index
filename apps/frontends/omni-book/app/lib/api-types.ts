@@ -96,6 +96,13 @@ export interface paths {
             "application/json": components["schemas"]["Entry"];
           };
         };
+        /** @description Default Response */
+        409: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
       };
     };
     delete?: never;
@@ -104,7 +111,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/entries/{id}": {
+  "/api/entries/{entryId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -117,7 +124,7 @@ export interface paths {
         header?: never;
         path: {
           /** @description ObjectId of the media entry */
-          id: string;
+          entryId: string;
         };
         cookie?: never;
       };
@@ -141,10 +148,66 @@ export interface paths {
     };
     put?: never;
     post?: never;
-    delete?: never;
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description ObjectId of the media entry */
+          entryId: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        204: {
+          headers: Record<string, unknown>;
+          content?: never;
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
     options?: never;
     head?: never;
-    patch?: never;
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description ObjectId of the media entry */
+          entryId: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "application/json": components["schemas"]["UpdateEntryRequest"];
+        };
+      };
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Entry"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
     trace?: never;
   };
   "/api/entries/{entryId}/comments": {
@@ -178,7 +241,7 @@ export interface paths {
         200: {
           headers: Record<string, unknown>;
           content: {
-            "application/json": components["schemas"]["CommentResponse"][];
+            "application/json": components["schemas"]["PaginatedCommentsResponse"];
           };
         };
         /** @description Default Response */
@@ -450,7 +513,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/entries/{entryId}/media/{mediaId}": {
+  "/api/entries/{entryId}/media/{mediaId}/{mediaId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -651,6 +714,43 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/entries/sse": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "text/event-stream":
+              | components["schemas"]["EntryCreatedEvent"]
+              | components["schemas"]["EntryUpdatedEvent"]
+              | components["schemas"]["EntryDeletedEvent"]
+              | components["schemas"]["HeartbeatEvent"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/events": {
     parameters: {
       query?: never;
@@ -672,11 +772,11 @@ export interface paths {
       };
       requestBody?: never;
       responses: {
-        /** @description Default Response */
+        /** @description Paginated stored events response */
         200: {
           headers: Record<string, unknown>;
           content: {
-            "application/json": components["schemas"]["StoredEventResponse"][];
+            "application/json": components["schemas"]["PaginatedStoredEventsResponse"];
           };
         };
       };
@@ -1067,11 +1167,21 @@ export interface components {
       likes: number;
       liked: boolean;
     };
+    /** PaginatedCommentsResponse */
+    PaginatedCommentsResponse: {
+      comments: components["schemas"]["CommentResponse"][];
+      total: number;
+    };
     /** CommentLikeResponse */
     CommentLikeResponse: {
       /** Format: uri */
       uri: string;
       tid: string;
+    };
+    /** HeartbeatEvent */
+    HeartbeatEvent: {
+      /** @enum {string} */
+      type: "heartbeat";
     };
     /** BlobLink */
     BlobLink:
@@ -1222,6 +1332,43 @@ export interface components {
         mirrors: components["schemas"]["CreateIndexRequest"][];
       })[];
     };
+    /**
+     * UpdateEntryRequest
+     * @description Partial update of an entry
+     */
+    UpdateEntryRequest: {
+      title?: string;
+      description?: string;
+      author?: string;
+      localizedTitle?: string;
+      year?: number;
+      language?: string;
+      thumbnail?:
+        | {
+            /**
+             * Format: uri
+             * @description Hot URL
+             */
+            url: string;
+          }
+        | {
+            /** @description IPFS CID */
+            cid: string;
+            /**
+             * Format: uri
+             * @description IPFS access URL
+             */
+            accessUrl: string;
+          };
+      meta?: components["schemas"]["Metadata"];
+      genres?: string[];
+    } & {
+      media?: ({
+        meta: components["schemas"]["Metadata"];
+      } & {
+        mirrors: components["schemas"]["CreateIndexRequest"][];
+      })[];
+    };
     /** IndexExport */
     IndexExport: {
       /**
@@ -1256,6 +1403,7 @@ export interface components {
        */
       _id: string;
       title: string;
+      author: string;
       localizedTitle?: string;
       year?: number;
       language?: string;
@@ -1292,6 +1440,110 @@ export interface components {
       exportedAt: string;
       entries: components["schemas"]["EntryExport"][];
     };
+    /** EntryCreatedEvent */
+    EntryCreatedEvent: {
+      /**
+       * @description ObjectId
+       * @example 5fdedb7c25ab1352eef88f60
+       */
+      id: string;
+      /** @enum {string} */
+      type: "entry.created";
+      payload: {
+        entry: {
+          /** @description ObjectId of the media entry */
+          _id: string;
+          title: string;
+          description?: string;
+          author: string;
+          localizedTitle?: string;
+          year?: number;
+          language?: string;
+          thumbnail?:
+            | {
+                /**
+                 * Format: uri
+                 * @description Hot URL
+                 */
+                url: string;
+              }
+            | {
+                /** @description IPFS CID */
+                cid: string;
+                /**
+                 * Format: uri
+                 * @description IPFS access URL
+                 */
+                accessUrl: string;
+              };
+          /** Format: date-time */
+          createdAt: string;
+          /** Format: date-time */
+          updatedAt: string;
+          meta: components["schemas"]["Metadata"];
+          genres: string[];
+        } & {
+          media: components["schemas"]["CreateMediaRequest"][];
+        };
+      };
+    };
+    /** EntryUpdatedEvent */
+    EntryUpdatedEvent: {
+      /**
+       * @description ObjectId
+       * @example 5fdedb7c25ab1352eef88f60
+       */
+      id: string;
+      /** @enum {string} */
+      type: "entry.updated";
+      payload: {
+        /**
+         * @description ObjectId
+         * @example 5fdedb7c25ab1352eef88f60
+         */
+        entryId: string;
+        fields: {
+          title?: string;
+          author?: string;
+          genres?: string[];
+          localizedTitle?: string;
+          thumbnail?: components["schemas"]["BlobLink"];
+          /** Format: date-time */
+          updatedAt?: string;
+          meta?: components["schemas"]["Metadata"];
+        };
+        deletedMediaIds: string[];
+        createdMedia: components["schemas"]["Media"][];
+        mediaUpdates: {
+          /**
+           * @description ObjectId
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          mediaId: string;
+          /** @description Only spec */
+          meta?: components["schemas"]["Metadata"];
+          createdMirrors: components["schemas"]["Index"][];
+          deletedMirrorIds: string[];
+        }[];
+      };
+    };
+    /** EntryDeletedEvent */
+    EntryDeletedEvent: {
+      /**
+       * @description ObjectId
+       * @example 5fdedb7c25ab1352eef88f60
+       */
+      id: string;
+      /** @enum {string} */
+      type: "entry.deleted";
+      payload: {
+        /**
+         * @description ObjectId
+         * @example 5fdedb7c25ab1352eef88f60
+         */
+        entryId: string;
+      };
+    };
     /** StoredEventResponse */
     StoredEventResponse: {
       /**
@@ -1304,6 +1556,16 @@ export interface components {
       /** @description TODO: Constraint to possible events enum */
       type: string;
       payload: unknown;
+      nodeUrl: string | null;
+    };
+    /**
+     * PaginatedStoredEventsResponse
+     * @description Paginated stored events response
+     */
+    PaginatedStoredEventsResponse: {
+      events: components["schemas"]["StoredEventResponse"][];
+      /** @description Total number of stored events */
+      total: number;
     };
     /** LoginRequestSchema */
     LoginRequestSchema: {
@@ -1312,7 +1574,7 @@ export interface components {
     };
     /** CreatePeerNodeRequest */
     CreatePeerNodeRequest: {
-      hostname: string;
+      url: string;
       trustLevel: "trusted" | "semi-trusted";
     };
     /** PeerNodeResponse */
@@ -1324,7 +1586,9 @@ export interface components {
       _id: string;
       /** Format: date-time */
       createdAt: string;
-      hostname: string;
+      /** Format: uri */
+      url: string;
+      trustLevel: "trusted" | "semi-trusted";
       pinnedCertificates: {
         /**
          * @description ObjectId
