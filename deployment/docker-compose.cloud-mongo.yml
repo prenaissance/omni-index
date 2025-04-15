@@ -1,6 +1,3 @@
-volumes:
-  mongo_data:
-
 services:
   webserver:
     image: nginx:latest
@@ -25,7 +22,6 @@ services:
       - .env
     environment:
       - PORT=80
-      - MONGODB_URL=mongodb://mongo:27017
       - MONGODB_DB=omni-index
       - FRONTEND_URL=https://book.omni-index.com
       - CALLBACK_URL=https://book.omni-index.com/api/oauth/callback
