@@ -43,7 +43,7 @@ export class EntryImportService {
         continue;
       }
 
-      await this.entryRepository.save(entry);
+      await this.entryRepository.create(entry);
       this.logger.info({
         msg: "Imported entry from file",
         slug: entry.slug,
@@ -81,7 +81,7 @@ export class EntryImportService {
         continue;
       }
 
-      await this.entryRepository.save(entry);
+      await this.entryRepository.create(entry);
       this.logger.info({
         msg: "Imported entry from another node",
         slug: entry.slug,
