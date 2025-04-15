@@ -4,10 +4,12 @@ import CheckIcon from "../icons/check";
 import ExclamationIcon from "../icons/exclamation";
 import WarningIcon from "../icons/warning";
 import InfoIcon from "../icons/info";
+import CloseIcon from "../icons/close";
+import { Button } from "./button";
 import { cn } from "~/lib/utils";
 
 const notificationVariants = cva(
-  "w-full flex items-center gap-2 rounded-md py-2 px-3 text-sm font-semibold",
+  "w-full flex items-center gap-2 rounded-md py-2 px-3 text-sm font-semibold justify-between",
   {
     variants: {
       variant: {
@@ -25,10 +27,13 @@ const notificationVariants = cva(
 
 export interface NotificationProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof notificationVariants> {}
+    VariantProps<typeof notificationVariants> {
+  closeButton?: boolean;
+  onClose?: () => void;
+}
 
 const Notification = React.forwardRef<HTMLDivElement, NotificationProps>(
-  ({ className, variant = "default", ...props }, ref) => {
+  ({ className, variant = "default", closeButton, onClose, ...props }, ref) => {
     const Comp = "div";
 
     const iconMap = {
@@ -44,8 +49,20 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>(
         ref={ref}
         {...props}
       >
-        <div>{iconMap[variant ?? "default"]}</div>
-        <div className="flex flex-col gap-2">{props.children}</div>
+        <div className="flex items-center gap-2">
+          <div>{iconMap[variant ?? "default"]}</div>
+          <div className="flex flex-col gap-2">{props.children}</div>
+        </div>
+        {closeButton && (
+          <Button
+            variant={"icon"}
+            size="icon"
+            onClick={onClose}
+            className="p-0 m-0 w-fit h-fit"
+          >
+            <CloseIcon size={4} />
+          </Button>
+        )}
       </Comp>
     );
   }

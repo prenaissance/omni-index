@@ -21,9 +21,9 @@ export const CertificateField = ({ certificate }: CertificateFieldProps) => {
       }
     >
       <div className="flex items-center gap-x-2">
-        <p>{"..." + certificate.sha256?.slice(-8)}</p>
+        <p>{"..." + certificate?.sha256?.slice(-8)}</p>
         <Popup
-          content={certificate.sha256 ?? "nothing"}
+          content={certificate?.sha256 ?? "nothing"}
           className="w-40 break-all"
         >
           <PopupIcon className="w-5 h-5" />

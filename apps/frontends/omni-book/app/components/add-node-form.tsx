@@ -10,7 +10,7 @@ export const AddNodeForm = () => {
   const [errors, setErrors] = useState<
     Partial<Record<keyof NodeFormData, string[]>>
   >({});
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,14 +34,34 @@ export const AddNodeForm = () => {
   };
 
   const errorMessage = searchParams.get("error");
+  const successMessage = searchParams.get("success");
+
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
   return (
     <div className="flex flex-col">
-      {errorMessage && (
-        <Notification variant={"danger"}>{errorMessage}</Notification>
-      )}
+      {errorMessage ? (
+        <Notification
+          variant={"danger"}
+          closeButton
+          onClose={() => {
+            setSearchParams({});
+          }}
+        >
+          {errorMessage}
+        </Notification>
+      ) : successMessage ? (
+        <Notification
+          variant={"success"}
+          closeButton
+          onClose={() => {
+            setSearchParams({});
+          }}
+        >
+          {successMessage}
+        </Notification>
+      ) : null}
       <Form action="/api/peer-nodes" method="POST" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 my-4">
           <label className="flex flex-col items-end gap-1 w-full">
@@ -63,10 +83,7 @@ export const AddNodeForm = () => {
                   <span key={error}>{error}</span>
                 ))}
               </p>
-            ) : // : searchParams?.get("error") ? (
-            // <p className="text-red-500 text-xs">{searchParams.get("error")}</p>
-            // )
-            null}
+            ) : null}
           </label>
           <label className="flex items-center gap-4 justify-between w-full text-sm">
             <p>Trusted Level</p>
@@ -87,6 +104,7 @@ export const AddNodeForm = () => {
             htmlFor={"add-node-button"}
             onClick={() => {
               setErrors({});
+              setSearchParams({});
             }}
             className="cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-primary text-primary bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-8 py-4"
           >

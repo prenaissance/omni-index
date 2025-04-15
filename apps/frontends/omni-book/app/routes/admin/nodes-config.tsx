@@ -140,15 +140,15 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
                 <td className="w-[25%]">
                   <TrustedLevelField value={"Options"} />
                 </td>
-                {/* <td className="w-[25%]">
+                <td className="w-[25%]">
                   <CertificateField
                     certificate={
                       node.pinnedCertificates[
-                        node.pinnedCertificates.length - 1
+                        node.pinnedCertificates?.length - 1
                       ]
                     }
                   />
-                </td> */}
+                </td>
                 <td>
                   <Button
                     variant={"icon"}

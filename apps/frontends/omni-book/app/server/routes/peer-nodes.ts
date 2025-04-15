@@ -46,5 +46,5 @@ export const action = async ({ request }: Route.LoaderArgs) => {
     );
   }
 
-  return redirect(`/admin/nodes-config`);
+  return redirect(`/admin/nodes-config?success=Node added successfully`);
 };
