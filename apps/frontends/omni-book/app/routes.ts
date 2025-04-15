@@ -17,6 +17,10 @@ export default [
       route("/peer-nodes", "server/routes/peer-nodes.ts"),
       route("/peer-nodes/:nodeId/remove", "server/routes/remove-node.ts"),
       route("/peer-nodes/:nodeId/edit", "server/routes/edit-node.ts"),
+      route(
+        "/peer-nodes/:nodeId/refresh",
+        "server/routes/refresh-node-cert.ts"
+      ),
     ]),
     ...prefix("/api/entries/:bookId", [
       route("/comments", "server/routes/comments/add-comment.ts"),

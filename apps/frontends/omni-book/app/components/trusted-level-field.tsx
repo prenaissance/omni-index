@@ -12,7 +12,7 @@ export const TrustedLevelField = ({ value }: TrustedLevelFieldProps) => {
         <ChevronIcon direction="down" size={4} />
       </summary>
 
-      <div className="absolute left-0 right-5 z-10 mt-2 max-w-full origin-top-right rounded-md bg-card-secondary shadow-lg ">
+      <div className="absolute left-0 right-5 z-10 mt-2 max-w-full origin-top-right rounded-md bg-background shadow-lg ">
         <div className="py-1">
           <form action="#" method="POST">
             <button

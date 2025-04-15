@@ -72,8 +72,8 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
   return !loaderData ? (
     <NotAuthorized />
   ) : (
-    <div className="m-10 rounded-lg bg-card px-10 py-5">
-      <div className="flex items-center justify-between mb-2">
+    <div className="m-10 rounded-lg bg-card pl-10 pr-6 py-5">
+      <div className="flex items-center justify-between mb-2 pr-4">
         <h1 className="text-2xl font-bold">Nodes Configuration</h1>
         <Popup content={"Add a node"} className="w-32" bg={"accent"}>
           <div>
@@ -102,83 +102,88 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
           </div>
         </Popup>
       </div>
-      <table className="w-full table-auto">
-        <thead>
-          <tr className="text-md font-medium text-accent border-collapse">
-            <th className="text-left">Hostname</th>
-            <th className="text-left">Created At</th>
-            <th className="text-left">Trust Level</th>
-            <th className="text-left">Certificate</th>
-            <th className="text-left"></th>
-          </tr>
-        </thead>
-        <tbody className="divide-y-2 divide-card-secondary">
-          {nodes &&
-            nodes.length > 0 &&
-            nodes.map((node) => (
-              <tr className="h-16" key={node._id}>
-                <td className="w-[25%]">
-                  <div
-                    className={"bg-card-secondary rounded-lg pl-4 py-2 mr-5"}
-                  >
-                    {node.url}
-                  </div>
-                </td>
-                <td className="w-[25%]">
-                  <div
-                    className={"bg-card-secondary rounded-lg pl-4 py-2 mr-5"}
-                  >
-                    {new Date(node.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "2-digit",
-                    })}
-                  </div>
-                </td>
-                <td className="w-[25%]">
-                  <TrustedLevelField value={"Options"} />
-                </td>
-                <td className="w-[25%]">
-                  <CertificateField
-                    certificate={
-                      node.pinnedCertificates[
-                        node.pinnedCertificates?.length - 1
-                      ]
-                    }
-                  />
-                </td>
-                <td>
-                  <div>
-                    <input
-                      type="checkbox"
-                      id={`delete-node-${node._id}`}
-                      className="peer hidden"
-                    />
-                    <label
-                      htmlFor={`delete-node-${node._id}`}
-                      className="cursor-pointer flex items-center gap-4"
+      <div
+        className={`h-[calc(100vh-240px)] pr-4 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-card-secondary [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-lg`}
+      >
+        <table className="w-full">
+          <thead className="sticky top-0 bg-card z-10">
+            <tr className="text-md font-medium text-accent border-collapse">
+              <th className="text-left">Hostname</th>
+              <th className="text-left">Created At</th>
+              <th className="text-left">Trust Level</th>
+              <th className="text-left">Certificate</th>
+              <th className="text-left"></th>
+            </tr>
+          </thead>
+          <tbody className="divide-y-2 divide-card-secondary">
+            {nodes &&
+              nodes.length > 0 &&
+              nodes.map((node) => (
+                <tr className="h-16" key={node._id}>
+                  <td className="w-[25%]">
+                    <div
+                      className={"bg-card-secondary rounded-lg pl-4 py-2 mr-5"}
                     >
-                      <div className="text-white text-primary-foreground flex items-center justify-center h-10 w-10 p-1 bg-destructive rounded-md hover:bg-destructive/80 transition-colors">
-                        <TrashIcon />
-                      </div>
-                    </label>
-                    <div className="hidden peer-checked:block">
-                      <Confirmation
-                        description="Are you sure you want to delete this node?"
-                        title="Delete node"
-                        confirmButtonText="Delete"
-                        cancelButtonText="Cancel"
-                        action={`/api/peer-nodes/${node._id}/remove`}
-                        htmlFor={`delete-node-${node._id}`}
-                        method="DELETE"
-                      />
+                      {node.url}
                     </div>
-                  </div>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+                  </td>
+                  <td className="w-[25%]">
+                    <div
+                      className={"bg-card-secondary rounded-lg pl-4 py-2 mr-5"}
+                    >
+                      {new Date(node.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "2-digit",
+                      })}
+                    </div>
+                  </td>
+                  <td className="w-[25%]">
+                    <TrustedLevelField value={"Options"} />
+                  </td>
+                  <td className="w-[25%]">
+                    <CertificateField
+                      certificate={
+                        node.pinnedCertificates[
+                          node.pinnedCertificates?.length - 1
+                        ]
+                      }
+                      nodeId={node._id}
+                    />
+                  </td>
+                  <td>
+                    <div>
+                      <input
+                        type="checkbox"
+                        id={`delete-node-${node._id}`}
+                        className="peer hidden"
+                      />
+                      <label
+                        htmlFor={`delete-node-${node._id}`}
+                        className="cursor-pointer flex items-center gap-4"
+                      >
+                        <div className="text-white text-primary-foreground flex items-center justify-center h-10 w-10 p-1 bg-destructive rounded-md hover:bg-destructive/80 transition-colors">
+                          <TrashIcon />
+                        </div>
+                      </label>
+                      <div className="hidden peer-checked:block">
+                        <Confirmation
+                          description="Are you sure you want to delete this node?"
+                          title="Delete node"
+                          confirmButtonText="Delete"
+                          cancelButtonText="Cancel"
+                          action={`/api/peer-nodes/${node._id}/remove`}
+                          htmlFor={`delete-node-${node._id}`}
+                          method="DELETE"
+                        />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
