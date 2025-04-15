@@ -15,6 +15,8 @@ export default [
       route("/oauth/callback", "server/routes/oauth/callback.ts"),
       route("/oauth/login", "server/routes/oauth/login.ts"),
       route("/peer-nodes", "server/routes/peer-nodes.ts"),
+      route("/peer-nodes/:nodeId/remove", "server/routes/remove-node.ts"),
+      route("/peer-nodes/:nodeId/edit", "server/routes/edit-node.ts"),
     ]),
     ...prefix("/api/entries/:bookId", [
       route("/comments", "server/routes/comments/add-comment.ts"),

@@ -1,11 +1,9 @@
-import { useActionData } from "react-router";
 import type { Route } from "./+types/nodes-config";
 import { parseCookie } from "~/server/utils";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
 import { NotAuthorized } from "~/components/not-authorized";
 import PlusIcon from "~/components/icons/plus";
-import { Button } from "~/components/ui/button";
 import Popup from "~/components/ui/popup";
 import TrashIcon from "~/components/icons/trash";
 import { CertificateField } from "~/components/certificate-field";
@@ -150,13 +148,32 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
                   />
                 </td>
                 <td>
-                  <Button
-                    variant={"icon"}
-                    size={"icon"}
-                    className="bg-destructive"
-                  >
-                    <TrashIcon />
-                  </Button>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id={`delete-node-${node._id}`}
+                      className="peer hidden"
+                    />
+                    <label
+                      htmlFor={`delete-node-${node._id}`}
+                      className="cursor-pointer flex items-center gap-4"
+                    >
+                      <div className="text-white text-primary-foreground flex items-center justify-center h-10 w-10 p-1 bg-destructive rounded-md hover:bg-destructive/80 transition-colors">
+                        <TrashIcon />
+                      </div>
+                    </label>
+                    <div className="hidden peer-checked:block">
+                      <Confirmation
+                        description="Are you sure you want to delete this node?"
+                        title="Delete node"
+                        confirmButtonText="Delete"
+                        cancelButtonText="Cancel"
+                        action={`/api/peer-nodes/${node._id}/remove`}
+                        htmlFor={`delete-node-${node._id}`}
+                        method="DELETE"
+                      />
+                    </div>
+                  </div>
                 </td>
               </tr>
             ))}
