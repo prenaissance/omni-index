@@ -4,12 +4,12 @@ import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
 import { NotAuthorized } from "~/components/not-authorized";
 import PlusIcon from "~/components/icons/plus";
-import Popup from "~/components/ui/popup";
 import TrashIcon from "~/components/icons/trash";
 import { CertificateField } from "~/components/certificate-field";
 import { TrustedLevelField } from "~/components/trusted-level-field";
 import Confirmation from "~/components/ui/confirmation";
 import { AddNodeForm } from "~/components/add-node-form";
+import Tooltip from "~/components/ui/tooltip";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -75,7 +75,11 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
     <div className="m-10 rounded-lg bg-card pl-10 pr-6 py-5">
       <div className="flex items-center justify-between mb-2 pr-4">
         <h1 className="text-2xl font-bold">Nodes Configuration</h1>
-        <Popup content={"Add a node"} className="w-32" bg={"accent"}>
+        <Tooltip
+          variant="light"
+          content={"Add a node"}
+          className="w-fit whitespace-nowrap"
+        >
           <div>
             <input
               type="checkbox"
@@ -100,7 +104,7 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
               </Confirmation>
             </div>
           </div>
-        </Popup>
+        </Tooltip>
       </div>
       <div
         className={`h-[calc(100vh-240px)] pr-4 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-card-secondary [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-lg`}

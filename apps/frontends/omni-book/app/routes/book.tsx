@@ -2,11 +2,11 @@ import { Link } from "react-router";
 import type { Route } from "./+types/book";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
-import Popup from "~/components/ui/popup";
 import { Comments } from "~/components/comments";
 import Recommended from "~/components/recommended";
 import { extractFormat } from "~/lib/utils";
 import PopupIcon from "~/components/icons/popup-icon";
+import Tooltip from "~/components/ui/tooltip";
 
 type BookResponseType =
   paths["/api/entries/{entryId}"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -164,16 +164,17 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                       </strong>{" "}
                       MB{" "}
                     </p>
-                    <Popup
+                    <Tooltip
                       content={
                         extractFormat(media.mirrors[0].mimeType || "")
                           .description
                       }
+                      className="w-72"
                     >
                       <button className="p-0">
                         <PopupIcon />
                       </button>
-                    </Popup>
+                    </Tooltip>
                   </div>
                 </div>
               ))}
