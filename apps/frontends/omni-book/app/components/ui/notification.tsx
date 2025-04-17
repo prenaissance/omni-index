@@ -1,11 +1,13 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Link } from "react-router";
-import CheckIcon from "../icons/check";
-import ExclamationIcon from "../icons/exclamation";
-import WarningIcon from "../icons/warning";
-import InfoIcon from "../icons/info";
-import CloseIcon from "../icons/close";
+import {
+  CheckIcon,
+  CloseIcon,
+  ExclamationIcon,
+  InfoIcon,
+  WarningIcon,
+} from "../icons";
 import { Button } from "./button";
 import { cn } from "~/lib/utils";
 

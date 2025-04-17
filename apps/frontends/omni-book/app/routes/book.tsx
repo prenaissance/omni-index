@@ -2,11 +2,11 @@ import { Link } from "react-router";
 import type { Route } from "./+types/book";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
-import { Comments } from "~/components/comments";
 import Recommended from "~/components/recommended";
 import { extractFormat } from "~/lib/utils";
-import PopupIcon from "~/components/icons/popup-icon";
 import Tooltip from "~/components/ui/tooltip";
+import { PopupIcon } from "~/components/icons";
+import { Comments } from "~/components/comments/comments";
 
 type BookResponseType =
   paths["/api/entries/{entryId}"]["get"]["responses"]["200"]["content"]["application/json"];

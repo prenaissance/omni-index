@@ -6,15 +6,13 @@ import {
   NavLink,
 } from "react-router";
 import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
-import { TextArea } from "./ui/text-area";
+import { TextArea } from "../ui/text-area";
+import { Button } from "../ui/button";
+import { ChevronIcon, SpinnerIcon, TrashIcon } from "../icons";
+import Confirmation from "../ui/confirmation";
 import LikeButton from "./like";
-import Spinner from "./icons/spinner";
-import Confirmation from "./ui/confirmation";
-import TrashIcon from "./icons/trash";
-import ChevronIcon from "./icons/chevron";
-import { useAuth } from "~/context/auth-context";
 import type { paths } from "~/lib/api-types";
+import { useAuth } from "~/context/auth-context";
 
 type CommentsResponse =
   paths["/api/entries/{entryId}/comments"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -73,7 +71,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
               className="absolute bottom-3 right-5 w-32"
               disabled={!user || isButtonDisabled || isSubmitting}
             >
-              {isSubmitting ? <Spinner /> : "Submit"}
+              {isSubmitting ? <SpinnerIcon /> : "Submit"}
             </Button>
           </Form>
         </div>

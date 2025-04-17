@@ -1,9 +1,9 @@
 import { useFetcher } from "react-router";
 import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
-import { Notification } from "./ui/notification";
-import Spinner from "./icons/spinner";
-import { nodeSchema, type NodeFormData } from "~/routes/admin/node-schema";
+import { nodeSchema, type NodeFormData } from "~/schemas/node-schema";
+import { Notification } from "~/components/ui/notification";
+import { Button } from "~/components/ui/button";
+import { SpinnerIcon } from "~/components/icons";
 
 export const AddNodeForm = () => {
   const [formData, setFormData] = useState({ url: "" });
@@ -122,7 +122,7 @@ export const AddNodeForm = () => {
             className="w-28"
             disabled={fetcher.state === "submitting"}
           >
-            {fetcher.state === "submitting" ? <Spinner /> : "Submit"}
+            {fetcher.state === "submitting" ? <SpinnerIcon /> : "Submit"}
           </Button>
         </div>
       </fetcher.Form>

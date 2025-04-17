@@ -3,15 +3,15 @@ import type { Route } from "./+types/nodes-config";
 import { parseCookie } from "~/server/utils";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
-import { NotAuthorized } from "~/components/not-authorized";
+import { NotAuthorized } from "~/components/admin/nodes-config/not-authorized";
 import PlusIcon from "~/components/icons/plus";
 import TrashIcon from "~/components/icons/trash";
-import { CertificateField } from "~/components/certificate-field";
-import { TrustedLevelField } from "~/components/trusted-level-field";
+import { CertificateField } from "~/components/admin/nodes-config/certificate-field";
+import { TrustedLevelField } from "~/components/admin/nodes-config/trusted-level-field";
 import Confirmation from "~/components/ui/confirmation";
-import { AddNodeForm } from "~/components/add-node-form";
 import Tooltip from "~/components/ui/tooltip";
 import { Notification } from "~/components/ui/notification";
+import { AddNodeForm } from "~/components/admin/nodes-config/add-node-form";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];

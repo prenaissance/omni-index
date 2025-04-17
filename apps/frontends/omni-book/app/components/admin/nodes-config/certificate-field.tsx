@@ -1,11 +1,10 @@
 import { useFetcher } from "react-router";
 import { useEffect, useState } from "react";
-import PopupIcon from "./icons/popup-icon";
-import RegenerateIcon from "./icons/regen";
-import { Button } from "./ui/button";
-import { Notification } from "./ui/notification";
-import Tooltip from "./ui/tooltip";
+import { Button } from "../../ui/button";
+import { Notification } from "../../ui/notification";
+import Tooltip from "../../ui/tooltip";
 import type { paths } from "~/lib/api-types";
+import { PopupIcon, RegenerateIcon } from "~/components/icons";
 
 type Node =
   paths["/api/peer-nodes"]["get"]["responses"]["200"]["content"]["application/json"];

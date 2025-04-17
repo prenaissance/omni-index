@@ -6,11 +6,14 @@
     }
   ],
   "cSpell.words": [
+    "Buildx",
     "ereaders",
-    "Buildx", "fontsource", "frontends",
+    "fontsource",
+    "frontends",
     "Gutendex",
     "IDPF",
     "mobipocket",
+    "regen",
     "Unliked"
   ]
 }

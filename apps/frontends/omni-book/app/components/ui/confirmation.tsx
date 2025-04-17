@@ -1,5 +1,5 @@
 import { Form, type HTMLFormMethod } from "react-router";
-import CloseIcon from "../icons/close";
+import { CloseIcon } from "../icons";
 import { Button } from "./button";
 
 type ConfirmationProps = {

@@ -1,4 +1,4 @@
-import ChevronIcon from "./icons/chevron";
+import { ChevronIcon } from "~/components/icons";
 
 type TrustedLevelFieldProps = {
   value: string;

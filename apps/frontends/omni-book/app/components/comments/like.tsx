@@ -1,7 +1,7 @@
 import { useFetcher } from "react-router";
-import LikeIcon from "./icons/like";
-import { Button } from "./ui/button";
-import Tooltip from "./ui/tooltip";
+import Tooltip from "../ui/tooltip";
+import { LikeIcon } from "../icons";
+import { Button } from "../ui/button";
 
 type LikeButtonProps = {
   initiallyLiked: boolean;
