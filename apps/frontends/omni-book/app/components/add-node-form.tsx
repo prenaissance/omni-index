@@ -1,5 +1,5 @@
-import { Form, useNavigation, useSearchParams } from "react-router";
-import { useState } from "react";
+import { useFetcher } from "react-router";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Notification } from "./ui/notification";
 import Spinner from "./icons/spinner";
@@ -10,7 +10,6 @@ export const AddNodeForm = () => {
   const [errors, setErrors] = useState<
     Partial<Record<keyof NodeFormData, string[]>>
   >({});
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -33,36 +32,44 @@ export const AddNodeForm = () => {
     }
   };
 
-  const errorMessage = searchParams.get("error");
-  const successMessage = searchParams.get("success");
+  const fetcher = useFetcher();
+  const [notification, setNotification] = useState(false);
 
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+  useEffect(() => {
+    if (fetcher.data) {
+      setNotification(true);
+    }
+  }, [fetcher.data]);
 
   return (
     <div className="flex flex-col">
-      {errorMessage ? (
-        <Notification
-          variant={"danger"}
-          closeButton
-          onClose={() => {
-            setSearchParams({});
-          }}
-        >
-          {errorMessage}
-        </Notification>
-      ) : successMessage ? (
-        <Notification
-          variant={"success"}
-          closeButton
-          onClose={() => {
-            setSearchParams({});
-          }}
-        >
-          {successMessage}
-        </Notification>
-      ) : null}
-      <Form action="/api/peer-nodes" method="POST" onSubmit={handleSubmit}>
+      {notification && (
+        <div>
+          <Notification
+            variant={
+              fetcher.data?.error
+                ? "danger"
+                : fetcher.data?.success
+                  ? "success"
+                  : "default"
+            }
+            onClose={() => {
+              setNotification(false);
+            }}
+          >
+            {"error" in fetcher.data
+              ? fetcher.data?.error
+              : fetcher.data?.success
+                ? "Node added successfully"
+                : null}
+          </Notification>
+        </div>
+      )}
+      <fetcher.Form
+        action="/api/peer-nodes"
+        method="POST"
+        onSubmit={handleSubmit}
+      >
         <div className="flex flex-col gap-2 my-4">
           <label className="flex flex-col items-end gap-1 w-full">
             <div className="flex items-center gap-4 justify-between w-full text-sm border-none">
@@ -104,17 +111,21 @@ export const AddNodeForm = () => {
             htmlFor={"add-node-button"}
             onClick={() => {
               setErrors({});
-              setSearchParams({});
+              setNotification(false);
             }}
             className="cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-primary text-primary bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-8 py-4"
           >
             Cancel
           </label>
-          <Button type="submit" className="w-28" disabled={isSubmitting}>
-            {isSubmitting ? <Spinner /> : "Submit"}
+          <Button
+            type="submit"
+            className="w-28"
+            disabled={fetcher.state === "submitting"}
+          >
+            {fetcher.state === "submitting" ? <Spinner /> : "Submit"}
           </Button>
         </div>
-      </Form>
+      </fetcher.Form>
     </div>
   );
 };

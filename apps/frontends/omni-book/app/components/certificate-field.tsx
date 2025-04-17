@@ -85,7 +85,7 @@ export const CertificateField = ({
         </div>
       </div>
       {notification && (
-        <div className="fixed z-50 bottom-0 right-0 m-10">
+        <div className="fixed z-50 bottom-4 right-4 m-10">
           <Notification
             variant={
               fetcher.data?.error
@@ -94,7 +94,6 @@ export const CertificateField = ({
                   ? "success"
                   : "default"
             }
-            closeButton
             onClose={() => {
               setNotification(false);
             }}

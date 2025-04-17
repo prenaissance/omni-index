@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { Link } from "react-router";
 import CheckIcon from "../icons/check";
 import ExclamationIcon from "../icons/exclamation";
 import WarningIcon from "../icons/warning";
@@ -25,15 +26,32 @@ const notificationVariants = cva(
   }
 );
 
-export interface NotificationProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof notificationVariants> {
-  closeButton?: boolean;
-  onClose?: () => void;
-}
+type BaseProps = React.HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof notificationVariants>;
+
+type NoClose = {
+  onClose?: undefined;
+  closeButtonLink?: undefined;
+};
+
+type WithOnClose = {
+  onClose: () => void;
+  closeButtonLink?: never;
+};
+
+type WithCloseLink = {
+  onClose?: never;
+  closeButtonLink: string;
+};
+
+export type NotificationProps = BaseProps &
+  (NoClose | WithOnClose | WithCloseLink);
 
 const Notification = React.forwardRef<HTMLDivElement, NotificationProps>(
-  ({ className, variant = "default", closeButton, onClose, ...props }, ref) => {
+  (
+    { className, variant = "default", onClose, closeButtonLink, ...props },
+    ref
+  ) => {
     const Comp = "div";
 
     const iconMap = {
@@ -53,7 +71,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>(
           <div>{iconMap[variant ?? "default"]}</div>
           <div className="flex flex-col gap-2">{props.children}</div>
         </div>
-        {closeButton && (
+        {onClose && (
           <Button
             variant={"icon"}
             size="icon"
@@ -62,6 +80,11 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>(
           >
             <CloseIcon size={4} />
           </Button>
+        )}
+        {closeButtonLink && (
+          <Link to={closeButtonLink} className="text-sm">
+            <CloseIcon size={4} />
+          </Link>
         )}
       </Comp>
     );
