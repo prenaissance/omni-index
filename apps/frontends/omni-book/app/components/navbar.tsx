@@ -3,8 +3,7 @@ import { LogOutIcon } from "lucide-react";
 import { memo } from "react";
 import type { Route } from "../components/+types/navbar";
 import { Button } from "./ui/button";
-import MenuIcon from "./icons/menu";
-import SearchIcon from "./icons/search";
+import { MenuIcon, SearchIcon } from "./icons";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
 import { parseCookie } from "~/server/utils";
@@ -94,7 +93,7 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
           </div>
           {loaderData.user ? (
             <div className="flex flex-row space-x-4 items-center">
-              <div className="relative inline-block">
+              <div className="relative">
                 <input
                   type="checkbox"
                   id="menu-toggle"
@@ -116,8 +115,8 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
                   </div>
                 </label>
                 <div
-                  className="absolute right-[-20px] mt-2 w-36 rounded-md shadow-lg bg-card border border-card
-                     opacity-0 scale-95 peer-checked:opacity-100 peer-checked:scale-100 transition-all"
+                  className="hidden right-[-20px] mt-2 w-36 rounded-md shadow-lg bg-card border border-card
+                      scale-95 peer-checked:absolute peer-checked:scale-100 transition-all"
                 >
                   <ul className="py-2 font-medium text-sm">
                     <li>

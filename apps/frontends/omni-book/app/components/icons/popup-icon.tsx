@@ -2,15 +2,16 @@ import { memo } from "react";
 
 type PopupIconProps = {
   size?: number;
+  className?: string;
 };
 
-const PopupIcon = ({ size }: PopupIconProps) => {
+const PopupIcon = ({ size, className }: PopupIconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="white"
-      className={`w-${size ?? 6} h-${size ?? 6}`}
+      className={`w-${size ?? 6} h-${size ?? 6} ${className}`}
     >
       <path
         fillRule="evenodd"

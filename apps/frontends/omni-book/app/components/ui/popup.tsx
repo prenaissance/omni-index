@@ -6,6 +6,7 @@ type PopupProps = {
   bg?: string;
   textStyle?: string;
   className?: string;
+  style?: React.CSSProperties;
 };
 
 const Popup: React.FC<PopupProps> = ({
@@ -14,6 +15,7 @@ const Popup: React.FC<PopupProps> = ({
   bg,
   textStyle,
   className,
+  style,
 }: PopupProps) => {
   return (
     <div className="relative group">
@@ -26,6 +28,7 @@ const Popup: React.FC<PopupProps> = ({
           textStyle ?? "text-white text-xs",
           className
         )}
+        style={style}
       >
         {content}
         <div

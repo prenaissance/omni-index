@@ -14,6 +14,7 @@ export default [
     ...prefix("/api", [
       route("/oauth/callback", "server/routes/oauth/callback.ts"),
       route("/oauth/login", "server/routes/oauth/login.ts"),
+      route("/peer-nodes", "server/routes/nodes/add-node.ts"),
     ]),
     ...prefix("/api/entries/:bookId", [
       route("/comments", "server/routes/comments/add-comment.ts"),
@@ -27,6 +28,12 @@ export default [
         "server/routes/comments/dislike-comment.ts"
       ),
     ]),
+    ...prefix("/api/peer-nodes", [
+      route("/:nodeId/remove", "server/routes/nodes/remove-node.ts"),
+      route("/:nodeId/edit", "server/routes/nodes/edit-node.ts"),
+      route("/:nodeId/refresh", "server/routes/nodes/refresh-node-cert.ts"),
+    ]),
     route("books/:bookId", "routes/book.tsx"),
+    route("/admin/nodes-config", "routes/admin/nodes-config.tsx"),
   ]),
 ] satisfies RouteConfig;

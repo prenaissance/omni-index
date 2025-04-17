@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import StarIcon from "./icons/star";
+import { StarIcon } from "./icons";
 import type { paths } from "~/lib/api-types";
 
 type BooksResponseType =

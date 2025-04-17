@@ -1,7 +1,7 @@
 import { useFetcher } from "react-router";
-import LikeIcon from "./icons/like";
-import Popup from "./ui/popup";
-import { Button } from "./ui/button";
+import Tooltip from "../ui/tooltip";
+import { LikeIcon } from "../icons";
+import { Button } from "../ui/button";
 
 type LikeButtonProps = {
   initiallyLiked: boolean;
@@ -24,9 +24,13 @@ const LikeButton = ({
     <div className="inline-flex gap-1 items-center ">
       {disabled ? (
         <div>
-          <Popup content="Log in to like" className="w-20" bg="background">
+          <Tooltip
+            content="Log in to like"
+            className="w-[70px]"
+            variant={"dark"}
+          >
             <LikeIcon />
-          </Popup>
+          </Tooltip>
         </div>
       ) : (
         <fetcher.Form

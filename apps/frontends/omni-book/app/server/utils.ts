@@ -11,3 +11,17 @@ export const parseCookie = (cookie: string) => {
     );
   return parsedCookie;
 };
+
+export const checkCookie = (request: Request) => {
+  const cookieHeader = request.headers.get("cookie");
+  if (!cookieHeader) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
+
+  const parsedCookie = parseCookie(cookieHeader);
+  if (!parsedCookie.session) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
+
+  return cookieHeader;
+};
