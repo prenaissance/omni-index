@@ -1,0 +1,36 @@
+services:
+  webserver:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/letsencrypt/:ro
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+
+  api:
+    image: prenaissance/omni-index:0.0.1-alpha4
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PORT=80
+      - MONGODB_DB=omni-index
+      - FRONTEND_URL=https://book.omni-index.com
+      - CALLBACK_URL=https://book.omni-index.com/api/oauth/callback
+      - DANGEROUS_SKIP_IDENTITY_VERIFICATION=true
+      - INIT_ADMIN_IDENTITY=prenaissance.bsky.social
+
+  omni-book:
+    image: prenaissance/omni-book:0.0.1-alpha4
+    restart: unless-stopped
+    environment:
+      - PORT=80
+      - API_URL=http://api:80

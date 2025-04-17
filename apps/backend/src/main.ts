@@ -13,6 +13,7 @@ listeners.forEach((signal) => {
 app
   .listen({
     port: app.env.PORT,
+    host: "0.0.0.0",
   })
   .then(() => {
     const address = app.server.address();
