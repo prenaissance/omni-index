@@ -14,13 +14,7 @@ export default [
     ...prefix("/api", [
       route("/oauth/callback", "server/routes/oauth/callback.ts"),
       route("/oauth/login", "server/routes/oauth/login.ts"),
-      route("/peer-nodes", "server/routes/peer-nodes.ts"),
-      route("/peer-nodes/:nodeId/remove", "server/routes/remove-node.ts"),
-      route("/peer-nodes/:nodeId/edit", "server/routes/edit-node.ts"),
-      route(
-        "/peer-nodes/:nodeId/refresh",
-        "server/routes/refresh-node-cert.ts"
-      ),
+      route("/peer-nodes", "server/routes/nodes/peer-nodes.ts"),
     ]),
     ...prefix("/api/entries/:bookId", [
       route("/comments", "server/routes/comments/add-comment.ts"),
@@ -33,6 +27,11 @@ export default [
         "/comments/:commentId/dislike",
         "server/routes/comments/dislike-comment.ts"
       ),
+    ]),
+    ...prefix("/api/peer-nodes", [
+      route("/:nodeId/remove", "server/routes/nodes/remove-node.ts"),
+      route("/:nodeId/edit", "server/routes/nodes/edit-node.ts"),
+      route("/:nodeId/refresh", "server/routes/nodes/refresh-node-cert.ts"),
     ]),
     route("books/:bookId", "routes/book.tsx"),
     route("/admin/nodes-config", "routes/admin/nodes-config.tsx"),

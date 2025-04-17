@@ -1,4 +1,4 @@
-import { checkCookie } from "../utils";
+import { checkCookie } from "../../utils";
 import type { Route } from "./+types/refresh-node-cert";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/server/env";
