@@ -1,3 +1,4 @@
+import { redirect } from "react-router";
 import { checkCookie } from "../../utils";
 import type { Route } from "./+types/refresh-node-cert";
 import type { paths } from "~/lib/api-types";
@@ -8,6 +9,8 @@ type NodeFail =
 
 export const action = async ({ request, params }: Route.LoaderArgs) => {
   const nodeId = params.nodeId;
+  const isHtmlRequest = request.headers.get("accept")?.includes("text/html");
+
   if (!nodeId) {
     throw new Response("Node ID is required", { status: 400 });
   }
@@ -26,6 +29,12 @@ export const action = async ({ request, params }: Route.LoaderArgs) => {
 
   if (!response.ok) {
     const error: NodeFail = await response.json();
+    if (isHtmlRequest) {
+      return redirect(
+        `/admin/nodes-config?error=${error.message || "Error refreshing node certificate"}`
+      );
+    }
+
     return new Response(
       JSON.stringify({
         error: error.message || "Error refreshing node cert",
@@ -37,6 +46,10 @@ export const action = async ({ request, params }: Route.LoaderArgs) => {
         },
       }
     );
+  }
+
+  if (isHtmlRequest) {
+    return redirect("/admin/nodes-config?success=Node certificate refreshed");
   }
 
   return new Response(JSON.stringify({ success: true }), {
