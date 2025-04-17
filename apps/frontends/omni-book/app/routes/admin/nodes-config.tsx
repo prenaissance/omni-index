@@ -113,7 +113,8 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
         </Tooltip>
       </div>
       <div
-        className={`h-[calc(100vh-240px)] pr-4 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-card-secondary [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-lg`}
+        className={`h-[calc(100vh-240px)] pr-4 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-card-secondary [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar:horizontal]:h-1
+    [&::-webkit-scrollbar:vertical]:w-1 [&::-webkit-scrollbar-corner]:bg-transparent`}
       >
         <table className="w-full">
           <thead className="sticky top-0 bg-card z-10">
@@ -137,14 +138,19 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
                       {node.url}
                     </div>
                   </td>
-                  <td className="w-[25%]">
+                  <td className="w-[25%] whitespace-nowrap">
                     <div
-                      className={"bg-card-secondary rounded-lg pl-4 py-2 mr-5"}
+                      className={
+                        "bg-card-secondary rounded-lg pl-4 py-2 pr-2 mr-5"
+                      }
                     >
                       {new Date(node.createdAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
                         day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
                       })}
                     </div>
                   </td>
