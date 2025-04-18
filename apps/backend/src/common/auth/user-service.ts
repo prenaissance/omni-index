@@ -80,7 +80,7 @@ export class UserService {
     const isAdmin = [data.did, data.handle].includes(
       this.env.INIT_ADMIN_IDENTITY
     );
-    const role = isAdmin ? UserRole.Admin : UserRole.User;
+    const role = isAdmin ? UserRole.Owner : UserRole.User;
     const user = new User({
       did,
       handle: data.handle,
