@@ -1,11 +1,13 @@
 import { request } from "node:https";
 import { PeerCertificate, TLSSocket } from "node:tls";
 
-export const getCertificate = async (hostname: string) => {
-  const url = `https://${hostname}`;
+export const getCertificate = async (urlOrHostname: string) => {
+  const url = urlOrHostname.startsWith("http")
+    ? urlOrHostname
+    : `https://${urlOrHostname}`;
   const response = request(url, {
     // consider using HEAD
-    method: "GET",
+    method: "HEAD",
     headers: {
       accept: "*/*",
     },

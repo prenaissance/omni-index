@@ -12,7 +12,6 @@ import {
   PeerNodeResponse,
 } from "~/synchronization/payloads/peer-node";
 import { getCertificate } from "~/synchronization/utilities";
-import { isValidNodeUrl } from "~/synchronization/validators";
 
 const peerNodeRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.addSchema(CreatePeerNodeRequest);
@@ -54,11 +53,31 @@ const peerNodeRoutes: FastifyPluginAsyncTypebox = async (app) => {
     async (request, reply) => {
       const { url, trustLevel } = request.body;
 
-      const isValid = isValidNodeUrl(url);
+      const isValid = URL.canParse(url);
       if (!isValid) {
         reply.status(400);
         return {
           message: "Invalid url",
+        };
+      }
+
+      const urlObj = new URL(url);
+      const isValidProtocol = ["http:", "https:"].includes(urlObj.protocol);
+      if (!isValidProtocol) {
+        reply.status(400);
+        return {
+          message: "Invalid url protocol",
+        };
+      }
+
+      if (
+        !app.env.DANGEROUS_SKIP_IDENTITY_VERIFICATION &&
+        urlObj.protocol !== "https:"
+      ) {
+        reply.status(400);
+        return {
+          message:
+            "Only https urls are allowed. Set the environment variable DANGEROUS_SKIP_IDENTITY_VERIFICATION=true to allow http urls.",
         };
       }
 
