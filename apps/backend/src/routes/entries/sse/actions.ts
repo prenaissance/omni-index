@@ -38,6 +38,8 @@ const entriesSseRoutes: FastifyPluginAsyncTypebox = async (app) => {
       reply.raw.setHeader("Connection", "keep-alive");
       reply.raw.setHeader("Cache-Control", "no-cache,no-transform");
       reply.raw.setHeader("Access-Control-Allow-Origin", "*");
+      // Hints to the reverse proxy to not buffer the response
+      reply.raw.setHeader("X-Accel-Buffering", "no");
 
       reply.raw.statusCode = 200;
       reply.raw.flushHeaders();

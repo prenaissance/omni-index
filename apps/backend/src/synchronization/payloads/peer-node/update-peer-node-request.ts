@@ -1,16 +1,15 @@
 import { Static, Type } from "@sinclair/typebox";
 import { PeerNode, PeerNodeInit } from "~/synchronization/entities/peer-node";
 
-export const CreatePeerNodeRequest = Type.Object(
+export const UpdatePeerNodeRequest = Type.Object(
   {
-    url: Type.String(),
     trustLevel: Type.Enum(PeerNode.TrustLevel),
   },
   {
-    $id: "CreatePeerNodeRequest",
+    $id: "UpdatePeerNodeRequest",
   }
 ) satisfies {
   static: Partial<PeerNodeInit>;
 };
 
-export type CreatePeerNodeRequest = Static<typeof CreatePeerNodeRequest>;
+export type UpdatePeerNodeRequest = Static<typeof UpdatePeerNodeRequest>;
