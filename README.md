@@ -58,7 +58,7 @@ The following section document ways to self-host Omni-Book, one of the official 
 
    ```bash
    curl https://raw.githubusercontent.com/prenaissance/omni-index/refs/heads/master/deployment/docker-compose.cloud-mongo.yml \
-     | sed 's/<your-domain>/<your-domain>/g' > ./docker-compose.yml
+     | sed 's/<domain>/<your-domain>/g' > ./docker-compose.yml
    ```
 
    Replace `<domain>` with your domain name and configure any environment variables you want to change.
@@ -157,7 +157,7 @@ The following section document ways to self-host Omni-Book, one of the official 
 
    ```bash
    curl https://raw.githubusercontent.com/prenaissance/omni-index/refs/heads/master/deployment/docker-compose.with-mongo.yml \
-     | sed 's/<your-domain>/<your-domain>/g' > ./docker-compose.yml
+     | sed 's/<domain>/<your-domain>/g' > ./docker-compose.yml
    ```
 
    Replace `<domain>` with your domain name and configure any environment variables you want to change.
