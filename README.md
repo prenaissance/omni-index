@@ -41,71 +41,27 @@ The following section document ways to self-host Omni-Book, one of the official 
 3. Provision a free MongoDB cluster using [MongoDB Atlas](https://cloud.mongodb.com/)
 4. Create a `.env` file in the `omni-book` directory and add the following environment variable:
    ```env
-   MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/omni-index?retryWrites=true&w=majority
+   MONGODB_URL=mongodb+srv://<username>:<password>@<cluster-url>/omni-index?retryWrites=true&w=majority
    ```
    Replace `<username>`, `<password>`, `<cluster-url>`, and `<database>` with your MongoDB credentials and cluster information.
-5. Create a file in the path `./nginx/conf/default.conf` and add the following content:
+5. Create a file in the path `./nginx/conf/default.conf` and add the content from [./deployment/nginx/conf/temp.conf](./deployment/nginx/conf/temp.conf), replacing `<domain>` with your domain name. Suggested command:
 
-   ```nginx
-   server {
-      listen 80;
-      server_name <your-domain> api.<your-domain>;
-
-      location /.well-known/acme-challenge/ {
-         root /var/www/certbot;
-      }
-
-      # Redirect all other HTTP traffic to HTTPS
-      location / {
-         return 301 https://$host$request_uri;
-      }
-   }
+   ```bash
+   mkdir -p ./nginx/conf
+   curl https://raw.githubusercontent.com/prenaissance/omni-index/refs/heads/master/deployment/nginx/conf/temp.conf \
+     | sed 's/<domain>/<your-domain>/g' > ./nginx/conf/default.conf
    ```
 
-   Replace `<your-domain>` with your domain name. This is needed for confirming ownership of the domain for TLS certificate generation. Make sure that the domain is already pointing to your server's IP address.
+   This is needed for confirming ownership of the domain for TLS certificate generation. Make sure that the domain is already pointing to your server's IP address.
 
-6. Create a `docker-compose.yml` file in the `omni-book` directory and add the following content:
+6. Create a `docker-compose.yml` file in the `omni-book` directory and add the content from [./deployment/docker-compose.cloud-mongo.yml](./deployment/docker-compose.cloud-mongo.yml), replacing `<your-domain>` with your domain name. Suggested command:
 
-   ```yaml
-   services:
-   webserver:
-     image: nginx:latest
-     ports:
-       - 80:80
-       - 443:443
-     restart: unless-stopped
-     volumes:
-       - ./nginx/conf/:/etc/nginx/conf.d/:ro
-       - ./certbot/www/:/var/www/certbot/:ro
-       - ./certbot/conf/:/etc/letsencrypt/:ro
-   certbot:
-     image: certbot/certbot:latest
-     volumes:
-       - ./certbot/www/:/var/www/certbot/:rw
-       - ./certbot/conf/:/etc/letsencrypt/:rw
-
-   api:
-     image: prenaissance/omni-index:0.0.1-alpha4
-     restart: unless-stopped
-     env_file:
-       - .env
-     environment:
-       - PORT=80
-       - MONGODB_DB=omni-index
-       - FRONTEND_URL=https://<your-domain>
-       - CALLBACK_URL=https://<your-domain>/api/oauth/callback
-       - DANGEROUS_SKIP_IDENTITY_VERIFICATION=true
-       - INIT_ADMIN_IDENTITY=prenaissance.bsky.social
-
-   omni-book:
-     image: prenaissance/omni-book:0.0.1-alpha4
-     restart: unless-stopped
-     environment:
-       - PORT=80
-       - API_URL=http://api:80
+   ```bash
+   curl https://raw.githubusercontent.com/prenaissance/omni-index/refs/heads/master/deployment/docker-compose.cloud-mongo.yml \
+     | sed 's/<your-domain>/<your-domain>/g' > ./docker-compose.yml
    ```
 
-   Replace `<your-domain>` with your domain name.
+   Replace `<domain>` with your domain name and configure any environment variables you want to change.
 
 7. (Optional) If you'd like to use a data import to bootstrap your instance, add an extra array item in the `services.api.environment` section of the `docker-compose.yml` file:
 
@@ -120,10 +76,16 @@ The following section document ways to self-host Omni-Book, one of the official 
      - ./omni_book_export.json:/app/omni_book_export.json
    ```
 
+   Suggested command:
+
+   ```bash
+   yq -i '.services.api.environment += ["INIT_IMPORT_SOURCE=https://api.book.omni-index.com/api/entries/exports/export"]' docker-compose.yml
+   ```
+
 8. Start the Docker containers:
 
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 9. Generate a TLS certificate using certbot:
@@ -138,12 +100,17 @@ The following section document ways to self-host Omni-Book, one of the official 
 
    Replace `<your-domain>` with your domain name.
 
-10. Edit the `./nginx/conf/default.conf` to match the content of [this configuration](./deployment/nginx/conf/default.conf). Make sure to use your domain for the `server_name` directives.
+10. Edit the `./nginx/conf/default.conf` to match the content of [./deployment/nginx/conf/default.conf](./deployment/nginx/conf/default.conf). Make sure to replace `<domain>` with your domain name. Suggested command:
+
+    ```bash
+    curl https://raw.githubusercontent.com/prenaissance/omni-index/refs/heads/master/deployment/nginx/conf/default.conf \
+      | sed 's/<domain>/<your-domain>/g' > ./nginx/conf/default.conf
+    ```
 
 11. Restart the webserver container:
 
     ```bash
-    docker-compose restart webserver
+    docker compose restart webserver
     ```
 
 12. (Optional) Set up a cron job to periodically refresh your TLS certificate. Create a file `renew-certificates.sh` in your project root with the following content:
@@ -160,7 +127,7 @@ The following section document ways to self-host Omni-Book, one of the official 
     chmod +x renew-certificates.sh
     ```
 
-    Then, set up a cron job to run the script periodically. Edit your crontab with `crontab -e` and add the following line:
+    Then, set up a cron job to run the script periodically. Edit your crontab with `crontab -e` and add the following line (get the absolute path via `realpath ./renew-certificates.sh`):
 
     ```bash
     30 3 * * * /bin/bash /path/to/your/project/renew-certificates.sh >> /var/log/letsencrypt-renew.log 2>&1
@@ -176,75 +143,24 @@ The following section document ways to self-host Omni-Book, one of the official 
    mkdir omni-book
    cd omni-book
    ```
-3. Create a file in the path `./nginx/conf/default.conf` and add the following content:
+3. Create a file in the path `./nginx/conf/default.conf` and add the content from [./deployment/nginx/conf/temp.conf](./deployment/nginx/conf/temp.conf), replacing `<domain>` with your domain name. Suggested command:
 
-   ```nginx
-   server {
-      listen 80;
-      server_name <your-domain> api.<your-domain>;
-
-      location /.well-known/acme-challenge/ {
-         root /var/www/certbot;
-      }
-
-      # Redirect all other HTTP traffic to HTTPS
-      location / {
-         return 301 https://$host$request_uri;
-      }
-   }
+   ```bash
+   mkdir -p ./nginx/conf
+   curl https://raw.githubusercontent.com/prenaissance/omni-index/refs/heads/master/deployment/nginx/conf/temp.conf \
+     | sed 's/<domain>/<your-domain>/g' > ./nginx/conf/default.conf
    ```
 
-   Replace `<your-domain>` with your domain name. This is needed for confirming ownership of the domain for TLS certificate generation. Make sure that the domain is already pointing to your server's IP address.
+   This is needed for confirming ownership of the domain for TLS certificate generation. Make sure that the domain is already pointing to your server's IP address.
 
-4. Create a `docker-compose.yml` file in the `omni-book` directory and add the following content:
+4. Create a `docker-compose.yml` file in the `omni-book` directory and add the content from [./deployment/docker-compose.with-mongo.yml](./deployment/docker-compose.with-mongo.yml), replacing `<your-domain>` with your domain name. Suggested command:
 
-   ```yaml
-   volumes:
-     mongo_data:
-
-   services:
-   mongo:
-     image: mongo:8
-     restart: unless-stopped
-     volumes:
-       - mongo_data:/data/db
-   webserver:
-     image: nginx:latest
-     ports:
-       - 80:80
-       - 443:443
-     restart: unless-stopped
-     volumes:
-       - ./nginx/conf/:/etc/nginx/conf.d/:ro
-       - ./certbot/www/:/var/www/certbot/:ro
-       - ./certbot/conf/:/etc/letsencrypt/:ro
-   certbot:
-     image: certbot/certbot:latest
-     volumes:
-       - ./certbot/www/:/var/www/certbot/:rw
-       - ./certbot/conf/:/etc/letsencrypt/:rw
-
-   api:
-     image: prenaissance/omni-index:0.0.1-alpha4
-     restart: unless-stopped
-     environment:
-       - PORT=80
-       - MONGODB_URL=mongodb://mongo:27017
-       - MONGODB_DB=omni-index
-       - FRONTEND_URL=https://book.omni-index.com
-       - CALLBACK_URL=https://book.omni-index.com/api/oauth/callback
-       - DANGEROUS_SKIP_IDENTITY_VERIFICATION=true
-       - INIT_ADMIN_IDENTITY=prenaissance.bsky.social
-
-   omni-book:
-     image: prenaissance/omni-book:0.0.1-alpha4
-     restart: unless-stopped
-     environment:
-       - PORT=80
-       - API_URL=http://api:80
+   ```bash
+   curl https://raw.githubusercontent.com/prenaissance/omni-index/refs/heads/master/deployment/docker-compose.with-mongo.yml \
+     | sed 's/<your-domain>/<your-domain>/g' > ./docker-compose.yml
    ```
 
-   Replace `<your-domain>` with your domain name.
+   Replace `<domain>` with your domain name and configure any environment variables you want to change.
 
 5. (Optional) If you'd like to use a data import to bootstrap your instance, add an extra array item in the `services.api.environment` section of the `docker-compose.yml` file:
 
@@ -257,6 +173,12 @@ The following section document ways to self-host Omni-Book, one of the official 
    ```yaml
    volumes:
      - ./omni_book_export.json:/app/omni_book_export.json
+   ```
+
+   Suggested command:
+
+   ```bash
+   yq -i '.services.api.environment += ["INIT_IMPORT_SOURCE=https://api.book.omni-index.com/api/entries/exports/export"]' docker-compose.yml
    ```
 
 6. Start the Docker containers:
@@ -277,7 +199,12 @@ The following section document ways to self-host Omni-Book, one of the official 
 
    Replace `<your-domain>` with your domain name.
 
-8. Edit the `./nginx/conf/default.conf` to match the content of [this configuration](./deployment/nginx/conf/default.conf). Make sure to use your domain for the `server_name` directives.
+8. Edit the `./nginx/conf/default.conf` to match the content of [./deployment/nginx/conf/default.conf](./deployment/nginx/conf/default.conf). Make sure to replace `<domain>` with your domain name. Suggested command:
+
+   ```bash
+   curl https://raw.githubusercontent.com/prenaissance/omni-index/refs/heads/master/deployment/nginx/conf/default.conf \
+     | sed 's/<domain>/<your-domain>/g' > ./nginx/conf/default.conf
+   ```
 
 9. Restart the webserver container:
 
@@ -299,7 +226,7 @@ The following section document ways to self-host Omni-Book, one of the official 
     chmod +x renew-certificates.sh
     ```
 
-    Then, set up a cron job to run the script periodically. Edit your crontab with `crontab -e` and add the following line:
+    Then, set up a cron job to run the script periodically. Edit your crontab with `crontab -e` and add the following line (get the absolute path via `realpath ./renew-certificates.sh`):
 
     ```bash
     30 3 * * * /bin/bash /path/to/your/project/renew-certificates.sh >> /var/log/letsencrypt-renew.log 2>&1
