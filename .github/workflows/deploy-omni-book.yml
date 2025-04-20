@@ -50,10 +50,10 @@ jobs:
             "${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.VERSION }}"
           )
           if [ "${{ github.event_name }}" == "push" ]; then
-            TAGS+=(
-              "${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.MAJOR_VERSION }}"
-              "${{ env.IMAGE_NAME }}:latest"
-            )
+            if [ "$MAJOR" != "0" ]; then
+              TAGS+=( "${IMAGE}:${MAJOR}" )
+            fi
+            TAGS+=( "${IMAGE}:latest" )
           fi
           echo "TAGS=$(IFS=,; echo ${TAGS[*]})" >> $GITHUB_OUTPUT
 
