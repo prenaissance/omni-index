@@ -14,7 +14,7 @@
     "dev": "tsx watch --env-file=.env src/main.ts",
     "second-node:dev": "PORT=8081 MONGODB_DB=omni-index-2 tsx watch --env-file=.env src/main.ts",
     "third-node:dev": "PORT=8082 MONGODB_DB=omni-index-3 tsx watch --env-file=.env src/main.ts",
-    "build": "esbuild $(find src migrations -name '*.ts') --platform=node --outdir=dist --sourcemap && tsc-alias",
+    "build": "esbuild $(find src -name '*.ts') --platform=node --outdir=dist --sourcemap && tsc-alias",
     "test:e2e": "NODE_OPTIONS='--import tsx' vitest run",
     "lint": "tsc --noEmit",
     "lexicon:codegen": "lex gen-server ./src/atproto $(find ./src/atproto/lexicons -name '*.json') && rm ./src/atproto/index.ts && eslint --fix ./src/atproto",
