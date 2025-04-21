@@ -6,7 +6,7 @@ services:
     image: mongo:8
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,7 +30,7 @@ services:
       - ./certbot/conf/:/etc/letsencrypt/:rw
 
   migration:
-    image: prenaissance/omni-index-migration:0.0.1-alpha8
+    image: prenaissance/omni-index-migration:0.0.1-alpha9
     environment:
       - MONGODB_URL=mongodb://mongo:27017
       - MONGODB_DB=omni-index
@@ -39,7 +39,7 @@ services:
         condition: service_healthy
 
   api:
-    image: prenaissance/omni-index:0.0.1-alpha8
+    image: prenaissance/omni-index:0.0.1-alpha9
     restart: unless-stopped
     environment:
       - PORT=80
@@ -54,14 +54,14 @@ services:
         condition: service_completed_successfully
       mongo:
         condition: service_healthy
-    mem_reservation: 128Mi
-    mem_limit: 256Mi
+    mem_reservation: 128m
+    mem_limit: 256m
 
   omni-book:
-    image: prenaissance/omni-book:0.0.1-alpha8
+    image: prenaissance/omni-book:0.0.1-alpha9
     restart: unless-stopped
     environment:
       - PORT=80
       - API_URL=http://api:80
-    mem_reservation: 96Mi
-    mem_limit: 192Mi
+    mem_reservation: 96m
+    mem_limit: 192m

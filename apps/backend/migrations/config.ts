@@ -9,6 +9,6 @@ mongoMigrateCli({
   options: {},
   migrationsDir: "migrations",
   migrationsCollection: "__migrations",
-  globPattern: "**/*.ts",
+  globPattern: "**/*.(ts|js)",
   migrationNameTimestampFormat: "yyyyMMddHHmmss",
 });
