@@ -12,11 +12,19 @@ on:
         type: string
 
 env:
-  IMAGE_NAME: prenaissance/omni-index
   TARGET_PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
   build:
+    strategy:
+      matrix:
+        image:
+          - name: backend
+            repo: prenaissance/omni-index
+            target: runner
+          - name: migration
+            repo: prenaissance/omni-index-migration
+            target: migration
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -47,21 +55,22 @@ jobs:
         id: docker_tags
         run: |
           TAGS=(
-            "${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.VERSION }}"
+            "${{ matrix.image.repo }}:${{ steps.get_version_fragments.outputs.VERSION }}"
           )
           if [ "${{ github.event_name }}" == "push" ]; then
             TAGS+=(
-              "${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.MAJOR_VERSION }}"
-              "${{ env.IMAGE_NAME }}:latest"
+              "${{ matrix.image.repo }}:${{ steps.get_version_fragments.outputs.MAJOR_VERSION }}"
+              "${{ matrix.image.repo }}:latest"
             )
           fi
           echo "TAGS=$(IFS=,; echo ${TAGS[*]})" >> $GITHUB_OUTPUT
 
-      - name: Build and push container image to registry
+      - name: Build and push ${{matrix.image.name}} image to registry
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./apps/backend/Dockerfile
+          target: ${{ matrix.image.target }}
           push: true
           platforms: ${{ env.TARGET_PLATFORMS }}
           tags: ${{ steps.docker_tags.outputs.TAGS }}
