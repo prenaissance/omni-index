@@ -19,4 +19,4 @@ RUN pnpm deploy --filter=omni-book --prod ./prod/omni-book
 FROM base
 WORKDIR /app
 COPY --from=build /app/prod/omni-book ./
-CMD ["pnpm", "start"]
+CMD ["node", "node_modules/@react-router/serve/bin.js", "./build/server/index.js"]
