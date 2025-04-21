@@ -30,7 +30,7 @@ services:
       - ./certbot/conf/:/etc/letsencrypt/:rw
 
   migration:
-    image: prenaissance/omni-index-migration:0.0.1-alpha9
+    image: prenaissance/omni-index-migration:0.0.1-alpha11
     environment:
       - MONGODB_URL=mongodb://mongo:27017
       - MONGODB_DB=omni-index
@@ -39,7 +39,7 @@ services:
         condition: service_healthy
 
   api:
-    image: prenaissance/omni-index:0.0.1-alpha9
+    image: prenaissance/omni-index:0.0.1-alpha11
     restart: unless-stopped
     environment:
       - PORT=80
@@ -58,7 +58,7 @@ services:
     mem_limit: 256m
 
   omni-book:
-    image: prenaissance/omni-book:0.0.1-alpha9
+    image: prenaissance/omni-book:0.0.1-alpha11
     restart: unless-stopped
     environment:
       - PORT=80

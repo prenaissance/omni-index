@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag to use for the Docker image. E.g., v0.1.0-alpha"
+        description: "Tag to use for the Docker image. E.g., v0.1.0-alpha1"
         required: true
         type: string
 

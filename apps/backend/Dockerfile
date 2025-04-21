@@ -22,11 +22,11 @@ CMD ["node", "dist/main"]
 
 FROM installer AS migration-build
 COPY . .
-RUN pnpm --filter=backend build
-RUN pnpm deploy --filter=backend ./prod/backend
+RUN pnpm --filter=backend build:migration
+RUN pnpm deploy --filter=backend --dev ./prod/backend
 
 FROM base AS migration
 COPY --from=migration-build /app/prod/backend/package.json ./
 COPY --from=migration-build /app/prod/backend/node_modules/ ./node_modules
-COPY --from=migration-build /app/prod/backend/migrations/ ./migrations
-CMD ["pnpm", "exec", "tsx", "migrations/config.ts", "up"]
+COPY --from=migration-build /app/prod/backend/dist/migrations/ ./migrations
+CMD ["node", "migrations/config.js", "up"]
