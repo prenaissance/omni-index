@@ -23,10 +23,10 @@ CMD ["node", "dist/main"]
 FROM installer AS migration-build
 COPY . .
 RUN pnpm --filter=backend build:migration
-RUN pnpm deploy --filter=backend --dev ./prod/backend
+RUN pnpm deploy --filter=backend ./prod/backend
 
 FROM base AS migration
 COPY --from=migration-build /app/prod/backend/package.json ./
 COPY --from=migration-build /app/prod/backend/node_modules/ ./node_modules
-COPY --from=migration-build /app/prod/backend/dist/ ./dist
-CMD ["node", "dist/migrations/config.js", "up"]
+COPY --from=migration-build /app/prod/backend/dist/ ./
+CMD ["node", "migrations/config.js", "up"]
