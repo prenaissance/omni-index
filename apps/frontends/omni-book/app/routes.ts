@@ -7,7 +7,7 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
-  layout("components/navbar.tsx", [
+  layout("components/navigation/navbar.tsx", [
     index("routes/home.tsx"),
     route("/login", "routes/login.tsx"),
     route("/client-metadata.json", "server/routes/client-metadata.ts"),

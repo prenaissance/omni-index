@@ -15,3 +15,6 @@ export { default as StarIcon } from "./star";
 export { default as TrashIcon } from "./trash";
 export { default as WarningIcon } from "./warning";
 export { default as MenuIcon } from "./menu";
+export { default as AdjustmentsIcon } from "./adjustments";
+export { default as HomeIcon } from "./home";
+export { default as SettingsIcon } from "./settings";
