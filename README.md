@@ -1,4 +1,7 @@
-# Omni-Index - Decentralized Media Indexing
+<p align="center">
+   <img src=./.github/images/repo-logo.svg width="200" height="200" />
+</p>
+<h1 align="center">Omni-Index - Decentralized Media Indexing</h1>
 
 Omni-Index is a decentralized media indexing system that allows hosting a variety of web apps that can be used to reference and media files and replicate them between node peers. It is designed to be simple and cheap to host, and very resilient to takedowns.
 

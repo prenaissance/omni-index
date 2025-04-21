@@ -5,6 +5,12 @@ services:
   mongo:
     image: mongo:8
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     volumes:
       - mongo_data:/data/db
   webserver:
@@ -23,8 +29,17 @@ services:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
 
+  migration:
+    image: prenaissance/omni-index-migration:0.0.1-alpha8
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017
+      - MONGODB_DB=omni-index
+    depends_on:
+      mongo:
+        condition: service_healthy
+
   api:
-    image: prenaissance/omni-index:0.0.1-alpha7
+    image: prenaissance/omni-index:0.0.1-alpha8
     restart: unless-stopped
     environment:
       - PORT=80
@@ -34,10 +49,19 @@ services:
       - CALLBACK_URL=https://<domain>/api/oauth/callback
       - DANGEROUS_SKIP_IDENTITY_VERIFICATION=true
       - INIT_ADMIN_IDENTITY=prenaissance.bsky.social
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+      mongo:
+        condition: service_healthy
+    mem_reservation: 128Mi
+    mem_limit: 256Mi
 
   omni-book:
-    image: prenaissance/omni-book:0.0.1-alpha7
+    image: prenaissance/omni-book:0.0.1-alpha8
     restart: unless-stopped
     environment:
       - PORT=80
       - API_URL=http://api:80
+    mem_reservation: 96Mi
+    mem_limit: 192Mi
