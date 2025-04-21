@@ -72,8 +72,7 @@ export class UserService {
     });
   }
 
-  async importUser(atproto: Agent) {
-    const did = atproto.assertDid as AtprotoDid;
+  async importUser(did: AtprotoDid, atproto: Agent) {
     const { data } = await atproto.app.bsky.actor.getProfile({
       actor: did,
     });
