@@ -1,4 +1,5 @@
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
+import { useEffect, useRef } from "react";
 import { AdjustmentsIcon, HomeIcon, LogOutIcon, SettingsIcon } from "../icons";
 import type { paths } from "~/lib/api-types";
 
@@ -10,8 +11,17 @@ type ProfileProps = {
 };
 
 export const Profile = ({ user }: ProfileProps) => {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (detailsRef.current?.open) {
+      detailsRef.current.removeAttribute("open");
+    }
+  }, [location]);
+
   return (
-    <details className="relative group">
+    <details className="relative group" ref={detailsRef}>
       <summary className="list-none cursor-pointer flex justify-end items-center gap-4 pl-10">
         <img
           src={
@@ -37,15 +47,17 @@ export const Profile = ({ user }: ProfileProps) => {
               <p>Home</p>
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/admin/nodes-config"
-              className="px-3 py-2 hover:bg-popover flex items-center gap-2"
-            >
-              <AdjustmentsIcon size={4} />
-              <p>Nodes Config</p>
-            </NavLink>
-          </li>
+          {user.role === "admin" && (
+            <li>
+              <NavLink
+                to="/admin/nodes-config"
+                className="px-3 py-2 hover:bg-popover flex items-center gap-2"
+              >
+                <AdjustmentsIcon size={4} />
+                <p>Nodes Config</p>
+              </NavLink>
+            </li>
+          )}
           <li>
             <NavLink
               to="/"
