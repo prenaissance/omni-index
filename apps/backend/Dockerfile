@@ -28,5 +28,5 @@ RUN pnpm deploy --filter=backend --dev ./prod/backend
 FROM base AS migration
 COPY --from=migration-build /app/prod/backend/package.json ./
 COPY --from=migration-build /app/prod/backend/node_modules/ ./node_modules
-COPY --from=migration-build /app/prod/backend/dist/migrations/ ./migrations
-CMD ["node", "migrations/config.js", "up"]
+COPY --from=migration-build /app/prod/backend/dist/ ./dist
+CMD ["node", "dist/migrations/config.js", "up"]
