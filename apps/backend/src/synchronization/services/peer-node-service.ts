@@ -56,6 +56,7 @@ export class PeerNodeService {
 
     return defer(() => {
       return new Observable<TEvent>((subscriber) => {
+        const controller = new AbortController();
         const parser = createParser({
           onEvent: (event) => {
             try {
@@ -80,6 +81,7 @@ export class PeerNodeService {
             connection: "keep-alive",
             "cache-control": "no-cache",
           },
+          signal: controller.signal,
           ...(!this.env.DANGEROUS_SKIP_IDENTITY_VERIFICATION && {
             checkServerIdentity,
           }),
@@ -122,6 +124,8 @@ export class PeerNodeService {
             });
             subscriber.error(error);
           });
+
+        return () => controller.abort();
       });
     });
   }
