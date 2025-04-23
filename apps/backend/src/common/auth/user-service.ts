@@ -3,6 +3,7 @@ import { AtprotoDid, NodeSavedSessionStore } from "@atproto/oauth-client-node";
 import { filter, from, map, mergeMap, Observable } from "rxjs";
 import { Event as AtprotoEvent } from "@atproto/sync";
 import { FastifyBaseLogger } from "fastify";
+import { IdResolver } from "@atproto/identity";
 import { UserRepository } from "./repositories/user-repository";
 import { User } from "./entities/user";
 import { UserRole } from "./entities/enums/user-role";
@@ -48,7 +49,8 @@ export class UserService {
   }
 
   private async handleProfileUpdate(event: ProfileUpdatedEvent) {
-    const user = await this.userRepository.getByDid(event.did as AtprotoDid);
+    const did = event.did as AtprotoDid;
+    const user = await this.userRepository.getByDid(did);
     if (!user) {
       this.logger.error({
         msg: `Update profile event for user passed filter, but user not found in db`,
@@ -59,6 +61,11 @@ export class UserService {
 
     user.displayName = event.record.displayName;
     user.description = event.record.description;
+    const didDoc = await new IdResolver().did.resolve(did);
+    const handle = didDoc?.alsoKnownAs?.[0]?.replace(/^at:\/\//, "");
+    if (handle) {
+      user.handle = handle;
+    }
 
     if (event.record.avatar) {
       user.avatarUrl = `https://cdn.bsky.app/img/avatar/plain/${
@@ -68,25 +75,53 @@ export class UserService {
     await this.userRepository.save(user);
     this.logger.info({
       msg: "Updated user profile based on atproto event",
-      did: user.did,
+      did,
     });
   }
 
-  async importUser(did: AtprotoDid, atproto: Agent) {
-    const { data } = await atproto.app.bsky.actor.getProfile({
-      actor: did,
+  /**
+   * @returns the imported user, or null if the user was not imported
+   */
+  async importUser(did: AtprotoDid, atproto: Agent): Promise<User | null> {
+    const {
+      data: { value },
+    } = await atproto.com.atproto.repo.getRecord({
+      repo: did,
+      collection: "app.bsky.actor.profile",
+      rkey: "self",
     });
-    const isAdmin = [data.did, data.handle].includes(
-      this.env.INIT_ADMIN_IDENTITY
-    );
+    const isProfileRecord = AppBskyActorProfile.isRecord(value);
+    if (!isProfileRecord) {
+      this.logger.error({
+        msg: "Imported user does not have a profile record",
+        did,
+        value,
+      });
+      return null;
+    }
+    const validationResult = AppBskyActorProfile.validateRecord(value);
+    if (!validationResult.success) {
+      this.logger.error({
+        msg: "Imported user profile is invalid",
+        did,
+        value,
+      });
+      return null;
+    }
+    const didDoc = await new IdResolver().did.resolve(did);
+    const handle = didDoc?.alsoKnownAs?.[0]?.replace(/^at:\/\//, "");
+
+    const isAdmin = [did, handle].includes(this.env.INIT_ADMIN_IDENTITY);
     const role = isAdmin ? UserRole.Owner : UserRole.User;
     const user = new User({
       did,
-      handle: data.handle,
+      handle,
       role,
-      displayName: data.displayName,
-      description: data.description,
-      avatarUrl: data.avatar,
+      displayName: value.displayName,
+      description: value.description,
+      avatarUrl: value.avatar
+        ? `https://cdn.bsky.app/img/avatar/plain/${did}/${value.avatar.ref.toString()}@jpeg`
+        : undefined,
     });
     await this.userRepository.save(user);
     return user;

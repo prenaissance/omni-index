@@ -1,9 +1,10 @@
 import * as tls from "node:tls";
-import { Readable } from "node:stream";
 import { ObjectId } from "mongodb";
 import { defer, filter, Observable, repeat, Subscription } from "rxjs";
 import { FastifyBaseLogger } from "fastify";
 import { createParser } from "eventsource-parser";
+import { Agent, Dispatcher } from "undici";
+import BodyReadable from "undici/types/readable";
 import { PeerNode, PeerNodeInit } from "../entities/peer-node";
 import { PeerNodeRepository } from "../repositories/peer-node-repository";
 import { getCertificate } from "../utilities";
@@ -32,30 +33,36 @@ export class PeerNodeService {
   get fingerprints(): ReadonlySet<string> {
     return this.fingerprintSet;
   }
+  private readonly agent: Agent;
   constructor(
     private readonly peerNodeRepository: PeerNodeRepository,
     private readonly storedEventRepository: StoredEventRepository,
     private readonly entryService: EntryService,
     private readonly env: Env,
     private readonly logger: FastifyBaseLogger
-  ) {}
+  ) {
+    this.agent = new Agent({
+      connect: {
+        checkServerIdentity: this.env.DANGEROUS_SKIP_IDENTITY_VERIFICATION
+          ? undefined
+          : (hostname, cert) => {
+              const error = tls.checkServerIdentity(hostname, cert);
+              if (error) {
+                return error;
+              }
+              if (!this.fingerprintSet.has(cert.fingerprint256)) {
+                return new FingerprintMismatchError();
+              }
+            },
+      },
+    });
+  }
 
-  private sse<TEvent>(url: URL | string) {
-    const checkServerIdentity = (
-      hostname: string,
-      cert: tls.PeerCertificate
-    ) => {
-      const error = tls.checkServerIdentity(hostname, cert);
-      if (error) {
-        return error;
-      }
-      if (this.fingerprints.has(cert.fingerprint256)) {
-        return new FingerprintMismatchError();
-      }
-    };
-
+  private sse<TEvent>(urlOrString: URL | string) {
     return defer(() => {
       return new Observable<TEvent>((subscriber) => {
+        const controller = new AbortController();
+        let body: (BodyReadable & Dispatcher.BodyMixin) | null = null;
         const parser = createParser({
           onEvent: (event) => {
             try {
@@ -63,7 +70,7 @@ export class PeerNodeService {
             } catch {
               this.logger.debug({
                 msg: "Failed to deserialize SSE event",
-                url,
+                url: urlOrString,
                 event: event.data,
               });
             }
@@ -73,55 +80,64 @@ export class PeerNodeService {
           },
         });
 
-        fetch(url, {
-          method: "GET",
-          headers: {
-            accept: "text/event-stream",
-            connection: "keep-alive",
-            "cache-control": "no-cache",
-          },
-          ...(!this.env.DANGEROUS_SKIP_IDENTITY_VERIFICATION && {
-            checkServerIdentity,
-          }),
-        })
+        const url = new URL(urlOrString);
+        this.agent
+          .request({
+            origin: url.origin,
+            path: url.pathname,
+            method: "GET",
+            headers: {
+              accept: "text/event-stream",
+              connection: "keep-alive",
+              "cache-control": "no-cache",
+            },
+            signal: controller.signal,
+          })
           .then((response) => {
-            if (!response.ok) {
+            if (response.statusCode >= 400) {
               return Promise.reject(new Error("Non-200 status code"));
             } else {
               this.logger.debug({
                 msg: "Peer node connection established",
-                url,
-                status: response.status,
-                statusMessage: response.statusText,
+                url: urlOrString,
+                status: response.statusCode,
               });
             }
             return response.body;
           })
-          .then(async (body) => {
+          .then(async (_body) => {
+            body = _body;
             if (!body) {
               return Promise.reject(new Error("No response body object"));
             }
 
-            const stream = Readable.fromWeb(body as never, {
-              encoding: "utf-8",
-            });
-            for await (const chunk of stream) {
-              parser.feed(chunk);
+            for await (const chunk of body) {
+              parser.feed(Buffer.from(chunk).toString("utf8"));
             }
+
             subscriber.complete();
             this.logger.debug({
               msg: "Peer node connection closed",
-              url,
+              url: urlOrString,
             });
           })
           .catch((error) => {
+            if (error.name === "AbortError") {
+              subscriber.complete();
+              return;
+            }
             this.logger.debug({
               msg: "Peer node connection error",
-              url,
+              url: urlOrString,
               error: "message" in error ? error.message : error,
             });
             subscriber.error(error);
           });
+
+        return () => {
+          controller.abort();
+          body?.dump();
+        };
       });
     });
   }

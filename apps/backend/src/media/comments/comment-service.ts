@@ -101,9 +101,11 @@ export class CommentService implements Disposable {
     const userExists = await this.userRepository.hasDid(userDid);
     if (!userExists) {
       const atprotoClient = new Agent("https://bsky.social/xrpc");
-      await this.userService.importUser(userDid, atprotoClient);
-      await this.importCommentLikes(atprotoClient);
-      await this.importComments(atprotoClient);
+      const user = await this.userService.importUser(userDid, atprotoClient);
+      if (!user) return;
+
+      await this.importCommentLikes(userDid, atprotoClient);
+      await this.importComments(userDid, atprotoClient);
       this.logger.info({
         msg: "Imported user upon synchronizing comment",
         did: userDid,
@@ -162,13 +164,15 @@ export class CommentService implements Disposable {
     const userExists = await this.userRepository.hasDid(userDid);
     if (!userExists) {
       const atprotoClient = new Agent("https://bsky.social/xrpc");
-      await this.userService.importUser(userDid, atprotoClient);
+      const user = await this.userService.importUser(userDid, atprotoClient);
+      if (!user) return;
+
       this.logger.info({
         msg: "Imported user upon synchronizing comment like",
         did: userDid,
       });
-      await this.importCommentLikes(atprotoClient);
-      await this.importComments(atprotoClient);
+      await this.importCommentLikes(userDid, atprotoClient);
+      await this.importComments(userDid, atprotoClient);
     }
 
     const like = new CommentLikeEntity({
@@ -269,8 +273,7 @@ export class CommentService implements Disposable {
     return { locallyDeleted, atprotoDeleted };
   }
 
-  async importComments(userAtproto: Agent) {
-    const did = userAtproto.assertDid as AtprotoDid;
+  async importComments(did: AtprotoDid, userAtproto: Agent) {
     const recordsResponse = await userAtproto.com.atproto.repo.listRecords({
       repo: did,
       collection: "com.omni-index.comment",
@@ -332,8 +335,7 @@ export class CommentService implements Disposable {
     });
   }
 
-  async importCommentLikes(userAtproto: Agent) {
-    const did = userAtproto.assertDid as AtprotoDid;
+  async importCommentLikes(did: AtprotoDid, userAtproto: Agent) {
     const recordsResponse = await userAtproto.com.atproto.repo.listRecords({
       repo: did,
       collection: "com.omni-index.comment.like",
