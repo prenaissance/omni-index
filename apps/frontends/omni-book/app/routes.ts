@@ -33,7 +33,10 @@ export default [
       route("/:nodeId/edit", "server/routes/nodes/edit-node.ts"),
       route("/:nodeId/refresh", "server/routes/nodes/refresh-node-cert.ts"),
     ]),
+    ...prefix("/admin", [
+      route("/nodes-config", "routes/admin/nodes-config.tsx"),
+      route("/add-entry", "routes/admin/add-entry.tsx"),
+    ]),
     route("books/:bookId", "routes/book.tsx"),
-    route("/admin/nodes-config", "routes/admin/nodes-config.tsx"),
   ]),
 ] satisfies RouteConfig;
