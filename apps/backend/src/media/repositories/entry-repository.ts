@@ -40,6 +40,11 @@ export class EntryRepository {
     };
   }
 
+  async findGenres() {
+    const genres = await this.collection.distinct("genres");
+    return genres;
+  }
+
   /**
    * @throws {import("mongodb").MongoServerError} if the entry already exists
    */

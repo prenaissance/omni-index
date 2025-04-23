@@ -68,6 +68,23 @@ const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
       reply.status(201).send(createdEntry);
     }
   );
+
+  app.get(
+    "/genres",
+    {
+      schema: {
+        tags: ["Entries"],
+        security: [],
+        response: {
+          200: Type.Array(Type.String()),
+        },
+      },
+    },
+    async () => {
+      const genres = await app.mediaEntry.repository.findGenres();
+      return genres;
+    }
+  );
 };
 
 export default entryRoutes;
