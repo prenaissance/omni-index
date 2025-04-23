@@ -82,8 +82,14 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
         const atprotoClient = new Agent(session);
         user = await app.users.service.importUser(did, atprotoClient);
         request.log.info({ msg: "Created user on first log in", did });
-        await app.mediaEntry.comments.service.importCommentLikes(atprotoClient);
-        await app.mediaEntry.comments.service.importComments(atprotoClient);
+        await app.mediaEntry.comments.service.importCommentLikes(
+          did,
+          atprotoClient
+        );
+        await app.mediaEntry.comments.service.importComments(
+          did,
+          atprotoClient
+        );
       }
 
       return reply.redirect(app.env.FRONTEND_URL);

@@ -49,7 +49,8 @@ export class UserService {
   }
 
   private async handleProfileUpdate(event: ProfileUpdatedEvent) {
-    const user = await this.userRepository.getByDid(event.did as AtprotoDid);
+    const did = event.did as AtprotoDid;
+    const user = await this.userRepository.getByDid(did);
     if (!user) {
       this.logger.error({
         msg: `Update profile event for user passed filter, but user not found in db`,
@@ -60,6 +61,11 @@ export class UserService {
 
     user.displayName = event.record.displayName;
     user.description = event.record.description;
+    const didDoc = await new IdResolver().did.resolve(did);
+    const handle = didDoc?.alsoKnownAs?.[0]?.replace(/^at:\/\//, "");
+    if (handle) {
+      user.handle = handle;
+    }
 
     if (event.record.avatar) {
       user.avatarUrl = `https://cdn.bsky.app/img/avatar/plain/${
@@ -69,7 +75,7 @@ export class UserService {
     await this.userRepository.save(user);
     this.logger.info({
       msg: "Updated user profile based on atproto event",
-      did: user.did,
+      did,
     });
   }
 
@@ -103,7 +109,7 @@ export class UserService {
       return null;
     }
     const didDoc = await new IdResolver().did.resolve(did);
-    const handle = didDoc?.alsoKnownAs?.[0];
+    const handle = didDoc?.alsoKnownAs?.[0]?.replace(/^at:\/\//, "");
 
     const isAdmin = [did, handle].includes(this.env.INIT_ADMIN_IDENTITY);
     const role = isAdmin ? UserRole.Owner : UserRole.User;
