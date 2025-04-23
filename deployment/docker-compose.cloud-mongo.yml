@@ -32,8 +32,8 @@ services:
       - CALLBACK_URL=https://<domain>/api/oauth/callback
       - DANGEROUS_SKIP_IDENTITY_VERIFICATION=true
       - INIT_ADMIN_IDENTITY=prenaissance.bsky.social
-    mem_reservation: 128Mi
-    mem_limit: 256Mi
+    mem_reservation: 128m
+    mem_limit: 256m
     depends_on:
       migration:
         condition: service_completed_successfully
@@ -44,5 +44,5 @@ services:
     environment:
       - PORT=80
       - API_URL=http://api:80
-    mem_reservation: 96Mi
-    mem_limit: 192Mi
+    mem_reservation: 96m
+    mem_limit: 192m
