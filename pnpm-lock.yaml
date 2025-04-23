@@ -126,6 +126,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
+      undici:
+        specifier: ^7.8.0
+        version: 7.8.0
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -4278,6 +4281,10 @@ packages:
   undici@6.20.1:
     resolution: {integrity: sha512-AjQF1QsmqfJys+LXfGTNum+qw4S88CojRInG/6t31W/1fk6G59s92bnAvGz5Cmur+kQv2SURXEvvudLmbrE8QA==}
     engines: {node: '>=18.17'}
+
+  undici@7.8.0:
+    resolution: {integrity: sha512-vFv1GA99b7eKO1HG/4RPu2Is3FBTWBrmzqzO0mz+rLxN3yXkE4mqRcb8g8fHxzX4blEysrNZLqg5RbJLqX5buA==}
+    engines: {node: '>=20.18.1'}
 
   universalify@2.0.1:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
@@ -8972,6 +8979,8 @@ snapshots:
       '@fastify/busboy': 2.1.1
 
   undici@6.20.1: {}
+
+  undici@7.8.0: {}
 
   universalify@2.0.1: {}
 

@@ -57,7 +57,7 @@ const entriesSseRoutes: FastifyPluginAsyncTypebox = async (app) => {
       app.eventEmitter.onPattern("entry.*", callback);
       const intervalId = setInterval(() => {
         reply.sse({ data: JSON.stringify({ type: "heartbeat" }) });
-      }, 90_000);
+      }, 30_000);
 
       reply.raw.once("close", () => {
         app.eventEmitter.offPattern("entry.*", callback);
