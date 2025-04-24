@@ -1,4 +1,4 @@
-import { Collection, Db, ObjectId } from "mongodb";
+import { Collection, Db, Filter, ObjectId } from "mongodb";
 import { Entry } from "../entities";
 import { PaginatedSearch } from "~/common/types/paginated-search";
 
@@ -26,13 +26,35 @@ export class EntryRepository {
     return Entry.fromDocument(document);
   }
 
-  async findMany({ skip, limit }: PaginatedSearch) {
+  async findMany({
+    skip,
+    limit,
+    author,
+    search,
+    orderBy,
+  }: PaginatedSearch & {
+    search?: string;
+    orderBy?: "createdAt" | "updatedAt";
+    author?: string;
+  }) {
+    const filter: Filter<Entry> = {};
+    if (search) {
+      filter.$text = {
+        $search: search,
+      };
+    }
+    if (author) {
+      filter.author = new RegExp(author, "i");
+    }
+    const sortBy = { sort: orderBy ? { [orderBy]: -1 as const } : undefined };
     const documents = await this.collection
-      .find({})
-      .skip(skip)
-      .limit(limit)
+      .find(filter, {
+        skip,
+        limit,
+        ...sortBy,
+      })
       .toArray();
-    const total = await this.collection.countDocuments();
+    const total = await this.collection.countDocuments(filter);
     const entries = documents.map(Entry.fromDocument);
     return {
       entries,

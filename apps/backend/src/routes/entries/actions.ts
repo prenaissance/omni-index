@@ -3,11 +3,11 @@ import {
   Type,
 } from "@fastify/type-provider-typebox";
 import { ExceptionSchema } from "~/common/payloads/exception-schema";
-import { PaginationQuery } from "~/common/payloads/pagination/pagination-query";
 import { PaginatedResponse } from "~/common/payloads/pagination/pagination-response";
 import { Entry } from "~/media/entities/entry";
 import { CreateEntryRequest } from "~/media/payloads/entry/create-entry-request";
 import { EntrySchema } from "~/media/payloads/entry/entry-schema";
+import { PaginatedEntriesRequest } from "~/media/payloads/entry/paginated-entries-request";
 
 const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.get(
@@ -16,19 +16,22 @@ const entryRoutes: FastifyPluginAsyncTypebox = async (app) => {
       schema: {
         tags: ["Entries"],
         security: [],
-        querystring: Type.Ref(PaginationQuery),
+        querystring: Type.Ref(PaginatedEntriesRequest),
         response: {
           200: PaginatedResponse(Type.Ref(EntrySchema)),
         },
       },
     },
     async (request) => {
-      const { page = 1, limit = 10 } = request.query;
+      const { page = 1, limit = 10, author, search, orderBy } = request.query;
       const skip = (page - 1) * limit;
 
       const { entries, total } = await app.mediaEntry.repository.findMany({
         skip,
         limit,
+        author,
+        search,
+        orderBy,
       });
 
       return {
