@@ -115,12 +115,14 @@ const AddEntry = () => {
               Add general information about the book
             </h4>
           </div>
-          <div className="flex-1 flex ">
+          <div className="flex-1 flex gap-4">
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex gap-4">
                 <label className="flex-1">
                   <div className="flex flex-col gap-1">
-                    <p className="text-sm font-light">Title</p>
+                    <p className="text-sm font-light">
+                      Title<span className="text-red-500">*</span>
+                    </p>
                     <input
                       name="title"
                       type="text"
@@ -145,7 +147,9 @@ const AddEntry = () => {
               <div className="flex gap-4">
                 <label className="flex-1">
                   <div className="flex flex-col gap-1">
-                    <p className="text-sm font-light">Author</p>
+                    <p className="text-sm font-light">
+                      Author<span className="text-red-500">*</span>
+                    </p>
                     <input
                       name="author"
                       type="text"
@@ -236,20 +240,54 @@ const AddEntry = () => {
             </h4>
           </div>
           <div className="flex-1">
-            {pageLoaded && (
-              <Select
-                isMulti
-                closeMenuOnSelect={false}
-                name="genres"
-                options={genres}
-                className="bg-card-secondary"
-                classNamePrefix="select"
-                components={animatedComponents}
-                styles={genresStyles}
-              />
+            {pageLoaded ? (
+              <>
+                <p className="text-sm font-light mb-1">
+                  Genres<span className="text-red-500">*</span>
+                </p>
+                <Select
+                  isMulti
+                  closeMenuOnSelect={false}
+                  name="genres"
+                  options={genres}
+                  className="bg-card-secondary"
+                  classNamePrefix="select"
+                  components={animatedComponents}
+                  styles={genresStyles}
+                />
+              </>
+            ) : (
+              <label className="flex-1">
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm font-light">
+                    Genres<span className="text-red-500">*</span>
+                  </p>
+                  <select
+                    name="genres"
+                    multiple
+                    className="h-40 px-4 py-2 bg-card-secondary rounded-lg outline-none [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-card-secondary [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar:horizontal]:h-1
+    [&::-webkit-scrollbar:vertical]:w-1 [&::-webkit-scrollbar-corner]:bg-transparent"
+                    required
+                  >
+                    {genres.map((genre) => (
+                      <option
+                        key={genre.value}
+                        value={genre.value}
+                        className="hover:bg-accent selection:bg-red "
+                      >
+                        {genre.label}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-muted-foreground">
+                    Hold Ctrl (or Cmd on Mac) to select multiple genres.
+                  </p>
+                </div>
+              </label>
             )}
           </div>
         </div>
+        <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
       </div>
     </div>
   );
