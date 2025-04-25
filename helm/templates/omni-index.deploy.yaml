@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: omni-index-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{ include "helm.labels" . | nindent 6 }}
+      app.kubernetes.io/name: omni-index
+      app.kubernetes.io/component: backend
+  template:
+    metadata:
+      name: omni-index
+      labels:
+        {{ include "helm.labels" . | nindent 8 }}
+        app.kubernetes.io/name: omni-index
+        app.kubernetes.io/component: backend
+    spec:
+      containers:
+        - name: api
+          image: "{{ .Values.omniIndex.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          livenessProbe:
+            httpGet:
+              path: /shallow-ping
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          env:
+            - name: PORT
+              value: "80"
+            - name: MONGODB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-credentials
+                  key: uri
+            - name: MONGODB_DB
+              value: omni-index
+            - name: FRONTEND_URL
+              value: "https://{{ .Values.omniBook.domain }}"
+            - name: CALLBACK_URL
+              value: "https://{{ .Values.omniBook.domain }}/api/oauth/callback"
+            - name: DANGEROUS_SKIP_IDENTITY_VERIFICATION
+              value: {{ .Values.omniIndex.skipIdentityVerification | quote }}
+            - name: INIT_ADMIN_IDENTITY
+              value: {{ .Values.omniIndex.initAdminIdentity | quote }}
+          resources:
+            requests:
+              memory: "128Mi"
+            limits:
+              memory: "256Mi"
