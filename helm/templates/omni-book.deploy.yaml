@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: omni-book-deployment
+  name: omni-book
   labels:
     {{- include "helm.labels" . | nindent 4 }}
     app.kubernetes.io/name: {{ include "helm.name" . }}

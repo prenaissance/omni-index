@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: omni-index-deployment
+  name: omni-index
 spec:
   replicas: 1
   selector:
@@ -45,6 +45,10 @@ spec:
               value: {{ .Values.omniIndex.skipIdentityVerification | quote }}
             - name: INIT_ADMIN_IDENTITY
               value: {{ .Values.omniIndex.initAdminIdentity | quote }}
+            {{- if .Values.omniIndex.initImportSource }}
+            - name: INIT_IMPORT_SOURCE
+              value: {{ .Values.omniIndex.initImportSource | quote }}
+            {{- end }}
           resources:
             requests:
               memory: "128Mi"
