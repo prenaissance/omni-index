@@ -4,12 +4,10 @@ metadata:
   name: omni-index
   labels:
     {{ include "helm.labels" . | nindent 4 }}
-    app.kubernetes.io/name: {{ include "helm.name" . }}
-    app.kubernetes.io/component: backend
 spec:
   selector:
     {{ include "helm.labels" . | nindent 4 }}
-    app.kubernetes.io/name: {{ include "helm.name" . }}
+    app.kubernetes.io/name: omni-book
     app.kubernetes.io/component: backend
   ports:
     - protocol: TCP

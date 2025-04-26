@@ -6,8 +6,8 @@ metadata:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   selector:
-    {{- include "helm.labels" . | nindent 4 }}
-    app.kubernetes.io/name: {{ include "helm.name" . }}
+    {{ include "helm.labels" . | nindent 4 }}
+    app.kubernetes.io/name: omni-book
     app.kubernetes.io/component: frontend
   ports:
     - protocol: TCP

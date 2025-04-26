@@ -2,19 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: omni-index
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       {{ include "helm.labels" . | nindent 6 }}
-      app.kubernetes.io/name: omni-index
+      app.kubernetes.io/name: omni-book
       app.kubernetes.io/component: backend
   template:
     metadata:
       name: omni-index
       labels:
         {{ include "helm.labels" . | nindent 8 }}
-        app.kubernetes.io/name: omni-index
+        app.kubernetes.io/name: omni-book
         app.kubernetes.io/component: backend
     spec:
       containers:

@@ -7,6 +7,7 @@ metadata:
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
+  clusterIP: None
   selector:
     app.kubernetes.io/name: "mongodb"
     app.kubernetes.io/component: "db"

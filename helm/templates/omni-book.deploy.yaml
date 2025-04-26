@@ -10,7 +10,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "helm.labels" . | nindent 6 }}
+      {{ include "helm.labels" . | nindent 6 }}
       app.kubernetes.io/name: omni-book
       app.kubernetes.io/component: frontend
   template:
@@ -28,7 +28,7 @@ spec:
             - name: PORT
               value: "80"
             - name: API_URL
-              value: "http://api:80"
+              value: "http://omni-index:80"
           resources:
             requests:
               memory: "96Mi"
