@@ -1,0 +1,17 @@
+omniBook:
+  domain: "book.omni-index.com"
+
+omniIndex:
+  domain: "api.book.omni-index.com"
+  initImportSource: "https://api.book-2.omni-index.com/api/entries/exports/export"
+
+ingress:
+  enabled: true
+  className: "traefik"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect-to-https@kubernetescrd
+  tls:
+    enabled: true
+    secretName: omni-book-tls

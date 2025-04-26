@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: omni-book
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "helm.name" . }}
+    app.kubernetes.io/component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{ include "helm.labels" . | nindent 6 }}
+      app.kubernetes.io/name: omni-book
+      app.kubernetes.io/component: frontend
+  template:
+    metadata:
+      labels:
+        {{- include "helm.labels" . | nindent 8 }}
+        app.kubernetes.io/name: omni-book
+        app.kubernetes.io/component: frontend
+    spec:
+      containers:
+        - name: omni-book
+          image: "{{ .Values.omniBook.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          env:
+            - name: PORT
+              value: "80"
+            - name: API_URL
+              value: "http://omni-index:80"
+          resources:
+            requests:
+              memory: "96Mi"
+            limits:
+              memory: "192Mi"

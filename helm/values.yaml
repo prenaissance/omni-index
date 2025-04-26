@@ -1,0 +1,58 @@
+# Default values for helm.
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  tag: 0.0.1-alpha11
+  pullPolicy: IfNotPresent
+omniBook:
+  domain: ""
+  image:
+    repository: prenaissance/omni-book
+
+omniIndex:
+  domain: ""
+  skipIdentityVerification: false
+  initAdminIdentity: "prenaissance.bsky.social"
+  initImportSource: ""
+  image:
+    repository: prenaissance/omni-index
+  migration:
+    image:
+      repository: prenaissance/omni-index-migration
+
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: false
+  className: "traefik"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+  tls:
+    enabled: true
+    secretName: ""
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+mongo:
+  enabled: true
+  image:
+    repository: mongo
+    tag: 8.0.8
+    pullPolicy: IfNotPresent
+  credentials:
+    user: admin
+  externalUri: ""
