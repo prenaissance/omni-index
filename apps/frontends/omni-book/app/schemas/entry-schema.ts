@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { components } from "~/lib/api-types";
 
 type CreateEntry = components["schemas"]["CreateEntryRequest"];
-type Mirror = components["schemas"]["CreateIndexRequest"];
+export type Mirror = components["schemas"]["CreateIndexRequest"];
 type MirrorWithoutMeta = Omit<Mirror, "meta">;
 type EntryWithoutMeta = Omit<CreateEntry, "meta">;
 type EntryWithoutMedia = Omit<EntryWithoutMeta, "media">;
@@ -42,4 +42,5 @@ export const entrySchema = z.object({
   ),
 }) satisfies z.ZodType<EntryWithoutMedia>;
 
+export type EntryFormInput = z.input<typeof entrySchema>;
 export type EntryFormData = z.infer<typeof entrySchema>;

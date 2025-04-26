@@ -9,6 +9,7 @@ const tooltipVariants = cva(
         default: "bg-card",
         light: "bg-accent text-foreground",
         dark: "bg-background text-white",
+        destructive: "bg-destructive",
       },
     },
     defaultVariants: {
@@ -25,6 +26,7 @@ const tooltipArrowVariants = cva(
         default: "border-t-card",
         light: "border-t-accent",
         dark: "border-t-background",
+        destructive: "border-t-destructive",
       },
     },
     defaultVariants: {

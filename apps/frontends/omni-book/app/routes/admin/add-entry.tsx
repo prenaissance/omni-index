@@ -3,13 +3,21 @@ import makeAnimated from "react-select/animated";
 import Select from "react-select";
 import type { StylesConfig } from "react-select";
 import { Form } from "react-router";
+import { v4 as uuidv4 } from "uuid";
 import type { Route } from "./+types/add-entry";
+import MediaForm from "./media-form";
 import { checkCookie } from "~/server/utils";
 import { env } from "~/lib/env";
 import type { paths } from "~/lib/api-types";
 import { TextArea } from "~/components/ui/text-area";
-import { entrySchema, type EntryFormData } from "~/schemas/entry-schema";
+import {
+  entrySchema,
+  type EntryFormData,
+  type EntryFormInput,
+} from "~/schemas/entry-schema";
 import { Button } from "~/components/ui/button";
+import { PlusIcon } from "~/components/icons";
+import Tooltip from "~/components/ui/tooltip";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -36,7 +44,9 @@ type GenreOption = {
   value: string;
   label: string;
 };
-const genresStyles: StylesConfig<GenreOption> = {
+type ArrayFormItem = EntryFormInput["media"][number] & { id: string };
+
+export const selectStyles: StylesConfig<GenreOption> = {
   control: (styles) => ({
     ...styles,
     backgroundColor: "card-secondary",
@@ -87,6 +97,10 @@ const genresStyles: StylesConfig<GenreOption> = {
     ...styles,
     color: "#fff",
   }),
+  singleValue: (styles) => ({
+    ...styles,
+    color: "#fff",
+  }),
 };
 
 const AddEntry = () => {
@@ -97,6 +111,39 @@ const AddEntry = () => {
     genres: [],
     media: [],
   });
+
+  const [medias, setMedias] = useState<ArrayFormItem[]>(() => [
+    {
+      id: uuidv4(),
+      mirrors: [
+        {
+          provider: "",
+          mimeType: "",
+          size: 0,
+          blob: {
+            url: "",
+          },
+        },
+      ],
+    },
+  ]);
+
+  const addMedia = () => {
+    setMedias((prev) => [
+      ...prev,
+      {
+        id: uuidv4(),
+        mirrors: [
+          {
+            provider: "",
+            mimeType: "",
+            size: 0,
+            blob: { url: "" },
+          },
+        ],
+      },
+    ]);
+  };
 
   const [errors, setErrors] = useState<
     Partial<Record<keyof EntryFormData, string[]>>
@@ -126,6 +173,15 @@ const AddEntry = () => {
     { value: "non-fiction", label: "Non-Fiction" },
     { value: "fantasy", label: "Fantasy" },
     { value: "science-fiction", label: "Science Fiction" },
+    { value: "mystery", label: "Mystery" },
+    { value: "romance", label: "Romance" },
+    { value: "thriller", label: "Thriller" },
+    { value: "horror", label: "Horror" },
+    { value: "biography", label: "Biography" },
+    { value: "self-help", label: "Self-Help" },
+    { value: "history", label: "History" },
+    { value: "science", label: "Science" },
+    { value: "philosophy", label: "Philosophy" },
   ];
 
   const animatedComponents = makeAnimated();
@@ -148,7 +204,7 @@ const AddEntry = () => {
               Add general information about the book
             </h4>
           </div>
-          <div className="flex-1 flex gap-4">
+          <div className="flex-1 flex ">
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex gap-4">
                 <label className="flex-1">
@@ -214,7 +270,7 @@ const AddEntry = () => {
                     <input
                       name="year"
                       type="number"
-                      className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
+                      className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="1448"
                       min={0}
                       max={new Date().getFullYear()}
@@ -248,9 +304,9 @@ const AddEntry = () => {
                   <div className="flex flex-col gap-1">
                     <p className="text-sm font-light">Thumbnail Url</p>
                     <input
-                      name="thumbnail-url"
+                      name="thumbnail"
                       type="text"
-                      placeholder="Thumbnail url"
+                      placeholder="https://example.com/thumbnail.jpg"
                       value={thumbnailUrl}
                       onChange={(e) => {
                         setThumbnailUrl(e.target.value);
@@ -262,8 +318,8 @@ const AddEntry = () => {
                 </label>
               </div>
             </div>
-            <div className="flex items-center h-[100%]">
-              {thumbnailUrl && (
+            {thumbnailUrl && (
+              <div className="flex items-center h-[100%] ml-4">
                 <img
                   src={thumbnailUrl}
                   alt="Thumbnail"
@@ -272,8 +328,8 @@ const AddEntry = () => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
@@ -319,7 +375,7 @@ const AddEntry = () => {
                   className="bg-card-secondary"
                   classNamePrefix="select"
                   components={animatedComponents}
-                  styles={genresStyles}
+                  styles={selectStyles}
                   onChange={(selectedOptions) => {
                     const selectedValues = (
                       selectedOptions as GenreOption[]
@@ -351,7 +407,7 @@ const AddEntry = () => {
                       <option
                         key={genre.value}
                         value={genre.value}
-                        className="hover:bg-accent selection:bg-red "
+                        className="hover:bg-accent"
                       >
                         {genre.label}
                       </option>
@@ -368,6 +424,49 @@ const AddEntry = () => {
             )}
           </div>
         </div>
+        <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
+        <div className="flex w-full gap-4">
+          <div className="w-1/4">
+            <h1 className="text-xl font-medium">Mirrors</h1>
+            <h4 className="text-sm font-light">
+              Add the mirrors for the book. You can add multiple mirrors.
+            </h4>
+          </div>
+          <div className="flex-1 flex flex-col gap-4">
+            {medias.map((_, index) => (
+              <MediaForm
+                key={medias[index].id}
+                pageLoaded={pageLoaded}
+                handleChange={handleChange}
+                errors={errors}
+                mediaIndex={index}
+                medias={medias}
+                setMedias={setMedias}
+              />
+            ))}
+            <div className="self-end flex">
+              <Button
+                type="button"
+                variant="icon"
+                size="icon"
+                className="p-0 m-0 w-fit h-fit"
+                onClick={() => {
+                  addMedia();
+                }}
+              >
+                <Tooltip
+                  variant="light"
+                  content={"Add a mirror"}
+                  className="w-fit whitespace-nowrap"
+                >
+                  <PlusIcon size={10} />
+                </Tooltip>
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
+
         <Button type="submit" className="w-fit self-end ">
           Submit form
         </Button>
@@ -378,7 +477,6 @@ const AddEntry = () => {
               </p>
             ))
           : null}
-        <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
       </div>
     </Form>
   );
