@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import makeAnimated from "react-select/animated";
 import Select from "react-select";
 import type { StylesConfig } from "react-select";
+import { Form } from "react-router";
 import type { Route } from "./+types/add-entry";
 import { checkCookie } from "~/server/utils";
 import { env } from "~/lib/env";
 import type { paths } from "~/lib/api-types";
 import { TextArea } from "~/components/ui/text-area";
+import { entrySchema, type EntryFormData } from "~/schemas/entry-schema";
+import { Button } from "~/components/ui/button";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -88,6 +91,31 @@ const genresStyles: StylesConfig<GenreOption> = {
 
 const AddEntry = () => {
   const [pageLoaded, setPageLoaded] = useState(false);
+  const [formData, setFormData] = useState<Partial<EntryFormData>>({
+    title: "",
+    author: "",
+    genres: [],
+    media: [],
+  });
+
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof EntryFormData, string[]>>
+  >({});
+
+  const handleChange = (field: keyof EntryFormData, value: unknown) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const result = entrySchema.safeParse(formData);
+    if (!result.success) {
+      e.preventDefault();
+      setErrors(result.error.flatten().fieldErrors);
+    }
+  };
 
   useEffect(() => {
     setPageLoaded(true);
@@ -104,7 +132,12 @@ const AddEntry = () => {
 
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   return (
-    <div className="m-10 rounded-lg bg-card pl-10 pr-6 py-5 relative">
+    <Form
+      method="POST"
+      action="/api/entries"
+      className="m-10 rounded-lg bg-card pl-10 pr-6 py-5 relative"
+      onSubmit={handleSubmit}
+    >
       <h1 className="text-2xl font-bold mb-4">Add Entry</h1>
       <div className="flex flex-col gap-5">
         <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
@@ -129,7 +162,11 @@ const AddEntry = () => {
                       className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
                       placeholder="The Republic"
                       required
+                      onChange={(e) => handleChange("title", e.target.value)}
                     />
+                    {errors.title && (
+                      <p className="text-red-500 text-sm">{errors.title[0]}</p>
+                    )}
                   </div>
                 </label>
                 <label className="flex-1">
@@ -140,7 +177,15 @@ const AddEntry = () => {
                       type="text"
                       className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
                       placeholder="The Republic"
+                      onChange={(e) =>
+                        handleChange("localizedTitle", e.target.value)
+                      }
                     />
+                    {errors["localizedTitle"] && (
+                      <p className="text-red-500 text-sm">
+                        {errors["localizedTitle"][0]}
+                      </p>
+                    )}
                   </div>
                 </label>
               </div>
@@ -156,7 +201,11 @@ const AddEntry = () => {
                       className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
                       placeholder="Plato"
                       required
+                      onChange={(e) => handleChange("author", e.target.value)}
                     />
+                    {errors.author && (
+                      <p className="text-red-500 text-sm">{errors.author[0]}</p>
+                    )}
                   </div>
                 </label>
                 <label className="flex-1">
@@ -169,7 +218,11 @@ const AddEntry = () => {
                       placeholder="1448"
                       min={0}
                       max={new Date().getFullYear()}
+                      onChange={(e) => handleChange("year", e.target.value)}
                     />
+                    {errors.year && (
+                      <p className="text-red-500 text-sm">{errors.year[0]}</p>
+                    )}
                   </div>
                 </label>
                 <label className="flex-1">
@@ -180,7 +233,13 @@ const AddEntry = () => {
                       type="text"
                       className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
                       placeholder="English"
+                      onChange={(e) => handleChange("language", e.target.value)}
                     />
+                    {errors.language && (
+                      <p className="text-red-500 text-sm">
+                        {errors.language[0]}
+                      </p>
+                    )}
                   </div>
                 </label>
               </div>
@@ -193,7 +252,10 @@ const AddEntry = () => {
                       type="text"
                       placeholder="Thumbnail url"
                       value={thumbnailUrl}
-                      onChange={(e) => setThumbnailUrl(e.target.value)}
+                      onChange={(e) => {
+                        setThumbnailUrl(e.target.value);
+                        handleChange("thumbnail", e.target.value);
+                      }}
                       className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
                     />
                   </div>
@@ -228,7 +290,11 @@ const AddEntry = () => {
               rows={7}
               placeholder="Add description..."
               name="text"
+              onChange={(e) => handleChange("description", e.target.value)}
             />
+            {errors.description && (
+              <p className="text-red-500 text-sm">{errors.description[0]}</p>
+            )}
           </div>
         </div>
         <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
@@ -254,6 +320,12 @@ const AddEntry = () => {
                   classNamePrefix="select"
                   components={animatedComponents}
                   styles={genresStyles}
+                  onChange={(selectedOptions) => {
+                    const selectedValues = (
+                      selectedOptions as GenreOption[]
+                    ).map((option) => option.value);
+                    handleChange("genres", selectedValues);
+                  }}
                 />
               </>
             ) : (
@@ -268,6 +340,12 @@ const AddEntry = () => {
                     className="h-40 px-4 py-2 bg-card-secondary rounded-lg outline-none [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-card-secondary [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar:horizontal]:h-1
     [&::-webkit-scrollbar:vertical]:w-1 [&::-webkit-scrollbar-corner]:bg-transparent"
                     required
+                    onChange={(e) => {
+                      const selectedOptions = Array.from(
+                        e.currentTarget.selectedOptions
+                      ).map((option) => option.value);
+                      handleChange("genres", selectedOptions);
+                    }}
                   >
                     {genres.map((genre) => (
                       <option
@@ -282,14 +360,27 @@ const AddEntry = () => {
                   <p className="text-xs text-muted-foreground">
                     Hold Ctrl (or Cmd on Mac) to select multiple genres.
                   </p>
+                  {errors.genres && (
+                    <p className="text-red-500 text-sm">{errors.genres[0]}</p>
+                  )}
                 </div>
               </label>
             )}
           </div>
         </div>
+        <Button type="submit" className="w-fit self-end ">
+          Submit form
+        </Button>
+        {errors
+          ? Object.entries(errors).map(([key, value]) => (
+              <p key={key} className="text-red-500 text-sm self-end">
+                {key}: {value[0]}
+              </p>
+            ))
+          : null}
         <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
       </div>
-    </div>
+    </Form>
   );
 };
 
