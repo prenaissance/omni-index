@@ -429,7 +429,9 @@ const AddEntry = () => {
           <div className="w-1/4">
             <h1 className="text-xl font-medium">Mirrors</h1>
             <h4 className="text-sm font-light">
-              Add the mirrors for the book. You can add multiple mirrors.
+              {pageLoaded
+                ? "Add the mirrors for the book. You can add multiple mirrors."
+                : "Add a mirror of the media."}
             </h4>
           </div>
           <div className="flex-1 flex flex-col gap-4">
@@ -444,29 +446,30 @@ const AddEntry = () => {
                 setMedias={setMedias}
               />
             ))}
-            <div className="self-end flex">
-              <Button
-                type="button"
-                variant="icon"
-                size="icon"
-                className="p-0 m-0 w-fit h-fit"
-                onClick={() => {
-                  addMedia();
-                }}
-              >
-                <Tooltip
-                  variant="light"
-                  content={"Add a mirror"}
-                  className="w-fit whitespace-nowrap"
+            {pageLoaded && (
+              <div className="self-end flex">
+                <Button
+                  type="button"
+                  variant="icon"
+                  size="icon"
+                  className="p-0 m-0 w-fit h-fit"
+                  onClick={() => {
+                    addMedia();
+                  }}
                 >
-                  <PlusIcon size={10} />
-                </Tooltip>
-              </Button>
-            </div>
+                  <Tooltip
+                    variant="light"
+                    content={"Add a mirror"}
+                    className="w-fit whitespace-nowrap"
+                  >
+                    <PlusIcon size={10} />
+                  </Tooltip>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
-
         <Button type="submit" className="w-fit self-end ">
           Submit form
         </Button>
