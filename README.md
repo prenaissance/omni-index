@@ -16,11 +16,11 @@ Omni-Index is a decentralized media indexing system that allows hosting a variet
 Omni-Index is designed to be easy and cheap to self-host. Below are the resource utilization figures for the application running on a Raspberry Pi 5 with 4GB of RAM:
 
 ```bash
-CONTAINER ID   NAME                    CPU %     MEM USAGE / LIMIT    MEM %     NET I/O           BLOCK I/O         PIDS
-2cde3e3f4d29   omni-book-omni-book-1   0.00%     91.17MiB / 3.95GiB   2.25%     4.89MB / 2.4MB    938kB / 23.2MB    22
-d772a1c186a5   omni-book-api-1         9.54%     332.7MiB / 3.95GiB   8.22%     37.2GB / 207MB    246kB / 0B        11
-fac23113787c   omni-book-webserver-1   0.00%     17.38MiB / 3.95GiB   0.43%     3MB / 2.68MB      12.2MB / 4.1kB    5
-e393a3a46bda   omni-book-mongo-1       0.42%     215.4MiB / 3.95GiB   5.33%     6.23MB / 3.77MB   111MB / 52.1MB    47
+CONTAINER ID   NAME                    CPU %     MEM USAGE / LIMIT    MEM %     NET I/O           BLOCK I/O        PIDS
+65dce33fabab   omni-book-api-1         13.41%    81.89MiB / 256MiB    31.99%    72.5MB / 495kB    17.7MB / 0B      11
+a8ecdd9c7632   omni-book-omni-book-1   0.00%     24.34MiB / 192MiB    12.68%    3.09MB / 126B     2.22MB / 0B      11
+c5998c79e95a   omni-book-webserver-1   0.00%     5.531MiB / 128MiB    4.32%     52.5MB / 96.4MB   5.1GB / 172kB    2
+e393a3a46bda   omni-book-mongo-1       0.42%     215.4MiB / 3.95GiB   5.33%     6.23MB / 3.77MB   111MB / 52.1MB   47
 ```
 
 The following section document ways to self-host Omni-Book, one of the official interfaces for Omni-Index, along with all the necessary dependencies:
