@@ -46,16 +46,14 @@ jobs:
       - name: Setup docker tags
         id: docker_tags
         run: |
-          TAGS=(
-            "${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.VERSION }}"
-          )
+          TAGS="${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.VERSION }}"
           if [ "${{ github.event_name }}" == "push" ]; then
             if [ "${{steps.get_version_fragments.outputs.MAJOR_VERSION}}" != "0" ]; then
-              TAGS+=( "${{ env.IMAGE_NAME }}:${{steps.get_version_fragments.outputs.MAJOR_VERSION}}" )
+              TAGS=${TAGS},${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.MAJOR_VERSION }}
             fi
-            TAGS+=( "${{ env.IMAGE_NAME }}:latest" )
+            TAGS=${TAGS},${{ env.IMAGE_NAME }}:latest
           fi
-          echo "TAGS=$(IFS=,; echo ${TAGS[*]})" >> $GITHUB_OUTPUT
+          echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v6
