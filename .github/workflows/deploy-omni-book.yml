@@ -51,9 +51,9 @@ jobs:
           )
           if [ "${{ github.event_name }}" == "push" ]; then
             if [ "$MAJOR" != "0" ]; then
-              TAGS+=( "${IMAGE}:${MAJOR}" )
+              TAGS+=( "${{ env.IMAGE_NAME }}:${MAJOR}" )
             fi
-            TAGS+=( "${IMAGE}:latest" )
+            TAGS+=( "${{ env.IMAGE_NAME }}:latest" )
           fi
           echo "TAGS=$(IFS=,; echo ${TAGS[*]})" >> $GITHUB_OUTPUT
 
