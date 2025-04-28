@@ -23,6 +23,9 @@ import GenresSection from "~/components/admin/entries-config/genres-section";
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
 
+type Genres =
+  paths["/api/entries/genres"]["get"]["responses"]["200"]["content"]["application/json"];
+
 type ArrayFormItem = EntryFormInput["media"][number] & { id: string };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -41,10 +44,27 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   }
 
   const user = (await res.json()) as Profile;
-  return { user };
+
+  const genresRes = await fetch(`${env.API_URL}/api/entries/genres`, {
+    method: "GET",
+  });
+
+  if (!genresRes.ok) {
+    return { user, genres: [] };
+  }
+
+  const genres = (await genresRes.json()) as Genres;
+
+  const genresOptions = genres.map((genre) => ({
+    value: genre,
+    label: genre,
+  }));
+
+  return { user, genresOptions };
 };
 
-const AddEntry = () => {
+export default function AddEntry({ loaderData }: Route.ComponentProps) {
+  const { genresOptions: genres } = loaderData;
   const [pageLoaded, setPageLoaded] = useState(false);
   const [formData, setFormData] = useState<Partial<EntryFormData>>({
     title: "",
@@ -213,21 +233,21 @@ const AddEntry = () => {
     setPageLoaded(true);
   }, []);
 
-  const genres = [
-    { value: "fiction", label: "Fiction" },
-    { value: "non-fiction", label: "Non-Fiction" },
-    { value: "fantasy", label: "Fantasy" },
-    { value: "science-fiction", label: "Science Fiction" },
-    { value: "mystery", label: "Mystery" },
-    { value: "romance", label: "Romance" },
-    { value: "thriller", label: "Thriller" },
-    { value: "horror", label: "Horror" },
-    { value: "biography", label: "Biography" },
-    { value: "self-help", label: "Self-Help" },
-    { value: "history", label: "History" },
-    { value: "science", label: "Science" },
-    { value: "philosophy", label: "Philosophy" },
-  ];
+  // const genres = [
+  //   { value: "fiction", label: "Fiction" },
+  //   { value: "non-fiction", label: "Non-Fiction" },
+  //   { value: "fantasy", label: "Fantasy" },
+  //   { value: "science-fiction", label: "Science Fiction" },
+  //   { value: "mystery", label: "Mystery" },
+  //   { value: "romance", label: "Romance" },
+  //   { value: "thriller", label: "Thriller" },
+  //   { value: "horror", label: "Horror" },
+  //   { value: "biography", label: "Biography" },
+  //   { value: "self-help", label: "Self-Help" },
+  //   { value: "history", label: "History" },
+  //   { value: "science", label: "Science" },
+  //   { value: "philosophy", label: "Philosophy" },
+  // ];
 
   const fetcher = useFetcher();
   const [notification, setNotification] = useState(false);
@@ -274,9 +294,6 @@ const AddEntry = () => {
       });
     }
   }, [fetcher.data]);
-
-  console.log("errors", errors);
-  console.log("submitErrors", submitErrors);
 
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   return (
@@ -353,7 +370,7 @@ const AddEntry = () => {
             errors={errors}
             touchedFields={touchedFields}
             pageLoaded={pageLoaded}
-            genres={genres}
+            genres={genres ?? []}
             selectedGenres={formData.genres || []}
           />
           <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
@@ -420,6 +437,4 @@ const AddEntry = () => {
       </fetcher.Form>
     </>
   );
-};
-
-export default AddEntry;
+}
