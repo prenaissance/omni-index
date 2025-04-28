@@ -53,7 +53,7 @@ const GeneralSection = ({
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-light">Localized Title</p>
                 <input
-                  name="localized-title"
+                  name="localizedTitle"
                   type="text"
                   className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
                   placeholder="The Republic"
