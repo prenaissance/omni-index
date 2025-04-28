@@ -65,3 +65,29 @@ jobs:
           push: true
           platforms: ${{ env.TARGET_PLATFORMS }}
           tags: ${{ steps.docker_tags.outputs.TAGS }}
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x argocd
+          sudo mv argocd /usr/local/bin/
+          argocd version
+      - name: Login to ArgoCD
+        run: argocd login ${{ secrets.ARGOCD_HOST }} --username admin --password ${{ secrets.ARGOCD_PASSWORD }}
+      - name: Sync ArgoCD application
+        run: |
+          argocd app set omni-book \
+            -p image.tag=$(echo ${{ github.ref_name }} | sed 's/v//')
+          argocd app sync omni-book
+      - name: Wait for ArgoCD application to be healthy
+        run: |
+          argocd app wait omni-book --sync --timeout 600
+          argocd app wait omni-book --health --timeout 600

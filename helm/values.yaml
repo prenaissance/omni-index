@@ -55,4 +55,5 @@ mongo:
     pullPolicy: IfNotPresent
   credentials:
     user: admin
+    password: admin
   externalUri: ""
