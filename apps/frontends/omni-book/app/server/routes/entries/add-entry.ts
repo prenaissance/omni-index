@@ -41,8 +41,6 @@ export const action = async ({ request }: Route.LoaderArgs) => {
 
   const genres = formData.getAll("genres") as string[];
 
-  const medias: CreateEntryRequest["media"] = [];
-
   if (!title) {
     return validateFormData("Title is required", isHtmlRequest);
   }
@@ -55,9 +53,9 @@ export const action = async ({ request }: Route.LoaderArgs) => {
     return validateFormData("At least one genre is required", isHtmlRequest);
   }
 
-  const mediaEntries: [string, FormDataEntryValue][] = Array.from(
-    formData.entries()
-  ).filter(([key]) => key.startsWith("media["));
+  const mediaEntries = Array.from(formData.entries()).filter(
+    ([key]) => key.startsWith("media[") || key.startsWith("media-")
+  );
 
   const mediaMap = new Map<
     number,
@@ -65,32 +63,51 @@ export const action = async ({ request }: Route.LoaderArgs) => {
   >();
 
   for (const [key, value] of mediaEntries) {
-    const match = key.match(/media\[(\d+)\]\[mirrors\]\[0\]\[(.+)\]/);
-    if (!match) continue;
+    const match = key.match(/media\[(\d+)\]\[mirrors\]\[0\]\[(\w+)\]/);
+    const blobMatch = key.match(/media-(.+)-blob-url/);
 
-    const mediaIndex = Number(match[1]);
-    const field = match[2];
+    if (match) {
+      const mediaIndex = Number(match[1]);
+      const field = match[2];
 
-    if (!mediaMap.has(mediaIndex)) {
-      mediaMap.set(mediaIndex, { mirrors: [{ blob: { url: "" }, meta: {} }] });
-    }
+      if (!mediaMap.has(mediaIndex)) {
+        mediaMap.set(mediaIndex, {
+          mirrors: [{ blob: { url: "" }, meta: {} }],
+        });
+      }
 
-    const mirror = mediaMap.get(mediaIndex)!.mirrors[0];
+      const mirror = mediaMap.get(mediaIndex)!.mirrors[0];
 
-    if (field === "provider" && value) {
-      mirror.provider = value.toString();
-    }
-    if (field === "mimeType" && value) {
-      mirror.mimeType = value.toString();
-    }
-    if (field === "size" && value) {
-      mirror.size = Number(value);
-    }
-    if (field === "blob") {
-      mirror.blob = { url: value.toString() };
+      if (field === "provider" && value) {
+        mirror.provider = value.toString();
+      }
+      if (field === "mimeType" && value) {
+        mirror.mimeType = value.toString();
+      }
+      if (field === "size" && value) {
+        mirror.size = Number(value);
+      }
+    } else if (blobMatch) {
+      const index = [...mediaMap.keys()].find((i) => {
+        const blob = mediaMap.get(i)?.mirrors[0].blob;
+        return blob && "url" in blob && !blob.url;
+      });
+
+      if (index !== undefined) {
+        const mirror = mediaMap.get(index)!.mirrors[0];
+        if ("url" in mirror.blob) {
+          mirror.blob.url = value.toString();
+        }
+      } else {
+        const newIndex = mediaMap.size;
+        mediaMap.set(newIndex, {
+          mirrors: [{ blob: { url: value.toString() }, meta: {} }],
+        });
+      }
     }
   }
 
+  const medias: CreateEntryRequest["media"] = [];
   for (const [, value] of mediaMap) {
     medias.push({
       mirrors: value.mirrors,

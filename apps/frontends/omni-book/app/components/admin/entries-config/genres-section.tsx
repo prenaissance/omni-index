@@ -17,7 +17,7 @@ type GenresSectionProps = {
   touchedFields: Record<string, boolean>;
   pageLoaded: boolean;
   genres: { value: string; label: string }[];
-  selectStyles: unknown;
+  selectedGenres: string[];
 };
 
 const GenresSection = ({
@@ -26,6 +26,7 @@ const GenresSection = ({
   touchedFields,
   pageLoaded,
   genres,
+  selectedGenres,
 }: GenresSectionProps) => {
   const animatedComponents = makeAnimated();
 
@@ -52,6 +53,9 @@ const GenresSection = ({
               classNamePrefix="select"
               components={animatedComponents}
               styles={selectStyles}
+              value={genres.filter((genre) =>
+                selectedGenres.includes(genre.value)
+              )}
               onChange={(selectedOptions) => {
                 const selectedValues = (selectedOptions as GenreOption[]).map(
                   (option) => option.value

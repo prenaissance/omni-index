@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFetcher, useSearchParams } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 import MediaForm from "../../components/admin/entries-config/media-form";
@@ -19,7 +19,6 @@ import Tooltip from "~/components/ui/tooltip";
 import { Notification } from "~/components/ui/notification";
 import DescriptionSection from "~/components/admin/entries-config/description-section";
 import GenresSection from "~/components/admin/entries-config/genres-section";
-import { selectStyles } from "~/components/ui/helpers";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -53,6 +52,8 @@ const AddEntry = () => {
     genres: [],
     media: [],
   });
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [medias, setMedias] = useState<ArrayFormItem[]>(() => [
     {
@@ -247,6 +248,36 @@ const AddEntry = () => {
     }
   }, [formData]);
 
+  useEffect(() => {
+    if (fetcher?.data?.success) {
+      formRef.current?.reset();
+      setThumbnailUrl("");
+      setMedias([
+        {
+          id: uuidv4(),
+          mirrors: [
+            {
+              provider: "",
+              mimeType: "",
+              size: 0,
+              blob: {
+                url: "",
+              },
+            },
+          ],
+        },
+      ]);
+      setTouchedFields({});
+      setTouchedMedia({});
+      setFormData({
+        genres: [],
+      });
+    }
+  }, [fetcher.data]);
+
+  console.log("errors", errors);
+  console.log("submitErrors", submitErrors);
+
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   return (
     <>
@@ -298,6 +329,7 @@ const AddEntry = () => {
         action="/api/entries"
         className="m-10 rounded-lg bg-card pl-10 pr-6 py-5 relative"
         onSubmit={handleSubmit}
+        ref={formRef}
       >
         <h1 className="text-2xl font-bold mb-4">Add Entry</h1>
         <div className="flex flex-col gap-5">
@@ -322,7 +354,7 @@ const AddEntry = () => {
             touchedFields={touchedFields}
             pageLoaded={pageLoaded}
             genres={genres}
-            selectStyles={selectStyles}
+            selectedGenres={formData.genres || []}
           />
           <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
           <div className="flex w-full gap-4">

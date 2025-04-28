@@ -100,7 +100,7 @@ const GeneralSection = ({
                   placeholder="1448"
                   min={0}
                   max={new Date().getFullYear()}
-                  onChange={(e) => handleChange("year", e.target.value)}
+                  onChange={(e) => handleChange("year", e.target.valueAsNumber)}
                 />
                 {touchedFields.year && errors?.year && (
                   <p className="text-red-500 text-xs">
@@ -132,13 +132,13 @@ const GeneralSection = ({
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-light">Thumbnail Url</p>
                 <input
-                  name="thumbnail"
+                  name="thumbnail.url"
                   type="text"
                   placeholder="https://example.com/thumbnail.jpg"
                   value={thumbnailUrl}
                   onChange={(e) => {
                     setThumbnailUrl(e.target.value);
-                    handleChange("thumbnail", e.target.value);
+                    handleChange("thumbnail", { url: e.target.value });
                   }}
                   className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
                 />
