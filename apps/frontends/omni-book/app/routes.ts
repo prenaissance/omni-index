@@ -31,7 +31,6 @@ export default [
     ]),
     ...prefix("/api/peer-nodes", [
       route("/:nodeId/remove", "server/routes/nodes/remove-node.ts"),
-      route("/:nodeId/edit", "server/routes/nodes/edit-node.ts"),
       route("/:nodeId/refresh", "server/routes/nodes/refresh-node-cert.ts"),
     ]),
     ...prefix("/admin", [
