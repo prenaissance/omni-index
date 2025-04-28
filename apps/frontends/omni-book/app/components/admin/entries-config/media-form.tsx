@@ -1,7 +1,7 @@
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import type { z } from "zod";
-import { selectStyles } from "./add-entry";
+import { selectStyles } from "../../../routes/admin/add-entry";
 import { formatSelector } from "~/lib/utils";
 import type {
   EntryFormData,
@@ -18,29 +18,28 @@ type FormattedEntryErrors = z.inferFormattedError<typeof entrySchema>;
 
 type MediaFormProps = {
   pageLoaded: boolean;
-  handleChange: (field: keyof EntryFormData, value: unknown) => void;
-  errors: FormattedEntryErrors | undefined;
-  touchedFields: Partial<Record<keyof EntryFormData, boolean>>;
+  media: ArrayFormItem;
   mediaIndex: number;
-  medias: ArrayFormItem[];
-  setMedias: React.Dispatch<React.SetStateAction<ArrayFormItem[]>>;
   handleMediaChange: (
-    mediaIndex: number,
+    mediaId: string,
     field: keyof EntryFormData["media"][number]["mirrors"][number]["blob"],
     value: string
   ) => void;
-  unTouchField: (field: keyof EntryFormData) => void;
+  touchedMedia: Record<string, { blobTouched?: boolean }>;
+  errors: FormattedEntryErrors | undefined;
+  removeMedia: (mediaId: string) => void;
+  medias: ArrayFormItem[];
 };
 
 const MediaForm = ({
   pageLoaded,
-  errors,
-  touchedFields,
+  media,
   mediaIndex,
-  medias,
-  setMedias,
   handleMediaChange,
-  unTouchField,
+  touchedMedia,
+  errors,
+  removeMedia,
+  medias,
 }: MediaFormProps) => {
   const providers = [
     { value: "gutenberg", label: "Gutenberg" },
@@ -48,19 +47,10 @@ const MediaForm = ({
   ];
   const animatedComponents = makeAnimated();
 
-  const blobTouched =
-    touchedFields[
-      `media.${mediaIndex}.mirrors.0.blob.url` as keyof typeof touchedFields
-    ];
+  const blobTouched = touchedMedia[media.id]?.blobTouched;
 
   const blobUrlError =
-    errors?.media?.[
-      mediaIndex
-    ]?.mirrors?.[0]?.blob?.url?._errors[0]?.toString() || null;
-
-  console.log("blobUrlError", blobUrlError);
-  console.log("blobTouched", blobTouched);
-  console.log("errors", errors);
+    errors?.media?.[mediaIndex]?.mirrors?.[0]?.blob?.url?._errors[0] || null;
 
   return (
     <div className="flex-1 flex flex-col gap-4 bg-[#353535] p-5 rounded-lg">
@@ -150,11 +140,11 @@ const MediaForm = ({
               Blob Url<span className="text-red-500">*</span>
             </p>
             <input
-              name={`media[${mediaIndex}][mirrors][0][blob][url]`}
+              name={`media-${media.id}-blob-url`}
               type="text"
-              value={medias[mediaIndex]?.mirrors[0]?.blob?.url || ""}
+              value={media.mirrors[0].blob.url}
               onChange={(e) =>
-                handleMediaChange(mediaIndex, "url", e.target.value)
+                handleMediaChange(media.id, "url", e.target.value)
               }
               placeholder="https://example.com/blob"
               className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
@@ -170,14 +160,7 @@ const MediaForm = ({
           variant="icon"
           size="icon"
           className="p-0 m-0 w-fit h-fit disabled:hidden"
-          onClick={() => {
-            setMedias((prev) =>
-              prev.filter((m) => m.id !== medias[mediaIndex!].id)
-            );
-            unTouchField(
-              `media.${mediaIndex}.mirrors.0.blob.url` as keyof typeof touchedFields
-            );
-          }}
+          onClick={() => removeMedia(media.id)}
           disabled={medias.length <= 1}
         >
           <Tooltip

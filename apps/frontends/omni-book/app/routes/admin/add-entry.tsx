@@ -5,8 +5,8 @@ import type { StylesConfig } from "react-select";
 import { useFetcher } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 import type { z } from "zod";
+import MediaForm from "../../components/admin/entries-config/media-form";
 import type { Route } from "./+types/add-entry";
-import MediaForm from "./media-form";
 import { checkCookie } from "~/server/utils";
 import { env } from "~/lib/env";
 import type { paths } from "~/lib/api-types";
@@ -138,6 +138,10 @@ const AddEntry = () => {
     Partial<Record<keyof EntryFormData, boolean>>
   >({});
 
+  const [touchedMedia, setTouchedMedia] = useState<
+    Record<string, { blobTouched?: boolean }>
+  >({});
+
   const addMedia = () => {
     setMedias((prev) => [
       ...prev,
@@ -183,35 +187,65 @@ const AddEntry = () => {
   };
 
   const handleMediaChange = (
-    index: number,
+    mediaId: string,
     field: keyof EntryFormData["media"][number]["mirrors"][number]["blob"],
     value: string
   ) => {
     setMedias((prev) => {
-      const updated = [...prev];
-      if (!updated[index]) {
-        updated[index] = {
-          mirrors: [{ blob: { url: "" } }],
-          id: uuidv4(),
-        };
-      }
-      updated[index].mirrors[0].blob[field] = value;
-      return updated;
+      return prev.map((media) =>
+        media.id === mediaId
+          ? {
+              ...media,
+              mirrors: [
+                {
+                  ...media.mirrors[0],
+                  blob: {
+                    ...media.mirrors[0].blob,
+                    [field]: value,
+                  },
+                },
+              ],
+            }
+          : media
+      );
     });
 
-    const fieldKey = `media.${index}.mirrors.0.blob.${field}`;
-
-    setTouchedFields((prev) => ({
+    setTouchedMedia((prev) => ({
       ...prev,
-      [fieldKey]: true,
+      [mediaId]: {
+        ...(prev[mediaId] || {}),
+        blobTouched: true,
+      },
     }));
+
+    setFormData((prev) => {
+      const mediaEntries = medias.map((media) => ({
+        mirrors: media.mirrors,
+        meta: {},
+      }));
+
+      const updated = { ...prev, media: mediaEntries };
+      const result = entrySchema.safeParse(updated);
+
+      if (!result.success) {
+        setErrors(result.error.format());
+      } else {
+        setErrors(undefined);
+        setSubmitErrors({});
+      }
+
+      return updated;
+    });
   };
 
-  const unTouchField = (field: keyof EntryFormData) => {
-    setTouchedFields((prev) => ({
-      ...prev,
-      [field]: false,
-    }));
+  const removeMedia = (mediaId: string) => {
+    setMedias((prev) => prev.filter((media) => media.id !== mediaId));
+    setTouchedMedia((prev) => {
+      const updated = Object.fromEntries(
+        Object.entries(prev).filter(([key]) => key !== mediaId)
+      );
+      return updated;
+    });
   };
 
   useEffect(() => {
@@ -560,18 +594,17 @@ const AddEntry = () => {
               </h4>
             </div>
             <div className="flex-1 flex flex-col gap-4">
-              {medias.map((_, index) => (
+              {medias.map((media, index) => (
                 <MediaForm
-                  key={medias[index].id}
+                  key={media.id}
                   pageLoaded={pageLoaded}
-                  handleChange={handleChange}
-                  errors={errors}
-                  touchedFields={touchedFields}
+                  media={media}
                   mediaIndex={index}
-                  medias={medias}
-                  setMedias={setMedias}
                   handleMediaChange={handleMediaChange}
-                  unTouchField={unTouchField}
+                  touchedMedia={touchedMedia}
+                  errors={errors}
+                  removeMedia={removeMedia}
+                  medias={medias}
                 />
               ))}
               {pageLoaded && (
