@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import type { StylesConfig } from "react-select";
-import { useFetcher } from "react-router";
+import { useFetcher, useSearchParams } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 import MediaForm from "../../components/admin/entries-config/media-form";
 import GeneralSection from "../../components/admin/entries-config/general-section";
@@ -20,9 +19,12 @@ import Tooltip from "~/components/ui/tooltip";
 import { Notification } from "~/components/ui/notification";
 import DescriptionSection from "~/components/admin/entries-config/description-section";
 import GenresSection from "~/components/admin/entries-config/genres-section";
+import { selectStyles } from "~/components/ui/helpers";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
+
+type ArrayFormItem = EntryFormInput["media"][number] & { id: string };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const cookieHeader = checkCookie(request);
@@ -41,70 +43,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
   const user = (await res.json()) as Profile;
   return { user };
-};
-
-type SelectOption = {
-  value: string;
-  label: string;
-};
-
-type ArrayFormItem = EntryFormInput["media"][number] & { id: string };
-
-export const selectStyles: StylesConfig<SelectOption> = {
-  control: (styles) => ({
-    ...styles,
-    backgroundColor: "card-secondary",
-    fontSize: "0.875rem",
-    paddingLeft: "0.5rem",
-    paddingTop: "4px",
-    paddingBottom: "4px",
-    border: "none",
-    outline: "none",
-    boxShadow: "none",
-    cursor: "pointer",
-  }),
-  option: (styles) => ({
-    ...styles,
-    backgroundColor: "#404040",
-    ":hover": {
-      backgroundColor: "#2f796e",
-      cursor: "pointer",
-    },
-    fontSize: "0.875rem",
-    paddingLeft: "1rem",
-  }),
-  menu: (styles) => ({
-    ...styles,
-    backgroundColor: "#404040",
-    borderRadius: "7px",
-  }),
-  container: (styles) => ({
-    ...styles,
-    borderRadius: "7px",
-    outline: "none",
-  }),
-  placeholder: (styles) => ({
-    ...styles,
-    color: "#a9a9a9",
-  }),
-  multiValue: (styles) => ({
-    ...styles,
-    backgroundColor: "#2f796e",
-    borderRadius: "3px",
-    color: "#fff",
-  }),
-  multiValueLabel: (styles) => ({
-    ...styles,
-    color: "#fff",
-  }),
-  input: (styles) => ({
-    ...styles,
-    color: "#fff",
-  }),
-  singleValue: (styles) => ({
-    ...styles,
-    color: "#fff",
-  }),
 };
 
 const AddEntry = () => {
@@ -139,6 +77,11 @@ const AddEntry = () => {
   const [touchedMedia, setTouchedMedia] = useState<
     Record<string, { blobTouched?: boolean }>
   >({});
+
+  const [searchParams] = useSearchParams();
+
+  const errorMessage = searchParams.get("error");
+  const successMessage = searchParams.get("success");
 
   const addMedia = () => {
     setMedias((prev) => [
@@ -307,7 +250,7 @@ const AddEntry = () => {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   return (
     <>
-      {notification && (
+      {notification ? (
         <div className="fixed w-full top-24 mx-auto z-50 flex justify-center">
           <Notification
             variant={
@@ -329,7 +272,27 @@ const AddEntry = () => {
                 : null}
           </Notification>
         </div>
-      )}
+      ) : errorMessage ? (
+        <div className="fixed w-full top-24 mx-auto z-50 flex justify-center">
+          <Notification
+            variant={"danger"}
+            closeButtonLink={"/admin/add-entry"}
+            className="w-fit min-w-96 max-w-[70%]"
+          >
+            {errorMessage}
+          </Notification>
+        </div>
+      ) : successMessage ? (
+        <div className="fixed w-full top-24 mx-auto z-50 flex justify-center">
+          <Notification
+            variant={"success"}
+            closeButtonLink={"/admin/add-entry"}
+            className="w-fit min-w-96 max-w-[70%]"
+          >
+            {successMessage}
+          </Notification>
+        </div>
+      ) : null}
       <fetcher.Form
         method="POST"
         action="/api/entries"

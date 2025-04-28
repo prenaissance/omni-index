@@ -1,6 +1,6 @@
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { selectStyles } from "~/routes/admin/add-entry";
+import { selectStyles } from "~/components/ui/helpers";
 import type {
   EntryFormData,
   FormattedEntryErrors,

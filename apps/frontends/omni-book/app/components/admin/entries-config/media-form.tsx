@@ -1,7 +1,6 @@
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import type { z } from "zod";
-import { selectStyles } from "../../../routes/admin/add-entry";
 import { formatSelector } from "~/lib/utils";
 import type {
   EntryFormData,
@@ -11,6 +10,7 @@ import type {
 import { Button } from "~/components/ui/button";
 import Tooltip from "~/components/ui/tooltip";
 import MinusIcon from "~/components/icons/minus";
+import { selectStyles } from "~/components/ui/helpers";
 
 type ArrayFormItem = EntryFormInput["media"][number] & { id: string };
 
