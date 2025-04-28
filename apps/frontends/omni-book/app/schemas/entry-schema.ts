@@ -49,3 +49,4 @@ export const entrySchema = z.object({
 
 export type EntryFormInput = z.input<typeof entrySchema>;
 export type EntryFormData = z.infer<typeof entrySchema>;
+export type FormattedEntryErrors = z.inferFormattedError<typeof entrySchema>;
