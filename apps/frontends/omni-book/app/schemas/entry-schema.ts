@@ -19,6 +19,12 @@ const mirrorSchema = z.object({
   }),
 }) satisfies z.ZodType<MirrorWithoutMeta>;
 
+const mediaSchema = z.object({
+  mirrors: z
+    .array(mirrorSchema)
+    .min(1, { message: "At least one mirror required" }),
+});
+
 export const entrySchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().optional(),
@@ -38,13 +44,7 @@ export const entrySchema = z.object({
     })
     .optional(),
   genres: z.array(z.string()).min(1, "Select at least one genre"),
-  media: z.array(
-    z.object({
-      mirrors: z
-        .array(mirrorSchema)
-        .min(1, { message: "At least one mirror required" }),
-    })
-  ),
+  media: z.array(mediaSchema),
 }) satisfies z.ZodType<EntryWithoutMedia>;
 
 export type EntryFormInput = z.input<typeof entrySchema>;

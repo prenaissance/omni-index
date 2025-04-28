@@ -4,6 +4,7 @@ import Select from "react-select";
 import type { StylesConfig } from "react-select";
 import { useFetcher } from "react-router";
 import { v4 as uuidv4 } from "uuid";
+import type { z } from "zod";
 import type { Route } from "./+types/add-entry";
 import MediaForm from "./media-form";
 import { checkCookie } from "~/server/utils";
@@ -22,6 +23,8 @@ import { Notification } from "~/components/ui/notification";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
+
+type FormattedEntryErrors = z.inferFormattedError<typeof entrySchema>;
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const cookieHeader = checkCookie(request);
@@ -152,9 +155,7 @@ const AddEntry = () => {
     ]);
   };
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof EntryFormData, string[]>>
-  >({});
+  const [errors, setErrors] = useState<FormattedEntryErrors>();
 
   const [submitErrors, setSubmitErrors] = useState<
     Partial<Record<keyof EntryFormData, string[]>>
@@ -172,9 +173,9 @@ const AddEntry = () => {
       const result = entrySchema.safeParse(updated);
 
       if (!result.success) {
-        setErrors(result.error.flatten().fieldErrors);
+        setErrors(result.error.format());
       } else {
-        setErrors({});
+        setErrors(undefined);
       }
 
       return updated;
@@ -206,6 +207,13 @@ const AddEntry = () => {
     }));
   };
 
+  const unTouchField = (field: keyof EntryFormData) => {
+    setTouchedFields((prev) => ({
+      ...prev,
+      [field]: false,
+    }));
+  };
+
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
@@ -220,7 +228,7 @@ const AddEntry = () => {
     const result = entrySchema.safeParse(formData);
     if (!result.success) {
       e.preventDefault();
-      setErrors(result.error.flatten().fieldErrors);
+      setErrors(result.error.format());
       setSubmitErrors(result.error.flatten().fieldErrors);
     }
   };
@@ -260,9 +268,9 @@ const AddEntry = () => {
     const result = entrySchema.safeParse(formData);
 
     if (!result.success) {
-      setErrors(result.error.flatten().fieldErrors);
+      setErrors(result.error.format());
     } else {
-      setErrors({});
+      setErrors(undefined);
     }
   }, [formData]);
 
@@ -324,8 +332,10 @@ const AddEntry = () => {
                         required
                         onChange={(e) => handleChange("title", e.target.value)}
                       />
-                      {touchedFields.title && errors.title && (
-                        <p className="text-red-500 text-xs">{errors.title}</p>
+                      {touchedFields.title && errors?.title && (
+                        <p className="text-red-500 text-xs">
+                          {errors?.title._errors[0].toString()}
+                        </p>
                       )}
                     </div>
                   </label>
@@ -341,9 +351,9 @@ const AddEntry = () => {
                           handleChange("localizedTitle", e.target.value)
                         }
                       />
-                      {errors["localizedTitle"] && (
+                      {errors?.localizedTitle && (
                         <p className="text-red-500 text-sm">
-                          {errors["localizedTitle"][0]}
+                          {errors?.localizedTitle._errors[0].toString()}
                         </p>
                       )}
                     </div>
@@ -363,8 +373,10 @@ const AddEntry = () => {
                         required
                         onChange={(e) => handleChange("author", e.target.value)}
                       />
-                      {touchedFields.author && errors.author && (
-                        <p className="text-red-500 text-xs">{errors.author}</p>
+                      {touchedFields.author && errors?.author && (
+                        <p className="text-red-500 text-xs">
+                          {errors?.author._errors[0].toString()}
+                        </p>
                       )}
                     </div>
                   </label>
@@ -380,8 +392,10 @@ const AddEntry = () => {
                         max={new Date().getFullYear()}
                         onChange={(e) => handleChange("year", e.target.value)}
                       />
-                      {touchedFields.year && errors.year && (
-                        <p className="text-red-500 text-xs">{errors.year}</p>
+                      {touchedFields.year && errors?.year && (
+                        <p className="text-red-500 text-xs">
+                          {errors.year._errors[0].toString()}
+                        </p>
                       )}
                     </div>
                   </label>
@@ -397,9 +411,9 @@ const AddEntry = () => {
                           handleChange("language", e.target.value)
                         }
                       />
-                      {touchedFields.language && errors.language && (
+                      {touchedFields.language && errors?.language && (
                         <p className="text-red-500 text-xs">
-                          {errors.language}
+                          {errors.language._errors[0].toString()}
                         </p>
                       )}
                     </div>
@@ -454,8 +468,10 @@ const AddEntry = () => {
                 name="text"
                 onChange={(e) => handleChange("description", e.target.value)}
               />
-              {touchedFields.description && errors.description && (
-                <p className="text-red-500 text-xs">{errors.description}</p>
+              {touchedFields.description && errors?.description && (
+                <p className="text-red-500 text-xs">
+                  {errors?.description._errors[0].toString()}
+                </p>
               )}
             </div>
           </div>
@@ -490,8 +506,10 @@ const AddEntry = () => {
                     }}
                     required
                   />
-                  {touchedFields.genres && errors.genres && (
-                    <p className="text-red-500 text-xs">{errors.genres[0]}</p>
+                  {touchedFields.genres && errors?.genres && (
+                    <p className="text-red-500 text-xs">
+                      {errors?.genres._errors[0].toString()}
+                    </p>
                   )}
                 </div>
               ) : (
@@ -553,6 +571,7 @@ const AddEntry = () => {
                   medias={medias}
                   setMedias={setMedias}
                   handleMediaChange={handleMediaChange}
+                  unTouchField={unTouchField}
                 />
               ))}
               {pageLoaded && (
@@ -582,13 +601,15 @@ const AddEntry = () => {
           <Button type="submit" className="w-fit self-end ">
             Submit form
           </Button>
-          {submitErrors
-            ? Object.entries(submitErrors).map(([key, value]) => (
-                <p key={key} className="text-red-500 text-sm self-end">
-                  {key}: {value[0]}
+          {submitErrors ? (
+            <div className="self-end text-end">
+              {Object.entries(submitErrors).map(([key, value]) => (
+                <p key={key} className="text-red-500 text-sm p-0 m-0">
+                  {value[0]}
                 </p>
-              ))
-            : null}
+              ))}
+            </div>
+          ) : null}
         </div>
       </fetcher.Form>
     </>

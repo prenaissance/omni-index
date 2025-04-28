@@ -1,18 +1,25 @@
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
+import type { z } from "zod";
 import { selectStyles } from "./add-entry";
 import { formatSelector } from "~/lib/utils";
-import type { EntryFormData, EntryFormInput } from "~/schemas/entry-schema";
+import type {
+  EntryFormData,
+  EntryFormInput,
+  entrySchema,
+} from "~/schemas/entry-schema";
 import { Button } from "~/components/ui/button";
 import Tooltip from "~/components/ui/tooltip";
 import MinusIcon from "~/components/icons/minus";
 
 type ArrayFormItem = EntryFormInput["media"][number] & { id: string };
 
+type FormattedEntryErrors = z.inferFormattedError<typeof entrySchema>;
+
 type MediaFormProps = {
   pageLoaded: boolean;
   handleChange: (field: keyof EntryFormData, value: unknown) => void;
-  errors: Partial<Record<string, string[]>>;
+  errors: FormattedEntryErrors | undefined;
   touchedFields: Partial<Record<keyof EntryFormData, boolean>>;
   mediaIndex: number;
   medias: ArrayFormItem[];
@@ -22,6 +29,7 @@ type MediaFormProps = {
     field: keyof EntryFormData["media"][number]["mirrors"][number]["blob"],
     value: string
   ) => void;
+  unTouchField: (field: keyof EntryFormData) => void;
 };
 
 const MediaForm = ({
@@ -32,6 +40,7 @@ const MediaForm = ({
   medias,
   setMedias,
   handleMediaChange,
+  unTouchField,
 }: MediaFormProps) => {
   const providers = [
     { value: "gutenberg", label: "Gutenberg" },
@@ -44,7 +53,10 @@ const MediaForm = ({
       `media.${mediaIndex}.mirrors.0.blob.url` as keyof typeof touchedFields
     ];
 
-  const blobUrlError = errors[`media` as keyof typeof errors]?.[0];
+  const blobUrlError =
+    errors?.media?.[
+      mediaIndex
+    ]?.mirrors?.[0]?.blob?.url?._errors[0]?.toString() || null;
 
   console.log("blobUrlError", blobUrlError);
   console.log("blobTouched", blobTouched);
@@ -161,6 +173,9 @@ const MediaForm = ({
           onClick={() => {
             setMedias((prev) =>
               prev.filter((m) => m.id !== medias[mediaIndex!].id)
+            );
+            unTouchField(
+              `media.${mediaIndex}.mirrors.0.blob.url` as keyof typeof touchedFields
             );
           }}
           disabled={medias.length <= 1}
