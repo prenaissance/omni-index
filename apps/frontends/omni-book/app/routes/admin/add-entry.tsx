@@ -316,7 +316,7 @@ export default function AddEntry({ loaderData }: Route.ComponentProps) {
             {"error" in fetcher.data
               ? fetcher.data?.error
               : fetcher.data?.success
-                ? "Node added successfully"
+                ? "Entry added successfully"
                 : null}
           </Notification>
         </div>

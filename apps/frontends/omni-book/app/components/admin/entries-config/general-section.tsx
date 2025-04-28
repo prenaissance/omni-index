@@ -97,16 +97,10 @@ const GeneralSection = ({
                   name="year"
                   type="number"
                   className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  placeholder="1448"
+                  placeholder="1999"
                   min={0}
                   max={new Date().getFullYear()}
-                  onChange={(e) => handleChange("year", e.target.valueAsNumber)}
                 />
-                {touchedFields.year && errors?.year && (
-                  <p className="text-red-500 text-xs">
-                    {errors.year._errors[0].toString()}
-                  </p>
-                )}
               </div>
             </label>
             <label className="flex-1">
