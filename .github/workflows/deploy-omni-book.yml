@@ -51,7 +51,7 @@ jobs:
           )
           if [ "${{ github.event_name }}" == "push" ]; then
             if [ "${{steps.get_version_fragments.outputs.MAJOR_VERSION}}" != "0" ]; then
-              TAGS+=( "${{ env.IMAGE_NAME }}:${{steps.get_version_fragments.outputs.MAJOR_VERSION}} )
+              TAGS+=( "${{ env.IMAGE_NAME }}:${{steps.get_version_fragments.outputs.MAJOR_VERSION}}"" )
             fi
             TAGS+=( "${{ env.IMAGE_NAME }}:latest" )
           fi
