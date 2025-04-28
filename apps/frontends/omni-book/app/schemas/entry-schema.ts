@@ -12,7 +12,10 @@ const mirrorSchema = z.object({
   mimeType: z.string().optional(),
   size: z.number().optional(),
   blob: z.object({
-    url: z.string().url("Blob must be a valid URL"),
+    url: z
+      .string()
+      .min(1, "Blob URL is required")
+      .url("Blob must be a valid URL"),
   }),
 }) satisfies z.ZodType<MirrorWithoutMeta>;
 
@@ -37,7 +40,9 @@ export const entrySchema = z.object({
   genres: z.array(z.string()).min(1, "Select at least one genre"),
   media: z.array(
     z.object({
-      mirrors: z.array(mirrorSchema),
+      mirrors: z
+        .array(mirrorSchema)
+        .min(1, { message: "At least one mirror required" }),
     })
   ),
 }) satisfies z.ZodType<EntryWithoutMedia>;

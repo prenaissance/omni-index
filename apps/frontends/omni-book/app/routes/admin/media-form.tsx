@@ -13,24 +13,42 @@ type MediaFormProps = {
   pageLoaded: boolean;
   handleChange: (field: keyof EntryFormData, value: unknown) => void;
   errors: Partial<Record<string, string[]>>;
-  mediaIndex?: number;
+  touchedFields: Partial<Record<keyof EntryFormData, boolean>>;
+  mediaIndex: number;
   medias: ArrayFormItem[];
   setMedias: React.Dispatch<React.SetStateAction<ArrayFormItem[]>>;
+  handleMediaChange: (
+    mediaIndex: number,
+    field: keyof EntryFormData["media"][number]["mirrors"][number]["blob"],
+    value: string
+  ) => void;
 };
 
 const MediaForm = ({
   pageLoaded,
   errors,
+  touchedFields,
   mediaIndex,
   medias,
   setMedias,
+  handleMediaChange,
 }: MediaFormProps) => {
   const providers = [
     { value: "gutenberg", label: "Gutenberg" },
     { value: "libgen", label: "Libgen" },
   ];
   const animatedComponents = makeAnimated();
-  const blobUrlError = errors?.[`media.${mediaIndex}.mirrors.0.blob.url`]?.[0];
+
+  const blobTouched =
+    touchedFields[
+      `media.${mediaIndex}.mirrors.0.blob.url` as keyof typeof touchedFields
+    ];
+
+  const blobUrlError = errors[`media` as keyof typeof errors]?.[0];
+
+  console.log("blobUrlError", blobUrlError);
+  console.log("blobTouched", blobTouched);
+  console.log("errors", errors);
 
   return (
     <div className="flex-1 flex flex-col gap-4 bg-[#353535] p-5 rounded-lg">
@@ -116,16 +134,23 @@ const MediaForm = ({
       <div className="flex items-end gap-4">
         <label className="flex-1">
           <div className="flex flex-col gap-1">
-            <p className="text-sm font-light">Blob Url</p>
+            <p className="text-sm font-light">
+              Blob Url<span className="text-red-500">*</span>
+            </p>
             <input
               name={`media[${mediaIndex}][mirrors][0][blob][url]`}
               type="text"
+              value={medias[mediaIndex]?.mirrors[0]?.blob?.url || ""}
+              onChange={(e) =>
+                handleMediaChange(mediaIndex, "url", e.target.value)
+              }
               placeholder="https://example.com/blob"
               className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
+              required
             />
-            {blobUrlError && (
-              <p className="text-red-500 text-sm">{blobUrlError}</p>
-            )}
+            {blobTouched && blobUrlError ? (
+              <p className="text-red-500 text-xs">{blobUrlError}</p>
+            ) : null}
           </div>
         </label>
         <Button

@@ -49,6 +49,11 @@ export interface paths {
           page?: number;
           /** @description Page size */
           limit?: number;
+          /** @description Filter by author. Case insensitive. */
+          author?: string;
+          orderBy?: "createdAt" | "updatedAt";
+          /** @description Search by title, author or description. */
+          search?: string;
         };
         header?: never;
         path?: never;
@@ -105,6 +110,39 @@ export interface paths {
         };
       };
     };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/entries/genres": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": string[];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -941,6 +979,86 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/peer-nodes/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Deletes a peer node */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the peer node
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        204: {
+          headers: Record<string, unknown>;
+          content?: never;
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    /** Updates a peer node */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the peer node
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "application/json": components["schemas"]["UpdatePeerNodeRequest"];
+        };
+      };
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["PeerNodeResponse"];
+          };
+        };
+        /** @description Default Response */
+        404: {
+          headers: Record<string, unknown>;
+          content: {
+            "application/json": components["schemas"]["Exception"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
   "/api/peer-nodes/{id}/refresh": {
     parameters: {
       query?: never;
@@ -983,51 +1101,6 @@ export interface paths {
       };
     };
     delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/peer-nodes/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Deletes a peer node */
-    delete: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path: {
-          /**
-           * @description ObjectId of the peer node
-           * @example 5fdedb7c25ab1352eef88f60
-           */
-          id: string;
-        };
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description Default Response */
-        204: {
-          headers: Record<string, unknown>;
-          content?: never;
-        };
-        /** @description Default Response */
-        404: {
-          headers: Record<string, unknown>;
-          content: {
-            "application/json": components["schemas"]["Exception"];
-          };
-        };
-      };
-    };
     options?: never;
     head?: never;
     patch?: never;
@@ -1283,6 +1356,25 @@ export interface components {
       meta: components["schemas"]["Metadata"];
       media: components["schemas"]["Media"][];
       genres: string[];
+    };
+    /** PaginatedEntriesRequest */
+    PaginatedEntriesRequest: {
+      /**
+       * @description Page number (1 indexed)
+       * @default 1
+       */
+      page: number;
+      /**
+       * @description Page size
+       * @default 10
+       */
+      limit: number;
+    } & {
+      /** @description Filter by author. Case insensitive. */
+      author?: string;
+      orderBy?: "createdAt" | "updatedAt";
+      /** @description Search by title, author or description. */
+      search?: string;
     };
     /** CreateIndexRequest */
     CreateIndexRequest: {
@@ -1575,6 +1667,10 @@ export interface components {
     /** CreatePeerNodeRequest */
     CreatePeerNodeRequest: {
       url: string;
+      trustLevel: "trusted" | "semi-trusted";
+    };
+    /** UpdatePeerNodeRequest */
+    UpdatePeerNodeRequest: {
       trustLevel: "trusted" | "semi-trusted";
     };
     /** PeerNodeResponse */
