@@ -233,22 +233,6 @@ export default function AddEntry({ loaderData }: Route.ComponentProps) {
     setPageLoaded(true);
   }, []);
 
-  // const genres = [
-  //   { value: "fiction", label: "Fiction" },
-  //   { value: "non-fiction", label: "Non-Fiction" },
-  //   { value: "fantasy", label: "Fantasy" },
-  //   { value: "science-fiction", label: "Science Fiction" },
-  //   { value: "mystery", label: "Mystery" },
-  //   { value: "romance", label: "Romance" },
-  //   { value: "thriller", label: "Thriller" },
-  //   { value: "horror", label: "Horror" },
-  //   { value: "biography", label: "Biography" },
-  //   { value: "self-help", label: "Self-Help" },
-  //   { value: "history", label: "History" },
-  //   { value: "science", label: "Science" },
-  //   { value: "philosophy", label: "Philosophy" },
-  // ];
-
   const fetcher = useFetcher();
   const [notification, setNotification] = useState(false);
 

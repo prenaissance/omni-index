@@ -5,18 +5,18 @@ import type { paths } from "~/lib/api-types";
 type BooksResponseType =
   paths["/api/entries"]["get"]["responses"]["200"]["content"]["application/json"]["data"];
 
-type TrendingProps = {
-  trendingBooks: BooksResponseType;
+type LatestProps = {
+  latestBooks: BooksResponseType;
 };
 
-const Trending = ({ trendingBooks }: TrendingProps) => {
+const Latest = ({ latestBooks }: LatestProps) => {
   return (
-    <div className="flex flex-col px-14 items-start pt-14 pb-20">
+    <div className="flex flex-col px-14 items-start py-14">
       <h1 className="text-2xl text-center text-white font-semibold mb-3">
-        Trending
+        Latest
       </h1>
       <div className="grid grid-cols-2 min-[500px]:grid-cols-3 sm:grid-cols-4 xl:grid-cols-7 w-full gap-4 md:gap-8 lg:gap-20 xl:gap-8 2xl:gap-16">
-        {trendingBooks.map((book) => (
+        {latestBooks.map((book) => (
           <div key={book._id} className="flex flex-col space-y-2 lg:space-y-4">
             <Link
               to={`/books/${book._id}`}
@@ -66,4 +66,4 @@ const Trending = ({ trendingBooks }: TrendingProps) => {
   );
 };
 
-export default Trending;
+export default Latest;
