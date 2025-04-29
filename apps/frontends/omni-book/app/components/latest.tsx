@@ -11,7 +11,7 @@ type LatestProps = {
 
 const Latest = ({ latestBooks }: LatestProps) => {
   return (
-    <div className="flex flex-col px-14 items-start pb-14 pt-0">
+    <div className="flex flex-col px-14 items-start py-14">
       <h1 className="text-2xl text-center text-white font-semibold mb-3">
         Latest
       </h1>

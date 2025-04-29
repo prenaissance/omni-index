@@ -11,7 +11,7 @@ type TrendingProps = {
 
 const Trending = ({ trendingBooks }: TrendingProps) => {
   return (
-    <div className="flex flex-col px-14 items-start py-14">
+    <div className="flex flex-col px-14 items-start pt-14 pb-20">
       <h1 className="text-2xl text-center text-white font-semibold mb-3">
         Trending
       </h1>

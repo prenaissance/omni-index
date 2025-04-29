@@ -64,6 +64,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     <div>
       <Hero />
       <Trending trendingBooks={trendingBooks.data} />
+      <div className="bg-card-secondary h-[2px] rounded-lg mx-14"></div>
       <Latest latestBooks={latestBooks.data} />
     </div>
   );
