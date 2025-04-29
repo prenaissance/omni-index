@@ -12,7 +12,7 @@ on:
         type: string
 
 env:
-  IMAGE_NAME: prenaissance/omni-book
+  IMAGE_NAME: prenaissance/omni-index
   TARGET_PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
