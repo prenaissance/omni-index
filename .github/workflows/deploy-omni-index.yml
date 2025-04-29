@@ -12,6 +12,7 @@ on:
         type: string
 
 env:
+  IMAGE_NAME: prenaissance/omni-book
   TARGET_PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
@@ -54,16 +55,14 @@ jobs:
       - name: Setup docker tags
         id: docker_tags
         run: |
-          TAGS=(
-            "${{ matrix.image.repo }}:${{ steps.get_version_fragments.outputs.VERSION }}"
-          )
+          TAGS="${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.VERSION }}"
           if [ "${{ github.event_name }}" == "push" ]; then
-            TAGS+=(
-              "${{ matrix.image.repo }}:${{ steps.get_version_fragments.outputs.MAJOR_VERSION }}"
-              "${{ matrix.image.repo }}:latest"
-            )
+            if [ "${{steps.get_version_fragments.outputs.MAJOR_VERSION}}" != "0" ]; then
+              TAGS=${TAGS},${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.MAJOR_VERSION }}
+            fi
+            TAGS=${TAGS},${{ env.IMAGE_NAME }}:latest
           fi
-          echo "TAGS=$(IFS=,; echo ${TAGS[*]})" >> $GITHUB_OUTPUT
+          echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Build and push ${{matrix.image.name}} image to registry
         uses: docker/build-push-action@v6

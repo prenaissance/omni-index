@@ -7,8 +7,18 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-options: Replace=true
 spec:
+  selector:
+    matchLabels:
+      {{- include "helm.labels" . | nindent 6 }}
+      app.kubernetes.io/name: omni-index
+      app.kubernetes.io/component: migration
   template:
     spec:
+      metadata:
+        labels:
+          {{- include "helm.labels" . | nindent 10 }}
+          app.kubernetes.io/name: omni-index
+          app.kubernetes.io/component: migration
       containers:
         - name: migration
           image: "{{ .Values.omniIndex.migration.image.repository }}:{{ .Values.image.tag }}"
