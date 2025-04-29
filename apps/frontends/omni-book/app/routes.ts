@@ -7,7 +7,7 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
-  layout("components/navbar.tsx", [
+  layout("components/navigation/navbar.tsx", [
     index("routes/home.tsx"),
     route("/login", "routes/login.tsx"),
     route("/client-metadata.json", "server/routes/client-metadata.ts"),
@@ -15,6 +15,7 @@ export default [
       route("/oauth/callback", "server/routes/oauth/callback.ts"),
       route("/oauth/login", "server/routes/oauth/login.ts"),
       route("/peer-nodes", "server/routes/nodes/add-node.ts"),
+      route("/entries", "server/routes/entries/add-entry.ts"),
     ]),
     ...prefix("/api/entries/:bookId", [
       route("/comments", "server/routes/comments/add-comment.ts"),
@@ -30,10 +31,12 @@ export default [
     ]),
     ...prefix("/api/peer-nodes", [
       route("/:nodeId/remove", "server/routes/nodes/remove-node.ts"),
-      route("/:nodeId/edit", "server/routes/nodes/edit-node.ts"),
       route("/:nodeId/refresh", "server/routes/nodes/refresh-node-cert.ts"),
     ]),
+    ...prefix("/admin", [
+      route("/nodes-config", "routes/admin/nodes-config.tsx"),
+      route("/add-entry", "routes/admin/add-entry.tsx"),
+    ]),
     route("books/:bookId", "routes/book.tsx"),
-    route("/admin/nodes-config", "routes/admin/nodes-config.tsx"),
   ]),
 ] satisfies RouteConfig;

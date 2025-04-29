@@ -79,3 +79,38 @@ export const extractFormat = (formatString: string): FormatInfo => {
     description: "Other format not listed here.",
   };
 };
+
+export const formatSelector = [
+  {
+    value: "text/html",
+    label: "Read Online (web)",
+  },
+  {
+    value: "application/epub+zip",
+    label: "EPUB3 (E-readers)",
+  },
+  {
+    value: "application/x-mobipocket-ebook",
+    label: "Kindle",
+  },
+  {
+    value: "text/plain; charset=iso-8859-1",
+    label: "Plain Text Latin-1",
+  },
+  {
+    value: "text/html; charset=iso-8859-1",
+    label: "Read Online Latin-1",
+  },
+  {
+    value: "application/rdf+xml",
+    label: "Metadata (RDF/XML)",
+  },
+  {
+    value: "application/octet-stream",
+    label: "Download HTML (zip)",
+  },
+  {
+    value: "text/plain; charset=us-ascii",
+    label: "Plain Text UTF-8",
+  },
+];
