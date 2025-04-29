@@ -47,7 +47,7 @@ export const Profile = ({ user }: ProfileProps) => {
               <p>Home</p>
             </NavLink>
           </li>
-          {user.role === "admin" && (
+          {(user.role === "admin" || user.role === "owner") && (
             <li>
               <NavLink
                 to="/admin/nodes-config"
