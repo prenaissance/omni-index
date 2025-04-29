@@ -15,6 +15,7 @@ spec:
   template:
     spec:
       metadata:
+        name: omni-index-migration
         labels:
           {{- include "helm.labels" . | nindent 10 }}
           app.kubernetes.io/name: omni-index
