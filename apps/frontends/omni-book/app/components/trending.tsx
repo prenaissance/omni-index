@@ -27,7 +27,7 @@ const Trending = ({ trendingBooks }: TrendingProps) => {
                   backgroundImage: `url(${
                     book.thumbnail && "url" in book.thumbnail
                       ? book.thumbnail.url
-                      : "../../public/placeholder.png"
+                      : "/placeholder.png"
                   })`,
                   backgroundSize: "cover",
                   backgroundPosition: "top left",
@@ -49,8 +49,7 @@ const Trending = ({ trendingBooks }: TrendingProps) => {
                 <p className="pt-1 mr-2">4.5</p>
                 <div className="w-[1px] h-4 bg-white mr-2"></div>
                 <Link
-                  // to={`/authors/${book.author}`}
-                  to={"#"}
+                  to={`/search?author=${book.author}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-md pt-1 hover:text-textHover transition duration-300 text-ellipsis overflow-hidden text-nowrap"
