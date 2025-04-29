@@ -24,11 +24,7 @@ export const Profile = ({ user }: ProfileProps) => {
     <details className="relative group" ref={detailsRef}>
       <summary className="list-none cursor-pointer flex justify-end items-center gap-4 pl-10">
         <img
-          src={
-            user.avatarUrl === undefined
-              ? user.avatarUrl
-              : "/avatar-placeholder.png"
-          }
+          src={user.avatarUrl ? user.avatarUrl : "/avatar-placeholder.png"}
           alt="avatar"
           className="w-10 h-10 rounded-full"
         />
@@ -47,7 +43,7 @@ export const Profile = ({ user }: ProfileProps) => {
               <p>Home</p>
             </NavLink>
           </li>
-          {user.role === "admin" && (
+          {(user.role === "admin" || user.role === "owner") && (
             <li>
               <NavLink
                 to="/admin/nodes-config"
