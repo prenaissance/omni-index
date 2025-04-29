@@ -77,7 +77,6 @@ jobs:
           curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
           chmod +x argocd
           sudo mv argocd /usr/local/bin/
-          argocd version
       - name: Login to ArgoCD
         run: argocd login ${{ secrets.ARGOCD_HOST }} --username admin --password ${{ secrets.ARGOCD_PASSWORD }}
       - name: Sync ArgoCD application

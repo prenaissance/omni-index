@@ -4,6 +4,8 @@ metadata:
   name: omni-index-migration
   labels:
     {{- include "helm.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-options: Replace=true
 spec:
   template:
     spec:

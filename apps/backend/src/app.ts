@@ -123,6 +123,7 @@ export const build = async () => {
             200: Type.Literal("pong"),
           },
         },
+        logLevel: "silent",
       },
       async () => {
         return "pong" as const;
