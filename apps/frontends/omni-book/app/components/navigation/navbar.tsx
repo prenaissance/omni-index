@@ -90,14 +90,15 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
           </div>
           {loaderData.user ? (
             <div className="flex flex-row items-center gap-2">
-              {loaderData.user.role === "admin" && (
-                <Link
-                  to={"/admin/add-entry"}
-                  className="bg-primary text-primary-foreground shadow hover:bg-primary/90 inline-flex disabled:opacity-50inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-10 px-4 sm:px-8 py-4"
-                >
-                  Add entry
-                </Link>
-              )}
+              {loaderData.user.role === "admin" ||
+                (loaderData.user.role === "owner" && (
+                  <Link
+                    to={"/admin/add-entry"}
+                    className="bg-primary text-primary-foreground shadow hover:bg-primary/90 inline-flex disabled:opacity-50inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-10 px-4 sm:px-8 py-4"
+                  >
+                    Add entry
+                  </Link>
+                ))}
               <Profile user={loaderData.user} />
             </div>
           ) : (
