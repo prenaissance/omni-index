@@ -12,7 +12,6 @@ on:
         type: string
 
 env:
-  IMAGE_NAME: prenaissance/omni-index
   TARGET_PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
@@ -55,12 +54,12 @@ jobs:
       - name: Setup docker tags
         id: docker_tags
         run: |
-          TAGS="${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.VERSION }}"
+          TAGS="${{ matrix.image.repo }}:${{ steps.get_version_fragments.outputs.VERSION }}"
           if [ "${{ github.event_name }}" == "push" ]; then
             if [ "${{steps.get_version_fragments.outputs.MAJOR_VERSION}}" != "0" ]; then
-              TAGS=${TAGS},${{ env.IMAGE_NAME }}:${{ steps.get_version_fragments.outputs.MAJOR_VERSION }}
+              TAGS=${TAGS},${{ matrix.image.repo }}:${{ steps.get_version_fragments.outputs.MAJOR_VERSION }}
             fi
-            TAGS=${TAGS},${{ env.IMAGE_NAME }}:latest
+            TAGS=${TAGS},${{ matrix.image.repo }}:latest
           fi
           echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
