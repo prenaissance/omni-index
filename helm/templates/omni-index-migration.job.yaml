@@ -9,7 +9,21 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-options: Replace=true
 spec:
+  # must explicitly declare a selector that matches your pod labels
+  selector:
+    matchLabels:
+      {{- include "helm.labels" . | nindent 6 }}
+      app.kubernetes.io/name: omni-index
+      app.kubernetes.io/component: migration
+
+  # pod template inherits the same labels
   template:
+    metadata:
+      labels:
+        {{- include "helm.labels" . | nindent 8 }}
+        app.kubernetes.io/name: omni-index
+        app.kubernetes.io/component: migration
+
     spec:
       containers:
         - name: migration
