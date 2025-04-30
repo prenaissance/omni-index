@@ -26,6 +26,8 @@ asserts.ok(
   "session is required to be set as an environment variable"
 );
 
+const omniIndexUrl = process.env.OMNI_INDEX_URL || "http://localhost:8080";
+
 const importBatch = async (page: number) => {
   const url = new URL("https://gutendex.com/books");
   url.searchParams.set("sort", "popularity");
@@ -39,7 +41,7 @@ const importBatch = async (page: number) => {
   for (const book of batch.results) {
     const entry: CreateEntryRequest = await gutenbergToEntry(book);
 
-    const createResponse = await fetch("http://localhost:8080/api/entries", {
+    const createResponse = await fetch(`${omniIndexUrl}/api/entries`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
