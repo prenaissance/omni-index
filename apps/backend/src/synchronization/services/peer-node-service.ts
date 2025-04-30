@@ -5,7 +5,7 @@ import { FastifyBaseLogger } from "fastify";
 import { createParser } from "eventsource-parser";
 import { Agent, Dispatcher } from "undici";
 import BodyReadable from "undici/types/readable";
-import { PeerNode, PeerNodeInit } from "../entities/peer-node";
+import { NodeTrustLevel, PeerNode, PeerNodeInit } from "../entities/peer-node";
 import { PeerNodeRepository } from "../repositories/peer-node-repository";
 import { getCertificate } from "../utilities";
 import { PinnedCertificate } from "../entities/pinned-certificate";
@@ -155,7 +155,21 @@ export class PeerNodeService {
     }
   }
 
-  private subscribeToNodeChanges(nodeUrl: string) {
+  async applyEventChange(event: EntryEvent, nodeUrl: string) {
+    switch (event.type) {
+      case "entry.created":
+        await this.entryService.synchronizeCreation(event, nodeUrl);
+        break;
+      case "entry.updated":
+        await this.entryService.synchronizeUpdate(event, nodeUrl);
+        break;
+      case "entry.deleted":
+        await this.entryService.synchronizeDeletion(event, nodeUrl);
+        break;
+    }
+  }
+
+  private subscribeToNodeChanges(nodeUrl: string, trustLevel: NodeTrustLevel) {
     const url = new URL(nodeUrl);
     url.pathname = "/api/entries/sse";
     const subscription = this.sse<EntryEvent | HeartbeatEvent>(url.toString())
@@ -177,25 +191,21 @@ export class PeerNodeService {
           });
           return;
         }
+        const status =
+          trustLevel === NodeTrustLevel.Trusted
+            ? StoredEventStatus.Accepted
+            : StoredEventStatus.Pending;
         const storedEvent = new StoredEvent({
           _id: new ObjectId(event.id),
           type: event.type,
           payload: event.payload,
           nodeUrl,
-          status: StoredEventStatus.Accepted,
+          status,
         });
-        await this.storedEventRepository.add(storedEvent);
 
-        switch (event.type) {
-          case "entry.created":
-            await this.entryService.synchronizeCreation(event, nodeUrl);
-            break;
-          case "entry.updated":
-            await this.entryService.synchronizeUpdate(event, nodeUrl);
-            break;
-          case "entry.deleted":
-            await this.entryService.synchronizeDeletion(event, nodeUrl);
-            break;
+        await this.storedEventRepository.add(storedEvent);
+        if (status === StoredEventStatus.Accepted) {
+          await this.applyEventChange(event, nodeUrl);
         }
       });
     this.subscriptionMap.set(nodeUrl, subscription);
@@ -204,7 +214,7 @@ export class PeerNodeService {
   private async subscribeToPeerNodesChanges() {
     const peerNodes = await this.peerNodeRepository.getAll();
     for (const node of peerNodes) {
-      this.subscribeToNodeChanges(node.url);
+      this.subscribeToNodeChanges(node.url, node.trustLevel);
     }
   }
 
@@ -232,7 +242,7 @@ export class PeerNodeService {
     peerNode.pinnedCertificates.forEach((certificate) => {
       this.fingerprintSet.add(certificate.sha256);
     });
-    this.subscribeToNodeChanges(peerNode.url);
+    this.subscribeToNodeChanges(peerNode.url, node.trustLevel);
   }
 
   /** Refreshes the pinned certificate for a peer node. Removes any older certificates. */
