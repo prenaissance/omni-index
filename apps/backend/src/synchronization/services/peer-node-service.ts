@@ -15,7 +15,10 @@ import { EventMap, EventType } from "~/common/events/event-map";
 import { MatchesPattern } from "~/common/types/strings";
 import { Env } from "~/common/config/env";
 import { StoredEventRepository } from "~/stored-events/stored-event-repository";
-import { StoredEvent } from "~/stored-events/entities/stored-event";
+import {
+  StoredEvent,
+  StoredEventStatus,
+} from "~/stored-events/entities/stored-event";
 import { EntryService } from "~/media/entry-service";
 import { HeartbeatEvent } from "~/common/events/heartbeat-event";
 
@@ -178,6 +181,8 @@ export class PeerNodeService {
           _id: new ObjectId(event.id),
           type: event.type,
           payload: event.payload,
+          nodeUrl,
+          status: StoredEventStatus.Accepted,
         });
         await this.storedEventRepository.add(storedEvent);
 
