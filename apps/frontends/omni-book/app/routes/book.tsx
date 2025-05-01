@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import type { Route } from "./+types/book";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
-import Recommended from "~/components/recommended";
+import Recommended from "~/components/recommended/recommended";
 import { extractFormat } from "~/lib/utils";
 import Tooltip from "~/components/ui/tooltip";
 import { PopupIcon } from "~/components/icons";
@@ -12,6 +12,8 @@ type BookResponseType =
   paths["/api/entries/{entryId}"]["get"]["responses"]["200"]["content"]["application/json"];
 type CommentsResponse =
   paths["/api/entries/{entryId}/comments"]["get"]["responses"]["200"]["content"]["application/json"];
+type BooksResponse =
+  paths["/api/entries"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { bookId } = params;
@@ -54,11 +56,49 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
   const entry: BookResponseType = await response.json();
   const comments: CommentsResponse = await commentsResponse.json();
-  return { entry, comments };
+
+  const author = entry.author;
+
+  const authorBooksQuery = {
+    author,
+    page: 1,
+    limit: 5,
+  } satisfies paths["/api/entries"]["get"]["parameters"]["query"];
+
+  const authorBooksSearchParams = new URLSearchParams(
+    Object.fromEntries(
+      Object.entries(authorBooksQuery).filter(
+        ([, value]) => value !== undefined
+      )
+    ) as Record<string, string>
+  );
+
+  const authorBooksResponse = await fetch(
+    `${env.API_URL}/api/entries?${authorBooksSearchParams}`,
+    {
+      headers: request.headers,
+    }
+  );
+
+  if (!authorBooksResponse.ok) {
+    return { entry, comments };
+  }
+
+  const authorBooks: BooksResponse = await authorBooksResponse.json();
+
+  const filteredBooks = authorBooks.data.filter(
+    (book) => book._id !== entry._id
+  ) as BookResponseType[];
+
+  return {
+    entry,
+    comments,
+    filteredBooks,
+  };
 };
 
 const Book = ({ loaderData }: Route.ComponentProps) => {
-  const { entry, comments } = loaderData;
+  const { entry, comments, filteredBooks } = loaderData;
 
   return (
     <>
@@ -184,7 +224,9 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
       </div>
       <div className="px-10 py-8 flex gap-8 w-full md:flex-row flex-col">
         <Comments comments={comments} bookId={entry._id} />
-        <Recommended />
+        {filteredBooks && filteredBooks?.length > 0 && (
+          <Recommended recommendedBooks={filteredBooks} />
+        )}
       </div>
     </>
   );
