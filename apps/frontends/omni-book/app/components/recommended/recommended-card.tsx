@@ -43,7 +43,7 @@ const RecommendedCard = ({ book }: RecommendedCardProps) => {
           </p>
         </Link>
         <div className="flex items-center gap-2">
-          {(book.year !== undefined && book.year != 0) && (
+          {book.year !== undefined && book.year != 0 && (
             <p className="whitespace-nowrap overflow-hidden text-ellipsis text-sm font-medium text-white flex items-center gap-2">
               {book.year || "1900"} <p className="text-2xl">•</p>
             </p>
