@@ -7,7 +7,6 @@ type RecommendedCardProps = {
 };
 
 const RecommendedCard = ({ book }: RecommendedCardProps) => {
-  console.log("book", book);
   return (
     <div className="flex w-full gap-4">
       <Link to={`/books/${book._id}`}>
