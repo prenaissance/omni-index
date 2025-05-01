@@ -39,7 +39,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
 
   const isButtonDisabled = comment.trim().length === 0 && pageLoaded;
   return (
-    <div className="w-full md:w-2/3 flex flex-col gap-5">
+    <div className="w-full flex flex-col gap-5">
       <div className="w-full rounded-lg bg-card overflow-hidden group relative">
         <div className="pb-14">
           <Form
