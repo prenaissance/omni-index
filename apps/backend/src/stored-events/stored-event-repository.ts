@@ -29,4 +29,9 @@ export class StoredEventRepository {
     const documents = await this.collection.find(filter, options).toArray();
     return documents.map(StoredEvent.fromDocument);
   }
+
+  async deleteMany(filter: Filter<StoredEvent>) {
+    const result = await this.collection.deleteMany(filter);
+    return result.deletedCount;
+  }
 }
