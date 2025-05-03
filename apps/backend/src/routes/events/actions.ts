@@ -3,7 +3,11 @@ import {
   Type,
 } from "@fastify/type-provider-typebox";
 import { Filter } from "mongodb";
-import { StoredEvent } from "~/stored-events/entities/stored-event";
+import { UserRole } from "~/common/auth/entities/enums/user-role";
+import {
+  StoredEvent,
+  StoredEventStatus,
+} from "~/stored-events/entities/stored-event";
 import { PaginatedStoredEventsQuery } from "~/stored-events/payloads/paginated-stored-events-query";
 import { PaginatedStoredEventsResponse } from "~/stored-events/payloads/paginated-stored-events-response";
 import { StoredEventResponse } from "~/stored-events/payloads/stored-event-response";
@@ -51,6 +55,15 @@ const eventRoutes: FastifyPluginAsyncTypebox = async (app) => {
         total,
       };
     }
+  );
+
+  app.patch(
+    "/status",
+    {
+      onRequest: app.auth([app.verifyRoles([UserRole.User, UserRole.Admin])]),
+      schema: { body: Type.Enum(StoredEventStatus) },
+    },
+    (request, reply) => {}
   );
 };
 
