@@ -105,7 +105,7 @@ const eventRoutes: FastifyPluginAsyncTypebox = async (app) => {
         );
       }
       storedEvent.status = status;
-      app.storedEvents.repository.save(storedEvent);
+      await app.storedEvents.repository.save(storedEvent);
       return reply.code(204).send();
     }
   );
