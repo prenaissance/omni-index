@@ -97,6 +97,12 @@ const eventRoutes: FastifyPluginAsyncTypebox = async (app) => {
           message: `Invalid status transition from ${storedEvent.status} to ${status}`,
         });
       }
+      if (status === StoredEventStatus.Accepted) {
+        await app.peerNodes.service.applyEventChange(
+          storedEvent.payload as never,
+          storedEvent.nodeUrl! // Pending events always come from other nodes, safe assertion
+        );
+      }
       storedEvent.status = status;
       app.storedEvents.repository.save(storedEvent);
       return reply.code(204).send();
