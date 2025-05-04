@@ -23,7 +23,7 @@ export class StoredEventService implements Disposable {
         return;
       }
 
-      await this.storedEventRepository.add(
+      await this.storedEventRepository.save(
         new StoredEvent({
           _id: new ObjectId(event.id),
           type: event.type,

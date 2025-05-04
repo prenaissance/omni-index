@@ -23,7 +23,7 @@ describe("Stored Events", () => {
 
   describe("Pagination and filtering", () => {
     beforeAll(async () => {
-      await app.storedEvents.repository.add(
+      await app.storedEvents.repository.save(
         new StoredEvent({
           _id: ObjectId.createFromTime(1),
           type: "entry.created",
@@ -32,7 +32,7 @@ describe("Stored Events", () => {
           status: StoredEventStatus.Accepted,
         })
       );
-      await app.storedEvents.repository.add(
+      await app.storedEvents.repository.save(
         new StoredEvent({
           _id: ObjectId.createFromTime(2),
           type: "entry.created",
@@ -41,7 +41,7 @@ describe("Stored Events", () => {
           status: StoredEventStatus.Pending,
         })
       );
-      await app.storedEvents.repository.add(
+      await app.storedEvents.repository.save(
         new StoredEvent({
           _id: ObjectId.createFromTime(3),
           type: "entry.created",

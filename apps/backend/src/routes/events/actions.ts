@@ -2,12 +2,14 @@ import {
   FastifyPluginAsyncTypebox,
   Type,
 } from "@fastify/type-provider-typebox";
-import { Filter } from "mongodb";
+import { Filter, ObjectId } from "mongodb";
 import { UserRole } from "~/common/auth/entities/enums/user-role";
+import { ObjectIdSchema } from "~/common/payloads";
 import {
   StoredEvent,
   StoredEventStatus,
 } from "~/stored-events/entities/stored-event";
+import { ChangeStoredEventStatusRequest } from "~/stored-events/payloads/change-stored-event-status-request";
 import { PaginatedStoredEventsQuery } from "~/stored-events/payloads/paginated-stored-events-query";
 import { PaginatedStoredEventsResponse } from "~/stored-events/payloads/paginated-stored-events-response";
 import { StoredEventResponse } from "~/stored-events/payloads/stored-event-response";
@@ -58,12 +60,47 @@ const eventRoutes: FastifyPluginAsyncTypebox = async (app) => {
   );
 
   app.patch(
-    "/status",
+    ":eventId/status",
     {
       onRequest: app.auth([app.verifyRoles([UserRole.User, UserRole.Admin])]),
-      schema: { body: Type.Enum(StoredEventStatus) },
+      schema: {
+        params: Type.Object({
+          eventId: ObjectIdSchema({
+            description: "ObjectId of the stored event",
+          }),
+        }),
+        body: Type.Ref(ChangeStoredEventStatusRequest),
+      },
     },
-    (request, reply) => {}
+    async (request, reply) => {
+      const allowedTransitions: Record<StoredEventStatus, StoredEventStatus[]> =
+        {
+          [StoredEventStatus.Accepted]: [],
+          [StoredEventStatus.Pending]: [
+            StoredEventStatus.Accepted,
+            StoredEventStatus.Rejected,
+          ],
+          [StoredEventStatus.Rejected]: [],
+        };
+
+      const { status } = request.body;
+      const storedEvent = await app.storedEvents.repository.findOne({
+        _id: new ObjectId(request.params.eventId),
+      });
+      if (!storedEvent) {
+        return reply.code(404).send({
+          message: "Stored event not found",
+        });
+      }
+      if (!allowedTransitions[storedEvent.status].includes(status)) {
+        return reply.code(400).send({
+          message: `Invalid status transition from ${storedEvent.status} to ${status}`,
+        });
+      }
+      storedEvent.status = status;
+      app.storedEvents.repository.save(storedEvent);
+      return reply.code(204).send();
+    }
   );
 };
 

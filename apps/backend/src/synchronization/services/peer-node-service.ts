@@ -203,7 +203,7 @@ export class PeerNodeService {
           status,
         });
 
-        await this.storedEventRepository.add(storedEvent);
+        await this.storedEventRepository.save(storedEvent);
         if (status === StoredEventStatus.Accepted) {
           await this.applyEventChange(event, nodeUrl);
         }
