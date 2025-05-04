@@ -18,6 +18,7 @@ const eventRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.addSchema(StoredEventResponse);
   app.addSchema(PaginatedStoredEventsQuery);
   app.addSchema(PaginatedStoredEventsResponse);
+  app.addSchema(ChangeStoredEventStatusRequest);
 
   app.get(
     "",
@@ -60,7 +61,7 @@ const eventRoutes: FastifyPluginAsyncTypebox = async (app) => {
   );
 
   app.patch(
-    ":eventId/status",
+    "/:eventId/status",
     {
       onRequest: app.auth([app.verifyRoles([UserRole.User, UserRole.Admin])]),
       schema: {

@@ -1,6 +1,7 @@
 import { promisify } from "node:util";
 import { FastifyInstance } from "fastify";
 import { ObjectId } from "mongodb";
+import { faker } from "@faker-js/faker";
 import { createIntegrationEntry } from "../media/entry-mocks";
 import { build } from "~/app";
 import {
@@ -19,6 +20,9 @@ describe("Stored Events", () => {
   });
   afterAll(async () => {
     await app.close();
+  });
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   describe("Pagination and filtering", () => {
@@ -142,6 +146,54 @@ describe("Stored Events", () => {
         }),
       ]);
     });
+  });
+
+  describe("Creation and update", () => {
+    // todo auth
+    it.todo("should accept a pending event", async () => {
+      const payload = {
+        entry: {
+          _id: new ObjectId(),
+          slug: faker.lorem.slug(),
+          title: faker.lorem.sentence(),
+          description: faker.lorem.paragraph(),
+        },
+      };
+      const pendingEvent = new StoredEvent({
+        status: StoredEventStatus.Pending,
+        type: "entry.created",
+        payload,
+        nodeUrl: faker.internet.url(),
+      });
+      await app.storedEvents.repository.save(pendingEvent);
+      vi.spyOn(app.peerNodes.service, "applyEventChange").mockResolvedValue();
+      const response = await app.inject({
+        method: "PATCH",
+        url: `/api/events/${pendingEvent._id}/status`,
+        payload: {
+          status: StoredEventStatus.Accepted,
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      expect(app.peerNodes.service.applyEventChange).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "entry.created",
+          payload,
+        }),
+        pendingEvent.nodeUrl
+      );
+      const updatedEvent = await app.storedEvents.repository.findOne(
+        pendingEvent._id
+      );
+      expect(updatedEvent).toEqual(
+        expect.objectContaining({
+          status: StoredEventStatus.Accepted,
+        })
+      );
+    });
+
+    it.todo("should reject a pending event");
+    it.todo("should not accept invalid state transitions");
   });
 
   it.todo("should create a stored event on entry creation", async () => {
