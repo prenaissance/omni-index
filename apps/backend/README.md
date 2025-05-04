@@ -43,10 +43,10 @@ pnpm --filter=backend dev
 - [x] Implement json data export
 - [x] Implement json data import
 - [x] Implement peer node data import
-- [ ] Implement the Gossip Protocol
-- [ ] Implement Gossip Protocol message deduplication
+- [x] Implement the Gossip Protocol
+- [x] Implement Gossip Protocol message deduplication
 - [ ] Implement Gossip Protocol conflict resolution
-- [ ] Implement firehose subscriptions
+- [x] Implement firehose subscriptions
 - [x] Implement user registration data migration
 - [x] Implement comment likes and garbage collection
 - [x] Add appropriate indices to the database using migrations

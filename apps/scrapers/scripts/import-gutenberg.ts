@@ -16,7 +16,9 @@ const book = (await response.json()) as GutendexBook;
 
 const entry: CreateEntryRequest = await gutenbergToEntry(book);
 
-const createResponse = await fetch("http://localhost:8080/api/entries", {
+const omniIndexUrl = process.env.OMNI_INDEX_URL || "http://localhost:8080";
+
+const createResponse = await fetch(`${omniIndexUrl}/api/entries`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -29,6 +31,6 @@ if (createResponse.ok) {
   console.log("Entry created successfully");
 } else {
   console.error(`Failed to create entry: ${createResponse.status}`);
-  console.error(await createResponse.json());
+  console.error(await createResponse.text());
   process.exit(1);
 }

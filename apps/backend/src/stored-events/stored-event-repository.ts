@@ -10,10 +10,23 @@ export class StoredEventRepository {
   }
 
   /**
-   * Add a stored event. Events are immutable and cannot be updated later on.
+   * Add or update stored event.
    */
-  async add(storedEvent: StoredEvent) {
-    await this.collection.insertOne(storedEvent);
+  async save(storedEvent: StoredEvent) {
+    const filter = { _id: storedEvent._id };
+    await this.collection.updateOne(
+      filter,
+      { $set: storedEvent },
+      { upsert: true }
+    );
+  }
+
+  async findOne(
+    filter: Filter<StoredEvent>,
+    options?: FindOptions
+  ): Promise<StoredEvent | null> {
+    const document = await this.collection.findOne(filter, options);
+    return document ? StoredEvent.fromDocument(document) : null;
   }
 
   async existsId(id: ObjectId) {
@@ -28,5 +41,10 @@ export class StoredEventRepository {
   async findMany(filter: Filter<StoredEvent>, options?: FindOptions) {
     const documents = await this.collection.find(filter, options).toArray();
     return documents.map(StoredEvent.fromDocument);
+  }
+
+  async deleteMany(filter: Filter<StoredEvent>) {
+    const result = await this.collection.deleteMany(filter);
+    return result.deletedCount;
   }
 }

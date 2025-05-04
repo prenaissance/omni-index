@@ -1,5 +1,5 @@
 import { Static, Type } from "@sinclair/typebox";
-import { StoredEvent } from "../entities/stored-event";
+import { StoredEvent, StoredEventStatus } from "../entities/stored-event";
 import { ClassProperties } from "~/common/utilities/serialization";
 import { ObjectIdSchema } from "~/common/payloads/object-id-schema";
 import { DateSchema } from "~/common/payloads/date-schema";
@@ -20,6 +20,7 @@ export const StoredEventResponse = Type.Object(
       }),
       Type.Null(),
     ]),
+    status: Type.Enum(StoredEventStatus),
   },
   { $id: "StoredEventResponse" }
 ) satisfies { static: ClassProperties<StoredEvent> };

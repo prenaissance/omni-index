@@ -65,7 +65,8 @@ export class EntryService {
 
   async synchronizeCreation(event: EntryCreatedEvent, nodeUrl: string) {
     const entry = Entry.fromDocument(event.payload.entry);
-    this.logger.info("Synchronizing entry creation", {
+    this.logger.info({
+      msg: "Synchronizing entry creation",
       id: entry._id,
       slug: entry.slug,
       nodeUrl,
@@ -74,7 +75,8 @@ export class EntryService {
       await this.entryRepository.create(entry);
       this.eventEmitter.emit("entry.created", event);
     } catch (error) {
-      this.logger.error("Error synchronizing entry creation", {
+      this.logger.error({
+        msg: "Error synchronizing entry creation",
         entryId: entry._id,
         nodeUrl,
         error,
