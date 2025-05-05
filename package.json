@@ -14,17 +14,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@eslint/js": "^9.23.0",
-    "@typescript-eslint/parser": "^8.27.0",
-    "eslint": "^9.23.0",
-    "eslint-config-prettier": "^10.1.1",
+    "@eslint/js": "^9.26.0",
+    "@typescript-eslint/parser": "^8.31.1",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.2",
     "eslint-import-resolver-typescript": "^3.9.1",
-    "eslint-plugin-import-x": "^4.9.1",
-    "eslint-plugin-prettier": "^5.2.3",
-    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-import-x": "^4.11.0",
+    "eslint-plugin-prettier": "^5.3.1",
+    "eslint-plugin-react": "^7.37.5",
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.27.0"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1"
   }
 }
