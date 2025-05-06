@@ -17,31 +17,64 @@ export const SearchBooksPagination = ({
   limit,
   total,
 }: SearchBooksPaginationProps) => {
+  const totalPages = Math.ceil(total / limit);
+  const isLastPage = page === totalPages;
+  const isSecondToLastPage = page === totalPages - 1;
+  const isFirstPage = page === 1;
+
   return (
     <Pagination>
       <PaginationContent>
+        {!isFirstPage && (
+          <PaginationItem>
+            <PaginationPrevious href={`?page=${page - 1}`} />
+          </PaginationItem>
+        )}
+        {page > 2 && (
+          <PaginationItem>
+            <PaginationLink href={`?page=1`}>1</PaginationLink>
+          </PaginationItem>
+        )}
+        {page > 3 && <PaginationEllipsis />}
         {page > 1 && (
           <PaginationItem>
-            <PaginationPrevious href="#" />
+            <PaginationLink href={`?page=${page - 1}`}>
+              {page - 1}
+            </PaginationLink>
           </PaginationItem>
         )}
         <PaginationItem>
-          <PaginationLink isActive href="#">
+          <PaginationLink isActive href={`?page=${page}`}>
             {page}
           </PaginationLink>
         </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">{page + 1}</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">{page + 2}</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
-        </PaginationItem>
+        {!isLastPage && !isSecondToLastPage && (
+          <PaginationItem>
+            <PaginationLink href={`?page=${page + 1}`}>
+              {page + 1}
+            </PaginationLink>
+          </PaginationItem>
+        )}
+        {page < totalPages - 2 && <PaginationEllipsis />}
+        {page < totalPages - 1 && (
+          <PaginationItem>
+            <PaginationLink href={`?page=${totalPages}`}>
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+        )}
+        {isSecondToLastPage && (
+          <PaginationItem>
+            <PaginationLink href={`?page=${totalPages}`}>
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+        )}
+        {!isLastPage && !isSecondToLastPage && (
+          <PaginationItem>
+            <PaginationNext href={`?page=${page + 1}`} />
+          </PaginationItem>
+        )}
       </PaginationContent>
     </Pagination>
   );
