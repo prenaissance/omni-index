@@ -1,12 +1,15 @@
-@import "@fontsource/montserrat/300.css"; /* Light */
-@import "@fontsource/montserrat/400.css"; /* Regular */
-@import "@fontsource/montserrat/500.css"; /* Medium */
-@import "@fontsource/montserrat/700.css"; /* Bold */
-
 @import "tailwindcss";
-@import "tailwindcss/preflight";
-@tailwind utilities;
 
+/* montserrat-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 200 300 400 500 600 700 800 900;
+  src: url("/montserrat-v29-latin-regular.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+@config "../tailwind.config.ts";
 html,
 body {
   @apply bg-[#212121] text-white font-sans;
