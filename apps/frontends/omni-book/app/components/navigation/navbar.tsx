@@ -13,14 +13,16 @@ type ProfileType =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  const query = new URL(request.url).searchParams.get("query") ?? undefined;
+
   const cookieHeader = request.headers.get("cookie");
   if (!cookieHeader) {
-    return { user: null };
+    return { user: null, query };
   }
 
   const parsedCookie = parseCookie(cookieHeader);
   if (!parsedCookie.session) {
-    return { user: null };
+    return { user: null, query };
   }
 
   const res = await fetch(`${env.API_URL}/api/profile`, {
@@ -32,13 +34,11 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   });
 
   if (!res.ok) {
-    return { user: null };
+    return { user: null, query };
   }
 
   const user = (await res.json()) as ProfileType;
 
-  const searchParams = new URL(request.url).searchParams;
-  const query = searchParams.get("query") ?? undefined;
   return { user, query };
 };
 
