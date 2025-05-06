@@ -61,7 +61,7 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
               />
               <div className="max-[635px]:hidden flex flex-col space-y-0">
                 <h6 className="leading-4 text-md">Omni</h6>
-                <h1 className="text-2xl font-bold leading-5">
+                <h1 className="text-2xl font-medium leading-5">
                   <strong>Book</strong>
                 </h1>
               </div>
