@@ -21,21 +21,22 @@ export default tseslint.config([
   importPlugin.flatConfigs.recommended,
   importPlugin.flatConfigs.typescript,
   eslintPluginPrettierRecommended,
+  ...[
+    "apps/backend",
+    "apps/frontends/omni-book",
+    "apps/scrapers",
+    "proof-of-concept",
+  ].map((project) => ({
+    files: [`./${project}/**/*`],
+    settings: {
+      "import-x/resolver-next": [createTypeScriptImportResolver({ project })],
+    },
+  })),
   {
     settings: {
       "import-x/parsers": {
         "@typescript-eslint/parser": [".ts", ".tsx", ".mts"],
       },
-      "import-x/resolver-next": [
-        createTypeScriptImportResolver({
-          project: [
-            "./apps/backend/tsconfig.json",
-            "./apps/frontends/omni-book/tsconfig.json",
-            "./apps/scrapers/tsconfig.json",
-            "./proof-of-concept/tsconfig.json",
-          ],
-        }),
-      ],
     },
     rules: {
       "prettier/prettier": [
