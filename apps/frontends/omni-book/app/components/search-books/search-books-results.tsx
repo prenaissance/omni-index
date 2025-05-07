@@ -7,8 +7,8 @@ export type SearchBooksResultsProps = {
 
 export const SearchBookResults = ({ books }: SearchBooksResultsProps) => {
   return (
-    <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-8 lg:grid-cols-5">
-      {!books ? (
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-8 min-[1300px]:gap-2 lg:grid-cols-5 w-full">
+      {!books || books.length === 0 ? (
         <div className="col-span-2 md:col-span-3 lg:col-span-5">
           <p className="text-center text-lg font-semibold">No results found</p>
         </div>

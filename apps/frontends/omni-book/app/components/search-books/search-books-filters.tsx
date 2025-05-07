@@ -12,44 +12,44 @@ export type SearchBookFiltersProps = {
 
 export const SearchBooksFilters = ({ filters }: SearchBookFiltersProps) => {
   return (
-    <aside className="w-80 bg-card-secondary rounded-sm px-8 py-8">
+    <aside className="bg-card-secondary rounded-sm px-8 py-8 ">
       <Form
         action={`/search?query=${filters.search ?? ""}`}
         method="GET"
-        className="flex flex-col items-center gap-7"
+        className="flex flex-col items-center gap-7 min-w-52 mx-auto"
       >
         <h1 className="font-bold text-xl">Filter Results</h1>
-        <div className="flex flex-col gap-3 w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-1 gap-3 w-full">
           <input name="query" className="hidden" value={filters.search ?? ""} />
           <label className="flex flex-col items-end gap-1 w-full">
-            <div className="flex items-center gap-4 w-full text-sm border-none">
+            <div className="flex min-[1400px]:items-center flex-col min-[1400px]:gap-4 w-full text-sm border-none min-[1400px]:flex-row items-start">
               <p className="w-1/4 font-light">Author</p>
               <input
                 id="author"
                 name="author"
                 type="text"
-                className="py-2 px-4 w-2/3 bg-card-secondary border-2 border-accent rounded-lg outline-none flex-1"
+                className="py-2 px-4 min-[1400px]:w-2/3 w-full bg-card-secondary border-2 border-accent rounded-lg outline-none flex-1"
                 placeholder="Author..."
                 defaultValue={filters.author}
               />
             </div>
           </label>
           <label className="flex flex-col items-end gap-1 w-full">
-            <div className="flex items-center gap-4 w-full text-sm border-none">
+            <div className="flex min-[1400px]:items-center min-[1400px]:gap-4 w-full min-[1400px]:flex-row flex-col text-sm border-none">
               <p className="w-1/4 font-light">Year</p>
               <input
                 // id="year"
                 // name="year"
                 type="number"
-                className="py-2 px-4 w-2/3 bg-card-secondary border-2 border-accent rounded-lg outline-none flex-1 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="py-2 px-4 min-[1400px]:w-2/3 w-full bg-card-secondary border-2 border-accent rounded-lg outline-none flex-1 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="Year..."
                 // defaultValue={filters.}
               />
             </div>
           </label>
-          <label className="flex items-center justify-between w-full text-sm gap-4">
-            <p className="w-1/4 font-light">Sort by</p>
-            <div className="border-2 border-accent rounded-lg flex-1">
+          <label className="flex min-[1400px]:items-center items-start justify-between w-full text-sm min-[1400px]:gap-4 min-[1400px]:flex-row flex-col">
+            <p className="min-[1400px]:w-1/4 w-full font-light">Sort by</p>
+            <div className="border-2 border-accent rounded-lg flex-1 w-full">
               <select
                 id="orderBy"
                 name="orderBy"

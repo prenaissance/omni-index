@@ -7,42 +7,44 @@ export type BookCardProps = {
 };
 
 export const BookCard = ({ book }: BookCardProps) => {
+  const thumbnailUrl =
+    book.thumbnail && "url" in book.thumbnail
+      ? book.thumbnail.url
+      : "/thumbnail.png";
+
   return (
-    <article className="flex flex-col items-center justify-center bg-card-secondary rounded-md px-4">
-      <div className="flex flex-col items-center justify-center gap-2">
-        <Link to={`/books/${book._id}`}>
-          <img
-            src={
-              book.thumbnail && "url" in book.thumbnail
-                ? book.thumbnail.url
-                : "./placeholder.jpg"
-            }
-            alt={book.title}
-            className="h-48 w-40 object-left-top"
-          />
+    <article className="flex flex-col h-full w-full rounded-md overflow-hidden items-center justify-center">
+      <Link to={`/books/${book._id}`} className="w-full">
+        <div
+          className="aspect-[3/4] mx-auto bg-cover bg-top-left rounded w-full max-w-40"
+          style={{ backgroundImage: `url(${thumbnailUrl})` }}
+        />
+      </Link>
+
+      <section className="flex flex-col w-full gap-1 mt-2 overflow-hidden">
+        <Link
+          to={`/books/${book._id}`}
+          className="font-semibold text-base text-center truncate w-full"
+          title={book.title}
+        >
+          {book.title}
         </Link>
-        <section className="flex flex-col w-full">
-          <Link
-            to={`/books/${book._id}`}
-            className="font-semibold overflow-hidden text-ellipsis whitespace-nowrap hover:text-textHover transition duration-300 text-base text-center w-44 mx-auto"
-          >
-            {book.title}
-          </Link>
-          <div className="flex items-center justify-center text-xs lg:text-sm w-44 mx-auto">
-            <div>
-              <StarIcon size={4} />
-            </div>
-            <p className="pt-1 mr-2">4.5</p>
-            <div className="w-[1px] h-4 bg-white mr-2"></div>
-            <Link
-              to={`/search?author=${book.author}`}
-              className="text-md pt-1 hover:text-textHover transition duration-300 text-ellipsis overflow-hidden text-nowrap"
-            >
-              {book.author}
-            </Link>
+
+        <div className="flex items-center justify-center text-xs lg:text-sm gap-2 w-full overflow-hidden text-ellipsis whitespace-nowrap">
+          <div>
+            <StarIcon size={4} />
           </div>
-        </section>
-      </div>
+          <p className="pt-0.5">4.5</p>
+          <div className="w-[1px] h-4 bg-white" />
+          <Link
+            to={`/search?author=${book.author}`}
+            className="hover:text-textHover transition duration-300 truncate max-w-[50%]"
+            title={book.author}
+          >
+            {book.author}
+          </Link>
+        </div>
+      </section>
     </article>
   );
 };
