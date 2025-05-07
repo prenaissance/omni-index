@@ -24,7 +24,6 @@ export const SearchBooksPagination = ({
   const isFirstPage = page === 1;
 
   const location = useLocation();
-  console.log(location);
 
   const buildPageLink = (targetPage: number) => {
     const params = new URLSearchParams(location.search);

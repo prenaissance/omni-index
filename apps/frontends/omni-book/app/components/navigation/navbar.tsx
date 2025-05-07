@@ -74,26 +74,24 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
                 >
                   Search
                 </label>
-                <fetcher.Form
-                  method="get"
-                  action="/search"
-                  className="relative h-full"
-                >
-                  <input
-                    name="query"
-                    id="landing-search"
-                    className="pl-6 pr-12 block h-full max-w-80 text-sm border rounded-md bg-card border-border text-card-foreground focus:ring-0 focus:border-none outline-none"
-                    placeholder="Search"
-                    defaultValue={loaderData.query}
-                  />
-                  <Button
-                    type="submit"
-                    variant={"icon"}
-                    size={"icon"}
-                    className="absolute top-0 right-1"
-                  >
-                    <SearchIcon />
-                  </Button>
+                <fetcher.Form method="get" action="/search" className="h-full">
+                  <div className="relative h-full">
+                    <input
+                      name="query"
+                      id="landing-search"
+                      className="pl-6 pr-12 block h-full max-w-80 text-sm border rounded-md bg-card border-border text-card-foreground focus:ring-0 focus:border-none outline-none"
+                      placeholder="Search"
+                      defaultValue={loaderData.query}
+                    />
+                    <Button
+                      type="submit"
+                      variant={"icon"}
+                      size={"icon"}
+                      className="absolute top-0 right-1"
+                    >
+                      <SearchIcon />
+                    </Button>
+                  </div>
                 </fetcher.Form>
               </form>
             </div>
