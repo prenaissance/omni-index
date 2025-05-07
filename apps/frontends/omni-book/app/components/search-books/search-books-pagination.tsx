@@ -1,3 +1,4 @@
+import { useLocation } from "react-router";
 import {
   Pagination,
   PaginationContent,
@@ -17,40 +18,49 @@ export const SearchBooksPagination = ({
   limit,
   total,
 }: SearchBooksPaginationProps) => {
-  const totalPages = Math.ceil(total / limit);
+  const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
   const isLastPage = page === totalPages;
   const isSecondToLastPage = page === totalPages - 1;
   const isFirstPage = page === 1;
+
+  const location = useLocation();
+  console.log(location);
+
+  const buildPageLink = (targetPage: number) => {
+    const params = new URLSearchParams(location.search);
+    params.set("page", targetPage.toString());
+    return `${location.pathname}?${params.toString()}`;
+  };
 
   return (
     <Pagination>
       <PaginationContent>
         {!isFirstPage && (
           <PaginationItem>
-            <PaginationPrevious href={`?page=${page - 1}`} />
+            <PaginationPrevious href={buildPageLink(page - 1)} />
           </PaginationItem>
         )}
         {page > 2 && (
           <PaginationItem>
-            <PaginationLink href={`?page=1`}>1</PaginationLink>
+            <PaginationLink href={buildPageLink(1)}>1</PaginationLink>
           </PaginationItem>
         )}
         {page > 3 && <PaginationEllipsis />}
         {page > 1 && (
           <PaginationItem>
-            <PaginationLink href={`?page=${page - 1}`}>
+            <PaginationLink href={buildPageLink(page - 1)}>
               {page - 1}
             </PaginationLink>
           </PaginationItem>
         )}
         <PaginationItem>
-          <PaginationLink isActive href={`?page=${page}`}>
+          <PaginationLink isActive href={buildPageLink(page)}>
             {page}
           </PaginationLink>
         </PaginationItem>
-        {!isLastPage && !isSecondToLastPage && (
+        {!isLastPage && !isSecondToLastPage && totalPages !== 0 && (
           <PaginationItem>
-            <PaginationLink href={`?page=${page + 1}`}>
+            <PaginationLink href={buildPageLink(page + 1)}>
               {page + 1}
             </PaginationLink>
           </PaginationItem>
@@ -58,21 +68,21 @@ export const SearchBooksPagination = ({
         {page < totalPages - 2 && <PaginationEllipsis />}
         {page < totalPages - 1 && (
           <PaginationItem>
-            <PaginationLink href={`?page=${totalPages}`}>
+            <PaginationLink href={buildPageLink(totalPages)}>
               {totalPages}
             </PaginationLink>
           </PaginationItem>
         )}
         {isSecondToLastPage && (
           <PaginationItem>
-            <PaginationLink href={`?page=${totalPages}`}>
+            <PaginationLink href={buildPageLink(totalPages)}>
               {totalPages}
             </PaginationLink>
           </PaginationItem>
         )}
-        {!isLastPage && !isSecondToLastPage && (
+        {!isLastPage && !isSecondToLastPage && totalPages !== 0 && (
           <PaginationItem>
-            <PaginationNext href={`?page=${page + 1}`} />
+            <PaginationNext href={buildPageLink(page + 1)} />
           </PaginationItem>
         )}
       </PaginationContent>
