@@ -3,8 +3,3 @@ packages:
   - apps/frontends/*
   - proof-of-concept
 injectWorkspacePackages: true
-onlyBuiltDependencies:
-  - cbor-extract
-  - cpu-features
-  - esbuild
-  - ssh2
