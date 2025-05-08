@@ -45,7 +45,7 @@ const SearchBooks = ({ loaderData }: Route.ComponentProps) => {
   const { entries, query } = loaderData;
 
   return (
-    <div className="h-hull flex flex-col gap-4 lg:h-[calc(100vh-80px)]">
+    <div className="h-full flex flex-col gap-4 lg:h-[calc(100vh-80px)]">
       <div className="flex w-full min-h-40 px-10 py-8 min-[1400px]:gap-8 gap-8 flex-col md:flex-row bg-card flex-1">
         <SearchBooksFilters filters={query} />
         <SearchBookResults books={entries.data} />

@@ -38,12 +38,9 @@ export const SearchBooksFilters = ({ filters }: SearchBookFiltersProps) => {
             <div className="flex min-[1400px]:items-center min-[1400px]:gap-4 w-full min-[1400px]:flex-row flex-col text-sm border-none">
               <p className="w-1/4 font-light">Year</p>
               <input
-                // id="year"
-                // name="year"
                 type="number"
                 className="py-2 px-4 min-[1400px]:w-2/3 w-full bg-card-secondary border-2 border-accent rounded-lg outline-none flex-1 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="Year..."
-                // defaultValue={filters.}
               />
             </div>
           </label>
