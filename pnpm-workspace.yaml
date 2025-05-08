@@ -7,4 +7,6 @@ onlyBuiltDependencies:
   - cbor-extract
   - cpu-features
   - esbuild
+  - protobufjs
   - ssh2
+  - unrs-resolver
