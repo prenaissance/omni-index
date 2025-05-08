@@ -36,6 +36,7 @@ export default [
     ...prefix("/admin", [
       route("/nodes-config", "routes/admin/nodes-config.tsx"),
       route("/add-entry", "routes/admin/add-entry.tsx"),
+      route("/edit-entry/:bookId", "routes/admin/edit-entry.tsx"),
     ]),
     route("/search", "routes/search.tsx"),
     route("books/:bookId", "routes/book.tsx"),
