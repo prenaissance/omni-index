@@ -19,8 +19,12 @@ import { Button } from "~/components/ui/button";
 import { PlusIcon } from "~/components/icons";
 import Tooltip from "~/components/ui/tooltip";
 import { Notification } from "~/components/ui/notification";
-import DescriptionSection from "~/components/admin/entries-config/description-section";
-import GenresSection from "~/components/admin/entries-config/genres-section";
+import DescriptionSection, {
+  type DescriptionSectionValues,
+} from "~/components/admin/entries-config/description-section";
+import GenresSection, {
+  type GenreOption,
+} from "~/components/admin/entries-config/genres-section";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -92,10 +96,17 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 export default function EditEntry({ loaderData }: Route.ComponentProps) {
   const { genres, entry } = loaderData;
   const [pageLoaded, setPageLoaded] = useState(false);
+
+  const existingGenres = genres.filter((genre) =>
+    entry.genres.includes(genre.value)
+  );
+
+  const genresSectionValues: GenreOption[] = existingGenres;
+
   const [formData, setFormData] = useState<Partial<EntryFormData>>({
     title: "",
     author: "",
-    genres: [],
+    genres: genresSectionValues.map((genre) => genre.value),
     media: [],
   });
 
@@ -320,6 +331,11 @@ export default function EditEntry({ loaderData }: Route.ComponentProps) {
   const [thumbnailUrl, setThumbnailUrl] = useState(
     entry.thumbnail && "url" in entry.thumbnail ? entry.thumbnail.url : ""
   );
+
+  const descriptionSectionValues: DescriptionSectionValues = {
+    description: entry.description,
+  };
+
   return (
     <>
       {notification ? (
@@ -388,6 +404,7 @@ export default function EditEntry({ loaderData }: Route.ComponentProps) {
             handleChange={handleChange}
             errors={errors}
             touchedFields={touchedFields}
+            values={descriptionSectionValues}
           />
           <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
           <GenresSection
@@ -397,6 +414,7 @@ export default function EditEntry({ loaderData }: Route.ComponentProps) {
             pageLoaded={pageLoaded}
             genres={genres ?? []}
             selectedGenres={formData.genres || []}
+            values={genresSectionValues}
           />
           <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
           <div className="flex w-full gap-4">
