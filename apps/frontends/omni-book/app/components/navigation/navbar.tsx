@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet, useFetcher } from "react-router";
+import { Form, Link, NavLink, Outlet } from "react-router";
 import { memo } from "react";
 import { Button } from "../ui/button";
 import { SearchIcon } from "../icons";
@@ -43,7 +43,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 const Navbar = ({ loaderData }: Route.ComponentProps) => {
-  const fetcher = useFetcher();
   return (
     <AuthContext.Provider value={loaderData.user}>
       <nav className="sticky top-0 bg-background z-50">
@@ -67,33 +66,31 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
               </div>
             </NavLink>
             <div className="h-10 ">
-              <form className="h-full">
-                <label
-                  htmlFor="landing-search"
-                  className="mb-2 text-sm font-medium text-foreground sr-only"
-                >
-                  Search
-                </label>
-                <fetcher.Form method="get" action="/search" className="h-full">
-                  <div className="relative h-full">
-                    <input
-                      name="query"
-                      id="landing-search"
-                      className="pl-6 pr-12 block h-full max-w-80 text-sm border rounded-md bg-card border-border text-card-foreground focus:ring-0 focus:border-none outline-none"
-                      placeholder="Search"
-                      defaultValue={loaderData.query}
-                    />
-                    <Button
-                      type="submit"
-                      variant={"icon"}
-                      size={"icon"}
-                      className="absolute top-0 right-1"
-                    >
-                      <SearchIcon />
-                    </Button>
-                  </div>
-                </fetcher.Form>
-              </form>
+              <label
+                htmlFor="landing-search"
+                className="mb-2 text-sm font-medium text-foreground sr-only"
+              >
+                Search
+              </label>
+              <Form method="GET" action="/search" className="h-full">
+                <div className="relative h-full">
+                  <input
+                    name="query"
+                    id="landing-search"
+                    className="pl-6 pr-12 block h-full max-w-80 text-sm border rounded-md bg-card border-border text-card-foreground focus:ring-0 focus:border-none outline-none"
+                    placeholder="Search"
+                    defaultValue={loaderData.query}
+                  />
+                  <Button
+                    type="submit"
+                    variant={"icon"}
+                    size={"icon"}
+                    className="absolute top-0 right-1"
+                  >
+                    <SearchIcon />
+                  </Button>
+                </div>
+              </Form>
             </div>
           </div>
           {loaderData.user ? (

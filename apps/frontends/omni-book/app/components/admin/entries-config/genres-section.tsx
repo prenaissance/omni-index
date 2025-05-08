@@ -6,7 +6,7 @@ import type {
   FormattedEntryErrors,
 } from "~/schemas/entry-schema";
 
-type GenreOption = {
+export type GenreOption = {
   value: string;
   label: string;
 };
@@ -18,6 +18,7 @@ type GenresSectionProps = {
   pageLoaded: boolean;
   genres: { value: string; label: string }[];
   selectedGenres: string[];
+  values?: GenreOption[];
 };
 
 const GenresSection = ({
@@ -27,6 +28,7 @@ const GenresSection = ({
   pageLoaded,
   genres,
   selectedGenres,
+  values,
 }: GenresSectionProps) => {
   const animatedComponents = makeAnimated();
 
@@ -94,6 +96,9 @@ const GenresSection = ({
                     key={genre.value}
                     value={genre.value}
                     className="hover:bg-accent"
+                    selected={
+                      values && values.some((v) => v.value === genre.value)
+                    }
                   >
                     {genre.label}
                   </option>
