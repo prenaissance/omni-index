@@ -112,21 +112,36 @@ export default function EditEntry({ loaderData }: Route.ComponentProps) {
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [medias, setMedias] = useState<ArrayFormItem[]>(() => [
-    {
-      id: uuidv4(),
-      mirrors: [
-        {
-          provider: "",
-          mimeType: "",
-          size: 0,
-          blob: {
-            url: "",
+  const [medias, setMedias] = useState<ArrayFormItem[]>(() =>
+    entry.media.length > 0
+      ? entry.media.map((media) => ({
+          id: uuidv4(),
+          mirrors: media.mirrors.map((mirror) => ({
+            blob:
+              "url" in mirror.blob
+                ? { url: mirror.blob.url }
+                : { url: mirror.blob.accessUrl },
+            provider: mirror.provider,
+            mimeType: mirror.mimeType,
+            size: mirror.size,
+          })),
+        }))
+      : [
+          {
+            id: uuidv4(),
+            mirrors: [
+              {
+                provider: "",
+                mimeType: "",
+                size: 0,
+                blob: {
+                  url: "",
+                },
+              },
+            ],
           },
-        },
-      ],
-    },
-  ]);
+        ]
+  );
 
   const [touchedFields, setTouchedFields] = useState<
     Partial<Record<keyof EntryFormData, boolean>>
@@ -384,7 +399,7 @@ export default function EditEntry({ loaderData }: Route.ComponentProps) {
       <fetcher.Form
         method="POST"
         action="/api/entries"
-        className="m-10 rounded-lg bg-card pl-10 pr-6 py-5 relative"
+        className="m-10 rounded-lg bg-card px-8 py-5 relative"
         onSubmit={handleSubmit}
         ref={formRef}
       >
