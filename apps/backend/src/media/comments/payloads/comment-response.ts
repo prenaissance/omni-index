@@ -9,7 +9,7 @@ export const CommentResponse = Type.Object(
     createdBy: Type.Object({
       did: Type.String(),
       displayName: Type.Optional(Type.String()),
-      avatarThumbnail: Type.Optional(Type.String({ format: "uri" })),
+      avatarUrl: Type.Optional(Type.String({ format: "uri" })),
     }),
     likes: Type.Number(),
     liked: Type.Boolean(),
