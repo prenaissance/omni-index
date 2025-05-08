@@ -45,7 +45,7 @@ pnpm --filter=backend dev
 - [x] Implement peer node data import
 - [x] Implement the Gossip Protocol
 - [x] Implement Gossip Protocol message deduplication
-- [ ] Implement Gossip Protocol conflict resolution
+- [x] Implement Gossip Protocol conflict resolution
 - [x] Implement firehose subscriptions
 - [x] Implement user registration data migration
 - [x] Implement comment likes and garbage collection
