@@ -31,7 +31,7 @@ const DescriptionSection = ({
           className="resize-none w-full px-4 py-4 text-sm bg-card-secondary"
           rows={7}
           placeholder="Add description..."
-          name="text"
+          name="description"
           onChange={(e) => handleChange("description", e.target.value)}
           defaultValue={values?.description}
         />

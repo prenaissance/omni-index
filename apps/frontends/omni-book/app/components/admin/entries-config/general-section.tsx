@@ -25,7 +25,6 @@ const GeneralSection = ({
   thumbnailUrl,
   values,
 }: GeneralSectionProps) => {
-  console.log("values", values);
   return (
     <div className="flex w-full gap-4">
       <div className="w-1/4">
@@ -112,6 +111,7 @@ const GeneralSection = ({
                   min={0}
                   max={new Date().getFullYear()}
                   defaultValue={values?.year}
+                  onChange={(e) => handleChange("year", Number(e.target.value))}
                 />
               </div>
             </label>

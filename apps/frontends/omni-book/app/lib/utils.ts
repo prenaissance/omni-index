@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { redirect } from "react-router";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -114,3 +115,19 @@ export const formatSelector = [
     label: "Plain Text UTF-8",
   },
 ];
+
+export const validateFormData = (message: string, isHtmlRequest = false) => {
+  return isHtmlRequest
+    ? redirect(`?error=${message}`)
+    : new Response(
+        JSON.stringify({
+          error: message,
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+};
