@@ -95,6 +95,23 @@ const oauthRoutes: FastifyPluginAsyncTypebox = async (app) => {
       return reply.redirect(app.env.FRONTEND_URL);
     }
   );
+
+  app.post("/logout", {
+    schema: {
+      tags: ["Auth"],
+      security: [],
+      response: {
+        200: Type.Null(),
+      },
+    },
+    handler: async (request, reply) => {
+      request.session.delete();
+      if (request.atproto.did) {
+        await app.oauth.sessionStore.del(request.atproto.did);
+      }
+      return reply.status(200).send();
+    },
+  });
 };
 
 export default oauthRoutes;
