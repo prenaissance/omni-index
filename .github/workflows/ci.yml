@@ -39,6 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
 
     strategy:
       matrix:
