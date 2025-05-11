@@ -1,9 +1,11 @@
+import { useSearchParams } from "react-router";
 import type { Route } from "./+types/home";
 import Trending from "~/components/trending";
 import Hero from "~/components/hero";
 import { env } from "~/lib/env";
 import type { paths } from "~/lib/api-types";
 import Latest from "~/components/latest";
+import { Notification } from "~/components/ui/notification";
 
 type LatestQuery = paths["/api/entries"]["get"]["parameters"]["query"];
 
@@ -60,8 +62,34 @@ export const loader = async () => {
 export default function Home({ loaderData }: Route.ComponentProps) {
   const { trendingBooks, latestBooks } = loaderData;
 
+  const [searchParams] = useSearchParams();
+
+  const errorMessage = searchParams.get("error");
+  const successMessage = searchParams.get("success");
+
   return (
     <div>
+      {errorMessage ? (
+        <div className="fixed w-full top-24 mx-auto z-50 flex justify-center">
+          <Notification
+            variant={"danger"}
+            closeButtonLink={`/`}
+            className="w-fit min-w-96 max-w-[70%]"
+          >
+            {errorMessage}
+          </Notification>
+        </div>
+      ) : successMessage ? (
+        <div className="fixed w-full top-24 mx-auto z-50 flex justify-center">
+          <Notification
+            variant={"success"}
+            closeButtonLink={`/`}
+            className="w-fit min-w-96 max-w-[70%]"
+          >
+            {successMessage}
+          </Notification>
+        </div>
+      ) : null}
       <Hero />
       <Trending trendingBooks={trendingBooks.data} />
       <div className="bg-card-secondary h-[2px] rounded-lg mx-14"></div>

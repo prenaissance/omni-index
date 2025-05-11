@@ -16,7 +16,7 @@ import {
   type FormattedEntryErrors,
 } from "~/schemas/entry-schema";
 import { Button } from "~/components/ui/button";
-import { PlusIcon } from "~/components/icons";
+import { PlusIcon, TrashIcon } from "~/components/icons";
 import Tooltip from "~/components/ui/tooltip";
 import { Notification } from "~/components/ui/notification";
 import DescriptionSection, {
@@ -27,6 +27,7 @@ import GenresSection, {
 } from "~/components/admin/entries-config/genres-section";
 import buildDiff from "~/lib/build-form-diff";
 import { validateFormData } from "~/lib/utils";
+import Confirmation from "~/components/ui/confirmation";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -619,7 +620,35 @@ export default function EditEntry({ loaderData }: Route.ComponentProps) {
         onSubmit={handleSubmit}
         ref={formRef}
       >
-        <h1 className="text-2xl font-bold mb-4">Edit Entry</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">Edit Entry</h1>
+          <div>
+            <input
+              type="checkbox"
+              id={`delete-entry-${entry._id}`}
+              className="peer hidden"
+            />
+            <label
+              htmlFor={`delete-entry-${entry._id}`}
+              className="cursor-pointer flex items-center gap-4"
+            >
+              <div className="text-primary-foreground flex items-center justify-center h-10 w-10 p-1 bg-destructive rounded-md hover:bg-destructive/80 transition-colors">
+                <TrashIcon />
+              </div>
+            </label>
+            <div className="hidden peer-checked:block">
+              <Confirmation
+                description="Are you sure you want to delete this book?"
+                title="Delete book"
+                confirmButtonText="Delete"
+                cancelButtonText="Cancel"
+                action={`/api/entries/${entry._id}/remove-entry`}
+                htmlFor={`delete-entry-${entry._id}`}
+                method="DELETE"
+              />
+            </div>
+          </div>
+        </div>
         <div className="flex flex-col gap-5">
           <div className="bg-card-secondary h-[2px] w-full rounded-lg"></div>
           <GeneralSection

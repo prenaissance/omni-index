@@ -178,7 +178,7 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
                         htmlFor={`delete-node-${node._id}`}
                         className="cursor-pointer flex items-center gap-4"
                       >
-                        <div className="text-white text-primary-foreground flex items-center justify-center h-10 w-10 p-1 bg-destructive rounded-md hover:bg-destructive/80 transition-colors">
+                        <div className="text-primary-foreground flex items-center justify-center h-10 w-10 p-1 bg-destructive rounded-md hover:bg-destructive/80 transition-colors">
                           <TrashIcon />
                         </div>
                       </label>

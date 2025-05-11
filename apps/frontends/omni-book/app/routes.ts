@@ -28,6 +28,7 @@ export default [
     ]),
     ...prefix("/api/entries", [
       route("/", "server/routes/entries/add-entry.ts"),
+      route("/:bookId/remove-entry", "server/routes/entries/remove-entry.ts"),
     ]),
     ...prefix("/admin", [
       route("/nodes-config", "routes/admin/nodes-config.tsx"),
