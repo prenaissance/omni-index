@@ -83,4 +83,34 @@ describe("Media Entries", () => {
       })
     );
   });
+
+  it("should update an entry and then retrieve it", async () => {
+    const entryBody = await createIntegrationEntry(app);
+    const entryId = entryBody._id;
+
+    const updatedTitle = faker.lorem.sentence();
+    const updateResponse = await app.inject({
+      method: "PATCH",
+      url: `/api/entries/${entryId}`,
+      payload: {
+        title: updatedTitle,
+      },
+    });
+    expect(updateResponse.statusCode).toBe(200);
+    const updateBody = updateResponse.json<EntrySchema>();
+    expect(updateBody).toMatchObject({
+      _id: entryId,
+      title: updatedTitle,
+    });
+    const getResponse = await app.inject({
+      method: "GET",
+      url: `/api/entries/${entryId}`,
+    });
+    expect(getResponse.statusCode).toBe(200);
+    const getBody = getResponse.json<EntrySchema>();
+    expect(getBody).toMatchObject({
+      _id: entryId,
+      title: updatedTitle,
+    });
+  });
 });

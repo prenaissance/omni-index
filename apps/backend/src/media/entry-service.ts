@@ -38,6 +38,7 @@ export class EntryService {
     }
     const { fieldsDiff, createdMedia, deletedMediaIds, mediaUpdates } =
       entry.diff(existingEntry);
+    await this.entryRepository.update(entry);
     this.eventEmitter.emit("entry.updated", {
       id: new ObjectId(),
       type: "entry.updated",
@@ -85,7 +86,7 @@ export class EntryService {
   }
   private async importFullEntry(entryId: ObjectId, nodeUrl: string) {
     const response = await fetch(`${nodeUrl}/api/entries/${entryId}`);
-    const data: EntrySchema = await response.json();
+    const data = (await response.json()) as EntrySchema;
     if (!response.ok) {
       this.logger.error("Error fetching entry from node", {
         entryId,
