@@ -39,8 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
-
+    if: github.event_name == 'pull_request' && contains(fromJson('["opened", "synchronize", "reopened"]'), github.event.action)
     strategy:
       matrix:
         image:
