@@ -3,12 +3,18 @@ import type {
   FormattedEntryErrors,
 } from "~/schemas/entry-schema";
 
+export type GeneralSectionValues = Pick<
+  EntryFormData,
+  "title" | "author" | "year" | "language" | "localizedTitle" | "thumbnail"
+>;
+
 type GeneralSectionProps = {
   handleChange: (field: keyof EntryFormData, value: unknown) => void;
   errors: FormattedEntryErrors | undefined;
   touchedFields: Record<string, boolean>;
   setThumbnailUrl: (url: string) => void;
   thumbnailUrl: string;
+  values?: GeneralSectionValues;
 };
 
 const GeneralSection = ({
@@ -17,6 +23,7 @@ const GeneralSection = ({
   touchedFields,
   setThumbnailUrl,
   thumbnailUrl,
+  values,
 }: GeneralSectionProps) => {
   return (
     <div className="flex w-full gap-4">
@@ -41,6 +48,7 @@ const GeneralSection = ({
                   placeholder="The Republic"
                   required
                   onChange={(e) => handleChange("title", e.target.value)}
+                  defaultValue={values?.title}
                 />
                 {touchedFields.title && errors?.title && (
                   <p className="text-red-500 text-xs">
@@ -60,6 +68,7 @@ const GeneralSection = ({
                   onChange={(e) =>
                     handleChange("localizedTitle", e.target.value)
                   }
+                  defaultValue={values?.localizedTitle}
                 />
                 {errors?.localizedTitle && (
                   <p className="text-red-500 text-sm">
@@ -82,6 +91,7 @@ const GeneralSection = ({
                   placeholder="Plato"
                   required
                   onChange={(e) => handleChange("author", e.target.value)}
+                  defaultValue={values?.author}
                 />
                 {touchedFields.author && errors?.author && (
                   <p className="text-red-500 text-xs">
@@ -100,6 +110,8 @@ const GeneralSection = ({
                   placeholder="1999"
                   min={0}
                   max={new Date().getFullYear()}
+                  defaultValue={values?.year}
+                  onChange={(e) => handleChange("year", Number(e.target.value))}
                 />
               </div>
             </label>
@@ -112,6 +124,7 @@ const GeneralSection = ({
                   className="px-4 py-2 bg-card-secondary rounded-lg outline-none placeholder:text-sm"
                   placeholder="English"
                   onChange={(e) => handleChange("language", e.target.value)}
+                  defaultValue={values?.language}
                 />
                 {touchedFields.language && errors?.language && (
                   <p className="text-red-500 text-xs">

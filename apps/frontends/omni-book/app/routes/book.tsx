@@ -5,8 +5,9 @@ import { env } from "~/lib/env";
 import Recommended from "~/components/recommended/recommended";
 import { extractFormat } from "~/lib/utils";
 import Tooltip from "~/components/ui/tooltip";
-import { PopupIcon } from "~/components/icons";
+import { EditIcon, PopupIcon } from "~/components/icons";
 import { Comments } from "~/components/comments/comments";
+import { useAuth } from "~/context/auth-context";
 
 type BookResponseType =
   paths["/api/entries/{entryId}"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -99,6 +100,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
 const Book = ({ loaderData }: Route.ComponentProps) => {
   const { entry, comments, filteredBooks } = loaderData;
+  const user = useAuth();
 
   return (
     <>
@@ -117,9 +119,20 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
               />
             </div>
             <div className="py-10 min-[525px]:py-16 max-w-2xl">
-              <h1 className="text-2xl min-[525px]:text-5xl font-semibold mb-2">
-                {entry.title}
-              </h1>
+              <div className="flex flex-row items-center gap-8">
+                <h1 className="text-2xl min-[525px]:text-5xl font-semibold mb-2">
+                  {entry.title}
+                </h1>
+                {user && (user.role === "admin" || user.role === "owner") && (
+                  <Link
+                    to={`/admin/edit-entry/${entry._id}`}
+                    className="bg-primary text-primary-foreground shadow hover:bg-primary/90 inline-flex disabled:opacity-50inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-10 px-4 sm:px-8 py-4"
+                  >
+                    <p>Edit</p>
+                    <EditIcon size={4} />
+                  </Link>
+                )}
+              </div>
               <div className="text-lg font-medium mb-3 flex gap-2 items-center">
                 <p>{entry.author}</p>
                 {entry.year !== null && entry.year !== 0 && (

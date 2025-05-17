@@ -67,12 +67,18 @@ const MediaForm = ({
                 classNamePrefix="select"
                 components={animatedComponents}
                 styles={selectStyles}
+                value={
+                  providers.find(
+                    (provider) => provider.value === media.mirrors[0].provider
+                  ) || null
+                }
                 isClearable
               />
             ) : (
               <select
                 name={`media[${mediaIndex}][mirrors][0][provider]`}
                 className="w-full bg-card-secondary rounded-lg border-r-8 border-transparent px-4 py-3 text-sm outline outline-neutral-700"
+                defaultValue={media.mirrors[0].provider}
               >
                 <option value="">No provider selected</option>
                 {providers.map((provider) => (
@@ -100,12 +106,18 @@ const MediaForm = ({
                 classNamePrefix="select"
                 components={animatedComponents}
                 styles={selectStyles}
+                value={
+                  formatSelector.find(
+                    (format) => format.value === media.mirrors[0].mimeType
+                  ) || null
+                }
                 isClearable
               />
             ) : (
               <select
                 name={`media[${mediaIndex}][mirrors][0][mimeType]`}
                 className="w-full bg-card-secondary rounded-lg border-r-8 border-transparent px-4 py-3 text-sm outline outline-neutral-700"
+                defaultValue={media.mirrors[0].mimeType}
               >
                 <option value="">No mimetype selected</option>
                 {formatSelector.map((format) => (
@@ -129,6 +141,7 @@ const MediaForm = ({
               type="number"
               className="px-4 py-2 h-full bg-card-secondary rounded-lg outline-none placeholder:text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="12000"
+              defaultValue={media.mirrors[0].size || ""}
             />
           </div>
         </label>

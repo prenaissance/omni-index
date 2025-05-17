@@ -4,15 +4,19 @@ import type {
   FormattedEntryErrors,
 } from "~/schemas/entry-schema";
 
+export type DescriptionSectionValues = Pick<EntryFormData, "description">;
+
 type DescriptionSectionProps = {
   handleChange: (field: keyof EntryFormData, value: unknown) => void;
   errors: FormattedEntryErrors | undefined;
   touchedFields: Record<string, boolean>;
+  values?: DescriptionSectionValues;
 };
 const DescriptionSection = ({
   handleChange,
   errors,
   touchedFields,
+  values,
 }: DescriptionSectionProps) => {
   return (
     <div className="flex w-full gap-4">
@@ -27,8 +31,9 @@ const DescriptionSection = ({
           className="resize-none w-full px-4 py-4 text-sm bg-card-secondary"
           rows={7}
           placeholder="Add description..."
-          name="text"
+          name="description"
           onChange={(e) => handleChange("description", e.target.value)}
+          defaultValue={values?.description}
         />
         {touchedFields.description && errors?.description && (
           <p className="text-red-500 text-xs">
