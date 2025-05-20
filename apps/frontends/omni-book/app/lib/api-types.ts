@@ -799,6 +799,9 @@ export interface paths {
     get: {
       parameters: {
         query?: {
+          statuses?:
+            | ("pending" | "accepted" | "rejected")
+            | ("pending" | "accepted" | "rejected")[];
           /** @description Page number (1 indexed) */
           page?: number;
           /** @description Page size */
@@ -825,6 +828,47 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/events/{eventId}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /**
+           * @description ObjectId of the stored event
+           * @example 5fdedb7c25ab1352eef88f60
+           */
+          eventId: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "application/json": components["schemas"]["ChangeStoredEventStatusRequest"];
+        };
+      };
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content?: never;
+        };
+      };
+    };
     trace?: never;
   };
   "/api/oauth/login": {
@@ -900,6 +944,37 @@ export interface paths {
     };
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/oauth/logout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Default Response */
+        200: {
+          headers: Record<string, unknown>;
+          content?: never;
+        };
+      };
+    };
     delete?: never;
     options?: never;
     head?: never;
@@ -1235,7 +1310,7 @@ export interface components {
         did: string;
         displayName?: string;
         /** Format: uri */
-        avatarThumbnail?: string;
+        avatarUrl?: string;
       };
       likes: number;
       liked: boolean;
@@ -1649,6 +1724,27 @@ export interface components {
       type: string;
       payload: unknown;
       nodeUrl: string | null;
+      status: "pending" | "accepted" | "rejected";
+    };
+    /**
+     * PaginatedStoredEventsQuery
+     * @description Paginated stored events query
+     */
+    PaginatedStoredEventsQuery: {
+      statuses?:
+        | ("pending" | "accepted" | "rejected")
+        | ("pending" | "accepted" | "rejected")[];
+    } & {
+      /**
+       * @description Page number (1 indexed)
+       * @default 1
+       */
+      page: number;
+      /**
+       * @description Page size
+       * @default 10
+       */
+      limit: number;
     };
     /**
      * PaginatedStoredEventsResponse
@@ -1658,6 +1754,10 @@ export interface components {
       events: components["schemas"]["StoredEventResponse"][];
       /** @description Total number of stored events */
       total: number;
+    };
+    /** ChangeStoredEventStatusRequest */
+    ChangeStoredEventStatusRequest: {
+      status: "pending" | "accepted" | "rejected";
     };
     /** LoginRequestSchema */
     LoginRequestSchema: {
