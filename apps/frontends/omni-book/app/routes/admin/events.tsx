@@ -1,10 +1,12 @@
-import { redirect } from "react-router";
+import { redirect, useSearchParams } from "react-router";
 import type { Route } from "./+types/events";
 import { checkCookie } from "~/server/utils";
 import { env } from "~/lib/env";
 import type { paths } from "~/lib/api-types";
 import { FilterIcon } from "~/components/icons";
 import StatusDropdown from "~/components/admin/events-inbox/status-dropdown";
+import EventsTable from "~/components/admin/events-inbox/events-table";
+import { SearchBooksPagination } from "~/components/search-books/search-books-pagination";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -78,49 +80,23 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 export default function EventsConfig({ loaderData }: Route.ComponentProps) {
   const { events } = loaderData;
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") ?? "1";
+  const limit = searchParams.get("limit") ?? "10";
   return (
     <div className="flex flex-col h-full">
-      <div className="m-10 rounded-lg bg-card pl-10 pr-6 py-5 relative">
+      <div className="m-10 mb-5 rounded-lg bg-card pl-10 pr-6 py-5 relative">
         <div className="flex items-center justify-between mb-2 pr-4">
           <h1 className="text-2xl font-bold">Updates Inbox</h1>
         </div>
-        <div
-          className={`h-[calc(100vh-240px)] pr-4 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-card-secondary [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar:horizontal]:h-1
-    [&::-webkit-scrollbar:vertical]:w-1 [&::-webkit-scrollbar-corner]:bg-transparent`}
-        >
-          <table className="w-full">
-            <thead className="sticky top-0 bg-card z-10">
-              <tr className="text-md font-medium text-accent border-collapse">
-                <th className="text-left w-[20%]">Created At</th>
-                <th className="text-left w-[20%]">Type</th>
-                <th className="text-left w-[20%]">Node URL</th>
-                <th className="text-left w-[20%] ">
-                  <StatusDropdown />
-                </th>
-                <th className="text-left w-[20%]">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y-2 divide-card-secondary"></tbody>
-          </table>
-        </div>
-        <div className="absolute right-4 bottom-4 min-w-[30%] whitespace-nowrap">
-          {/* {errorMessage ? (
-            <Notification
-              variant={"danger"}
-              closeButtonLink={"/admin/nodes-config"}
-            >
-              {errorMessage}
-            </Notification>
-          ) : successMessage ? (
-            <Notification
-              variant={"success"}
-              closeButtonLink={"/admin/nodes-config"}
-            >
-              {successMessage}
-            </Notification>
-          ) : null} */}
-        </div>
+        <EventsTable events={events.events} />
+        <div className="absolute right-4 bottom-4 min-w-[30%] whitespace-nowrap"></div>
       </div>
+      <SearchBooksPagination
+        limit={Number.parseInt(limit)}
+        page={Number.parseInt(page)}
+        total={events.total}
+      />
     </div>
   );
 }

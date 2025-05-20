@@ -32,7 +32,7 @@ const StatusDropdown = () => {
 
   return (
     <details className="relative w-full group">
-      <summary className="list-none cursor-pointer flex items-center gap-x-1.5 group-open:text-primary">
+      <summary className="list-none cursor-pointer flex items-center gap-x-3 group-open:text-primary">
         <span>Status</span>
         <div className="p-1 border rounded hover:cursor-pointer hover:text-primary transition-colors duration-200 ease-in-out w-fit">
           <FilterIcon size={4}></FilterIcon>
