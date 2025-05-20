@@ -13,15 +13,13 @@ const StatusDropdown = () => {
   const currentStatuses = searchParams.getAll("statuses");
 
   const handleCheckboxChange = (status: string, checked: boolean) => {
-    const newParams = new URLSearchParams(searchParams);
+    const currentStatuses = searchParams.getAll("statuses");
+    const updatedStatuses = checked
+      ? [...currentStatuses, status]
+      : currentStatuses.filter((s) => s !== status);
 
-    if (checked) {
-      newParams.append("statuses", status);
-    } else {
-      const updated = newParams.getAll("statuses").filter((s) => s !== status);
-      newParams.delete("statuses");
-      updated.forEach((s) => newParams.append("statuses", s));
-    }
+    const newParams = new URLSearchParams();
+    updatedStatuses.forEach((s) => newParams.append("statuses", s));
 
     submit(newParams, { method: "get" });
   };
