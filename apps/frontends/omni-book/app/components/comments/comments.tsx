@@ -115,9 +115,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
           <div className="flex justify-between items-center mb-2 w-full">
             <div className="flex gap-3 items-center">
               <img
-                src={
-                  comment.createdBy.avatarThumbnail ?? "/avatar-placeholder.png"
-                }
+                src={comment.createdBy.avatarUrl ?? "/avatar-placeholder.png"}
                 alt="avatar"
                 className="w-8 h-8 rounded-full"
               />
