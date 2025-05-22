@@ -1,5 +1,10 @@
 import StatusDropdown from "./status-dropdown";
+import ChangeStatusForm from "./change-status-form";
+import { EditIcon } from "~/components/icons";
+import MoreIcon from "~/components/icons/more";
+import Confirmation from "~/components/ui/confirmation";
 import type { paths } from "~/lib/api-types";
+import { formatEventType } from "~/server/utils";
 
 type EventsResponse =
   paths["/api/events"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -20,10 +25,10 @@ const EventsTable = ({ events }: EventsTableProps) => {
             <th className="text-left">Created At</th>
             <th className="text-left">Type</th>
             <th className="text-left">Node URL</th>
+            <th className="text-left">Info</th>
             <th className="text-left">
               <StatusDropdown />
             </th>
-            <th className="text-left">Action</th>
           </tr>
         </thead>
         <tbody className="divide-y-2 divide-card-secondary ">
@@ -35,8 +40,37 @@ const EventsTable = ({ events }: EventsTableProps) => {
               <td className="py-4">
                 {new Date(event.createdAt).toLocaleString()}
               </td>
-              <td>{event.type}</td>
-              <td>{event.nodeUrl}</td>
+              <td>{formatEventType(event.type)}</td>
+              <td>{event.nodeUrl || "https://node1.omni-index.com"}</td>
+              <td>
+                <div className="flex items-center gap-x-2 justify-between w-40">
+                  <pre className="truncate max-w-40">
+                    {JSON.stringify(event.payload, null, 2)}
+                  </pre>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id={`view-payload-${event._id}`}
+                      className="peer hidden"
+                    />
+                    <label
+                      htmlFor={`view-payload-${event._id}`}
+                      className="cursor-pointer flex items-center gap-4"
+                    >
+                      <div className="hover:text-primary transition-colors duration-200 ease-in-out">
+                        <MoreIcon />
+                      </div>
+                    </label>
+                    <div className="hidden peer-checked:block">
+                      <Confirmation
+                        description={JSON.stringify(event.payload, null, 2)}
+                        title="Payload"
+                        htmlFor={`view-payload-${event._id}`}
+                      ></Confirmation>
+                    </div>
+                  </div>
+                </div>
+              </td>{" "}
               <td
                 className={
                   event.status === "pending"
@@ -48,18 +82,48 @@ const EventsTable = ({ events }: EventsTableProps) => {
                         : "text-foreground/70"
                 }
               >
-                <div
-                  className={`${
-                    event.status === "pending"
-                      ? "border-warning"
-                      : event.status === "rejected"
-                        ? "border-error"
-                        : event.status === "accepted"
-                          ? "border-success"
-                          : "border-foreground/70"
-                  } border-1 w-fit rounded-full px-3 py-1`}
-                >
-                  {event.status}
+                <div className="flex items-center gap-x-2 justify-between w-32">
+                  <div
+                    className={`${
+                      event.status === "pending"
+                        ? "border-warning"
+                        : event.status === "rejected"
+                          ? "border-error"
+                          : event.status === "accepted"
+                            ? "border-success"
+                            : "border-foreground/70"
+                    } border-1 w-fit rounded-full px-3 py-1`}
+                  >
+                    {event.status}
+                  </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id={`update-status-${event._id}`}
+                      className="peer hidden"
+                    />
+                    <label
+                      htmlFor={`update-status-${event._id}`}
+                      className="cursor-pointer flex items-center gap-4"
+                    >
+                      <div className="hover:text-primary transition-colors duration-200 ease-in-out">
+                        <EditIcon size={5} />
+                      </div>
+                    </label>
+                    <div className="hidden peer-checked:block">
+                      <Confirmation
+                        title="Change update status"
+                        confirmButtonText="Update"
+                        htmlFor={`update-status-${event._id}`}
+                        className="xl:w-[30%] lg:w-[40%] text-white"
+                        closeIcon={false}
+                      >
+                        <ChangeStatusForm
+                          eventId={event._id}
+                        ></ChangeStatusForm>
+                      </Confirmation>
+                    </div>
+                  </div>
                 </div>
               </td>
             </tr>

@@ -25,3 +25,16 @@ export const checkCookie = (request: Request) => {
 
   return cookieHeader;
 };
+
+export const formatEventType = (type: string) => {
+  switch (type) {
+    case "entry.updated":
+      return "Entry updated";
+    case "entry.deleted":
+      return "Entry deleted";
+    case "entry.created":
+      return "Entry created";
+    default:
+      return type;
+  }
+};
