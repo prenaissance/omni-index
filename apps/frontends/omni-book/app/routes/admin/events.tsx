@@ -3,8 +3,6 @@ import type { Route } from "./+types/events";
 import { checkCookie } from "~/server/utils";
 import { env } from "~/lib/env";
 import type { paths } from "~/lib/api-types";
-import { FilterIcon } from "~/components/icons";
-import StatusDropdown from "~/components/admin/events-inbox/status-dropdown";
 import EventsTable from "~/components/admin/events-inbox/events-table";
 import { SearchBooksPagination } from "~/components/search-books/search-books-pagination";
 
@@ -14,9 +12,6 @@ type Profile =
 type EventsResponse =
   paths["/api/events"]["get"]["responses"]["200"]["content"]["application/json"];
 
-type EventsQuery = NonNullable<
-  paths["/api/events"]["get"]["parameters"]["query"]
->;
 type Statuses =
   | ("pending" | "accepted" | "rejected")
   | ("pending" | "accepted" | "rejected")[]
