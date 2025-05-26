@@ -76,7 +76,7 @@ export const Profile = ({ user }: ProfileProps) => {
             {(user.role === "admin" || user.role === "owner") && (
               <li>
                 <NavLink
-                  to="/admin/events?statuses=pending"
+                  to="/admin/events"
                   className="px-3 py-2 hover:bg-popover flex items-center gap-2"
                 >
                   <InboxIcon size={4} />
