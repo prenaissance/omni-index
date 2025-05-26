@@ -27,7 +27,7 @@ const Latest = ({ latestBooks }: LatestProps) => {
                   backgroundImage: `url(${
                     book.thumbnail && "url" in book.thumbnail
                       ? book.thumbnail.url
-                      : "../../public/placeholder.png"
+                      : "./placeholder.png"
                   })`,
                   backgroundSize: "cover",
                   backgroundPosition: "top left",

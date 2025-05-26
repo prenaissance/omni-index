@@ -74,37 +74,41 @@ export const formatEntryAsParagraph = (entry: Entry | EntryEdit) => {
           <span className="text-primary font-semibold">{localizedTitle}</span>
         </p>
       )}
-      {description && (
-        <p className="text-sm text-white font-light inline">
-          <span className="text-primary font-semibold flex flex-col">
-            <input
-              type="checkbox"
-              id="read-more-toggle"
-              className="peer hidden"
-            />
-            <p className="peer-checked:line-clamp-none line-clamp-5 transition-all duration-300 text-sm min-[525px]:text-md">
-              <span className="text-sm text-white font-light">
-                Description:{" "}
-              </span>
-              {description}
-            </p>
-            <label
-              tabIndex={0}
-              htmlFor="read-more-toggle"
-              className="cursor-pointer peer-checked:hidden inline-flex items-center justify-center gap-2 whitespace-nowrap text-md font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover self-end"
-            >
-              Read More
-            </label>
-            <label
-              tabIndex={0}
-              htmlFor="read-more-toggle"
-              className="mt-3 cursor-pointer hidden peer-checked:inline-block items-center justify-center gap-2 whitespace-nowrap text-md font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover self-end"
-            >
-              Read Less
-            </label>
-          </span>
-        </p>
-      )}
+      {
+        <div className="text-md text-white flex flex-col">
+          {description ? (
+            <div className="text-primary font-semibold flex flex-col">
+              <input
+                type="checkbox"
+                id="read-more-toggle"
+                className="peer hidden"
+              />
+              <p className="peer-checked:line-clamp-none line-clamp-5 transition-all duration-300 text-sm min-[525px]:text-md">
+                <span className="text-sm text-white font-light">
+                  Description:{" "}
+                </span>
+                {description}
+              </p>
+              <label
+                tabIndex={0}
+                htmlFor="read-more-toggle"
+                className="cursor-pointer peer-checked:hidden inline-flex items-center justify-center gap-2 whitespace-nowrap text-md font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover self-end"
+              >
+                Read More
+              </label>
+              <label
+                tabIndex={0}
+                htmlFor="read-more-toggle"
+                className="cursor-pointer hidden peer-checked:inline-block items-center justify-center gap-2 whitespace-nowrap text-md font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-foreground underline-offset-4 underline hover:text-textHover self-end"
+              >
+                Read Less
+              </label>
+            </div>
+          ) : (
+            <>No description available</>
+          )}
+        </div>
+      }
       {year && (
         <p className="text-sm text-white font-light">
           Year: <span className="text-primary font-semibold">{year}</span>

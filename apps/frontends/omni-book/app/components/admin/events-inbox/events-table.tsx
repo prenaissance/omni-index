@@ -46,8 +46,8 @@ const EventsTable = ({ events }: EventsTableProps) => {
               <td>{formatEventType(event.type)}</td>
               <td>{event.nodeUrl || "https://node1.omni-index.com"}</td>
               <td>
-                <div className="flex items-center gap-x-4">
-                  <p className="truncate  font-family-montserrat">
+                <div className="flex items-center">
+                  <p className="truncate">
                     {event.type === "entry.created" ? (
                       <p>
                         {(event.payload as { entry: Entry }).entry.title} -{" "}
@@ -70,7 +70,7 @@ const EventsTable = ({ events }: EventsTableProps) => {
                         htmlFor={`view-payload-${event._id}`}
                         className="cursor-pointer flex items-center gap-4"
                       >
-                        <div className="hover:text-primary transition-colors duration-200 ease-in-out">
+                        <div className="hover:text-primary transition-colors duration-200 ease-in-out ml-3">
                           <MoreIcon />
                         </div>
                       </label>
