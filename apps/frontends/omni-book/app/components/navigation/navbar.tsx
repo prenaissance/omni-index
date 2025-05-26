@@ -43,7 +43,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 const Navbar = ({ loaderData }: Route.ComponentProps) => {
-  console.log("loaderData", loaderData.user);
   return (
     <AuthContext.Provider value={loaderData.user}>
       <nav className="sticky top-0 bg-background z-50">
