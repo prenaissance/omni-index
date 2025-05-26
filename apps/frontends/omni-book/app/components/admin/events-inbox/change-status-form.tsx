@@ -16,11 +16,8 @@ const ChangeStatusForm = ({ eventId, fetcher }: ChangeStatusFormProps) => {
           <select
             name="status"
             className="px-4 border-r-8 border-r-transparent py-2 w-2/3 bg-card-secondary rounded-lg outline-none"
-            defaultValue="pending"
+            defaultValue="accepted"
           >
-            <option value="pending" className="hover:bg-black">
-              pending
-            </option>
             <option value="accepted">accepted</option>
             <option value="rejected">rejected</option>
           </select>
