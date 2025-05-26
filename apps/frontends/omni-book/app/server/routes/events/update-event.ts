@@ -2,7 +2,6 @@ import { redirect } from "react-router";
 import { checkCookie } from "../../utils";
 import type { Route } from "./+types/update-event";
 import { env } from "~/server/env";
-import { validateFormData } from "~/lib/utils";
 
 export const action = async ({ request, params }: Route.LoaderArgs) => {
   const eventId = params.eventId;
@@ -27,11 +26,29 @@ export const action = async ({ request, params }: Route.LoaderArgs) => {
 
   if (!response.ok) {
     const error = await response.json();
-    return validateFormData(
-      error.message || "Error changing event status",
-      isHtmlRequest
-    );
+    return isHtmlRequest
+      ? redirect(`/admin/events?error=${error.message}`)
+      : new Response(
+          JSON.stringify({
+            error: error.message || "Failed to update event status",
+          }),
+          {
+            status: 400,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
   }
 
-  return redirect(`/admin/events?success=Event status updated successfully`);
+  if (isHtmlRequest) {
+    return redirect(`/admin/events?success=Event status updated successfully`);
+  }
+
+  return new Response(JSON.stringify({ success: true }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };

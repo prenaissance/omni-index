@@ -75,56 +75,6 @@ const StatusDropdown = () => {
           )}
         </Form>
       </div>
-      {/* <button
-        type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        aria-haspopup="true"
-        aria-expanded={isOpen}
-        className="p-1 border rounded hover:cursor-pointer hover:text-primary transition-colors duration-200 ease-in-out"
-      >
-        <FilterIcon size={4}></FilterIcon>
-      </button> */}
-
-      {/* {isOpen && (
-        <div className="absolute z-10 mt-2 bg-white border rounded shadow">
-          <Form method="get" className="flex flex-col p-2">
-            {Array.from(searchParams.entries())
-              .filter(([key]) => key !== "statuses")
-              .map(([key, value]) => (
-                <input
-                  key={`${key}-${value}`}
-                  type="hidden"
-                  name={key}
-                  value={value}
-                />
-              ))}
-
-            {STATUSES.map((status) => (
-              <label
-                key={status}
-                className="inline-flex items-center space-x-2 py-1"
-              >
-                <input
-                  type="checkbox"
-                  name="statuses"
-                  value={status}
-                  defaultChecked={currentStatuses.includes(status)}
-                  onChange={(e) =>
-                    handleCheckboxChange(status, e.target.checked)
-                  }
-                />
-                <span>{status}</span>
-              </label>
-            ))}
-            <button
-              type="submit"
-              className="mt-2 px-2 py-1 border rounded bg-gray-100"
-            >
-              Apply
-            </button>
-          </Form>
-        </div>
-        )} */}
     </details>
   );
 };
