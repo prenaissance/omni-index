@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { SearchIcon } from "../icons";
 import type { Route } from "./+types/navbar";
 import { Profile } from "./profile";
+import Footer from "./footer";
 import type { paths } from "~/lib/api-types";
 import { env } from "~/lib/env";
 import { parseCookie } from "~/server/utils";
@@ -119,6 +120,7 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
         </div>
       </nav>
       <Outlet />
+      <Footer />
     </AuthContext.Provider>
   );
 };
