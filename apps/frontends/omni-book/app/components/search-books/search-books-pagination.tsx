@@ -79,7 +79,7 @@ export const SearchBooksPagination = ({
             </PaginationLink>
           </PaginationItem>
         )}
-        {!isLastPage && !isSecondToLastPage && totalPages !== 0 && (
+        {!isLastPage && totalPages !== 0 && (
           <PaginationItem>
             <PaginationNext href={buildPageLink(page + 1)} />
           </PaginationItem>

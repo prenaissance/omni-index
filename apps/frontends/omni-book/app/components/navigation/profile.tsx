@@ -1,6 +1,12 @@
 import { NavLink, useFetcher, useLocation } from "react-router";
 import { useEffect, useRef } from "react";
-import { AdjustmentsIcon, HomeIcon, LogOutIcon, SettingsIcon } from "../icons";
+import {
+  AdjustmentsIcon,
+  HomeIcon,
+  InboxIcon,
+  LogOutIcon,
+  SettingsIcon,
+} from "../icons";
 import { Button } from "../ui/button";
 import type { paths } from "~/lib/api-types";
 
@@ -67,6 +73,17 @@ export const Profile = ({ user }: ProfileProps) => {
                 <p>Settings</p>
               </NavLink>
             </li>
+            {(user.role === "admin" || user.role === "owner") && (
+              <li>
+                <NavLink
+                  to="/admin/events"
+                  className="px-3 py-2 hover:bg-popover flex items-center gap-2"
+                >
+                  <InboxIcon size={4} />
+                  <p>Events</p>
+                </NavLink>
+              </li>
+            )}
             <li>
               <fetcher.Form
                 className="hover:bg-popover flex items-center gap-2 hover:cursor-pointer w-full"

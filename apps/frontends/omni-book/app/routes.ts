@@ -27,6 +27,9 @@ export default [
       route("/:nodeId/remove", "server/routes/nodes/remove-node.ts"),
       route("/:nodeId/refresh", "server/routes/nodes/refresh-node-cert.ts"),
     ]),
+    ...prefix("/api/events", [
+      route("/:eventId/status", "server/routes/events/update-event.ts"),
+    ]),
     ...prefix("/api/entries", [
       route("/", "server/routes/entries/add-entry.ts"),
       route("/:bookId/remove-entry", "server/routes/entries/remove-entry.ts"),
@@ -35,6 +38,7 @@ export default [
       route("/nodes-config", "routes/admin/nodes-config.tsx"),
       route("/add-entry", "routes/admin/add-entry.tsx"),
       route("/edit-entry/:bookId", "routes/admin/edit-entry.tsx"),
+      route("/events", "routes/admin/events.tsx"),
     ]),
     route("/search", "routes/search.tsx"),
     route("books/:bookId", "routes/book.tsx"),
