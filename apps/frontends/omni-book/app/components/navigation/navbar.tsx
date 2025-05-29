@@ -1,7 +1,8 @@
-import { Form, Link, NavLink, Outlet } from "react-router";
+import { Form, Link, NavLink, Outlet, useLocation } from "react-router";
 import { memo } from "react";
 import { Button } from "../ui/button";
 import { SearchIcon } from "../icons";
+import Footer from "../footer/footer";
 import type { Route } from "./+types/navbar";
 import { Profile } from "./profile";
 import type { paths } from "~/lib/api-types";
@@ -43,6 +44,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 const Navbar = ({ loaderData }: Route.ComponentProps) => {
+  const location = useLocation();
   return (
     <AuthContext.Provider value={loaderData.user}>
       <nav className="sticky top-0 bg-background z-50">
@@ -119,6 +121,7 @@ const Navbar = ({ loaderData }: Route.ComponentProps) => {
         </div>
       </nav>
       <Outlet />
+      {!location.pathname.startsWith("/admin") && <Footer />}
     </AuthContext.Provider>
   );
 };

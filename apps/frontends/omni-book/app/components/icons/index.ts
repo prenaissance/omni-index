@@ -21,3 +21,4 @@ export { default as SettingsIcon } from "./settings";
 export { default as EditIcon } from "./edit";
 export { default as InboxIcon } from "./inbox";
 export { default as FilterIcon } from "./filter";
+export { default as GithubIcon } from "./github";
