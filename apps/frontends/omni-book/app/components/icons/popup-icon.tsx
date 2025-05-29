@@ -10,7 +10,7 @@ const PopupIcon = ({ size, className }: PopupIconProps) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill="white"
+      fill="currentColor"
       className={`w-${size ?? 6} h-${size ?? 6} ${className}`}
     >
       <path

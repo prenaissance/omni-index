@@ -88,7 +88,7 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
             />
             <label
               htmlFor={"add-node-button"}
-              className="cursor-pointer flex items-center gap-4"
+              className="cursor-pointer flex items-center gap-4 text-primary hover:text-accent transition-colors duration-200"
             >
               <PlusIcon size={8} />
             </label>
@@ -110,7 +110,7 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
         className={`h-[calc(100vh-240px)] pr-4 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-card-secondary [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar:horizontal]:h-1
     [&::-webkit-scrollbar:vertical]:w-1 [&::-webkit-scrollbar-corner]:bg-transparent`}
       >
-        <table className="w-full">
+        <table className="w-full text-nowrap">
           <thead className="sticky top-0 bg-card z-10">
             <tr className="text-md font-medium text-accent border-collapse">
               <th className="text-left">Hostname</th>
@@ -127,16 +127,14 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
                 <tr className="h-16" key={node._id}>
                   <td className="w-[25%]">
                     <div
-                      className={"bg-card-secondary rounded-lg pl-4 py-2 mr-5"}
+                      className={"bg-card-secondary rounded-lg px-4 py-2 mr-5"}
                     >
                       {node.url}
                     </div>
                   </td>
                   <td className="w-[25%] whitespace-nowrap">
                     <div
-                      className={
-                        "bg-card-secondary rounded-lg pl-4 py-2 pr-2 mr-5"
-                      }
+                      className={"bg-card-secondary rounded-lg px-4 py-2 mr-5"}
                     >
                       {new Date(node.createdAt).toLocaleDateString("en-US", {
                         year: "numeric",
