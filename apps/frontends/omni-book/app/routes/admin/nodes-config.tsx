@@ -1,4 +1,3 @@
-import { useSearchParams } from "react-router";
 import type { Route } from "./+types/nodes-config";
 import { parseCookie } from "~/server/utils";
 import type { paths } from "~/lib/api-types";
@@ -10,7 +9,6 @@ import { CertificateField } from "~/components/admin/nodes-config/certificate-fi
 import { TrustedLevelField } from "~/components/admin/nodes-config/trusted-level-field";
 import Confirmation from "~/components/ui/confirmation";
 import Tooltip from "~/components/ui/tooltip";
-import { Notification } from "~/components/ui/notification";
 import { AddNodeForm } from "~/components/admin/nodes-config/add-node-form";
 
 type Profile =
@@ -70,10 +68,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 export default function NodesConfig({ loaderData }: Route.ComponentProps) {
   const { nodes } = loaderData;
-  const [searchParams] = useSearchParams();
-
-  const errorMessage = searchParams.get("error");
-  const successMessage = searchParams.get("success");
 
   return !loaderData ? (
     <NotAuthorized />
@@ -155,7 +149,10 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
                     </div>
                   </td>
                   <td className="w-[25%]">
-                    <TrustedLevelField value={"Options"} />
+                    <TrustedLevelField
+                      value={node.trustLevel}
+                      nodeId={node._id}
+                    />
                   </td>
                   <td className="w-[25%]">
                     <CertificateField
@@ -199,23 +196,6 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
               ))}
           </tbody>
         </table>
-      </div>
-      <div className="absolute right-4 bottom-4 min-w-[30%] whitespace-nowrap">
-        {errorMessage ? (
-          <Notification
-            variant={"danger"}
-            closeButtonLink={"/admin/nodes-config"}
-          >
-            {errorMessage}
-          </Notification>
-        ) : successMessage ? (
-          <Notification
-            variant={"success"}
-            closeButtonLink={"/admin/nodes-config"}
-          >
-            {successMessage}
-          </Notification>
-        ) : null}
       </div>
     </div>
   );

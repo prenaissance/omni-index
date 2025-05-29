@@ -41,7 +41,7 @@ export const CertificateField = ({
           <Tooltip
             variant={"dark"}
             content={certificate?.sha256 ?? "certificate"}
-            className="w-96"
+            className="w-96 break-words"
             style={{ zIndex: 1000 }}
           >
             <PopupIcon className="w-5 h-5" />
