@@ -58,7 +58,11 @@ export const AddNodeForm = () => {
             }}
           >
             {"error" in fetcher.data
-              ? fetcher.data?.error
+              ? fetcher.data.error && fetcher.data.error.includes("ENOTFOUND")
+                ? "Address not found"
+                : fetcher.data.error.includes("EHOSTUNREACH")
+                  ? "Host unreachable"
+                  : fetcher.data?.error
               : fetcher.data?.success
                 ? "Node added successfully"
                 : null}

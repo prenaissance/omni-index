@@ -5,6 +5,7 @@ import { Notification } from "../../ui/notification";
 import Tooltip from "../../ui/tooltip";
 import type { paths } from "~/lib/api-types";
 import { PopupIcon, RegenerateIcon } from "~/components/icons";
+import Confirmation from "~/components/ui/confirmation";
 
 type Node =
   paths["/api/peer-nodes"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -38,14 +39,32 @@ export const CertificateField = ({
       >
         <div className="flex items-center gap-x-2">
           <p>{"..." + certificate?.sha256?.slice(-8)}</p>
-          <Tooltip
-            variant={"dark"}
-            content={certificate?.sha256 ?? "certificate"}
-            className="w-96"
-            style={{ zIndex: 1000 }}
-          >
-            <PopupIcon className="w-5 h-5" />
-          </Tooltip>
+          <div>
+            <input
+              type="checkbox"
+              id={`certificate-info-${certificate._id}`}
+              className="peer hidden"
+            />
+            <label
+              htmlFor={`certificate-info-${certificate._id}`}
+              className="cursor-pointer flex items-center gap-4"
+            >
+              <div className="hover:text-primary transition-colors duration-200">
+                <PopupIcon className="w-5 h-5" />
+              </div>
+            </label>
+            <div className="hidden peer-checked:block">
+              <Confirmation
+                title="Certificate details"
+                description={
+                  <p className="break-all whitespace-normal w-full font-semibold text-primary">
+                    {certificate?.sha256}
+                  </p>
+                }
+                htmlFor={`certificate-info-${certificate._id}`}
+              />
+            </div>
+          </div>
         </div>
         <div>
           <Tooltip

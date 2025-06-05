@@ -26,6 +26,7 @@ export default [
     ...prefix("/api/peer-nodes", [
       route("/:nodeId/remove", "server/routes/nodes/remove-node.ts"),
       route("/:nodeId/refresh", "server/routes/nodes/refresh-node-cert.ts"),
+      route("/:nodeId", "server/routes/nodes/update-trust-level.ts"),
     ]),
     ...prefix("/api/events", [
       route("/:eventId/status", "server/routes/events/update-event.ts"),
