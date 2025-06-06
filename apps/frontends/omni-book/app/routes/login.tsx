@@ -1,4 +1,5 @@
-import { Form } from "react-router";
+import { Form, Link } from "react-router";
+import { ExternalIcon } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -13,7 +14,7 @@ const Login = () => {
             Please, enter your details
           </p>
           <Form
-            className="w-80 flex flex-col gap-2 mb-9"
+            className="w-80 flex flex-col gap-2 mb-2"
             action="/api/oauth/login"
             method="POST"
           >
@@ -29,6 +30,21 @@ const Login = () => {
               Login
             </Button>
           </Form>
+          <div>
+            <p className="text-[0.8rem] font-light flex items-center gap-1">
+              Don{"'"}t have an account?{" "}
+              <Link
+                to="https://bsky.app/settings"
+                target="_blank"
+                className="text-primary hover:underline flex items-center gap-1"
+              >
+                Register on Bluesky
+                <span>
+                  <ExternalIcon size={4} />
+                </span>
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
       <div className="w-1/2 hidden md:block">
