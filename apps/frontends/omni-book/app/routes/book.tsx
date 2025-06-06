@@ -107,12 +107,12 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
       <div className="bg-[url('/gradient.jpg')] bg-cover bg-center h-full">
         <div className="flex justify-center items-center lg:px-10 lg:gap-8 lg:flex-row flex-col">
           <div className="flex items-center w-fit gap-8 px-8 min-[525px]:px-10 lg:px-0">
-            <div className="h-full md:w-72 min-w-24 min-[525px]:min-w-44 md:min-w-52">
+            <div className="h-full md:w-72 min-w-24 min-[525px]:min-w-44 md:min-w-52 hidden min-[700px]:block">
               <img
                 src={
                   entry.thumbnail && "url" in entry.thumbnail
                     ? entry.thumbnail.url
-                    : "./placeholder.jpg"
+                    : "/placeholder.png"
                 }
                 className="py-12 min-[525px]:py-20 h-full w-full object-cover"
                 alt="thumbnail"
@@ -142,8 +142,7 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                   </>
                 )}
               </div>
-
-              <div className="flex flex-row space-x-2 mb-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:flex xl:flex-row xl:space-x-2 gap-2 mb-3">
                 {entry.genres.map((genre) => (
                   <span
                     key={genre}
@@ -182,6 +181,17 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                 ) : (
                   <>No description available</>
                 )}
+              </div>
+              <div className="h-full w-52 min-[700px]:hidden pt-10 mx-auto">
+                <img
+                  src={
+                    entry.thumbnail && "url" in entry.thumbnail
+                      ? entry.thumbnail.url
+                      : "/placeholder.png"
+                  }
+                  className="h-full w-full object-cover"
+                  alt="thumbnail"
+                />
               </div>
             </div>
           </div>
@@ -222,7 +232,7 @@ const Book = ({ loaderData }: Route.ComponentProps) => {
                         extractFormat(media.mirrors[0].mimeType || "")
                           .description
                       }
-                      className="w-72"
+                      className="lg:w-60 w-40"
                     >
                       <button className="p-0">
                         <PopupIcon />
