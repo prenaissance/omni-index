@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFetcher, useSearchParams, redirect } from "react-router";
 import { v4 as uuidv4 } from "uuid";
-import MediaForm from "../../components/admin/entries-config/media-form";
 import GeneralSection, {
   type GeneralSectionValues,
 } from "../../components/admin/entries-config/general-section";
@@ -28,6 +27,7 @@ import GenresSection, {
 import buildDiff from "~/lib/build-form-diff";
 import { validateFormData } from "~/lib/utils";
 import Confirmation from "~/components/ui/confirmation";
+import EditMediaForm from "~/components/admin/entries-config/edit-media-from";
 
 type Profile =
   paths["/api/profile"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -688,7 +688,7 @@ export default function EditEntry({ loaderData }: Route.ComponentProps) {
             </div>
             <div className="flex-1 flex flex-col gap-4">
               {medias.map((media, index) => (
-                <MediaForm
+                <EditMediaForm
                   key={media.id}
                   pageLoaded={pageLoaded}
                   media={media}
@@ -716,7 +716,9 @@ export default function EditEntry({ loaderData }: Route.ComponentProps) {
                       content={"Add a mirror"}
                       className="w-fit whitespace-nowrap"
                     >
-                      <PlusIcon size={10} />
+                      <div className="text-primary hover:text-accent transition-colors duration-200">
+                        <PlusIcon size={10} />
+                      </div>
                     </Tooltip>
                   </Button>
                 </div>

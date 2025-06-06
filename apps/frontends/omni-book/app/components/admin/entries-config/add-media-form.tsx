@@ -16,7 +16,7 @@ type ArrayFormItem = EntryFormInput["media"][number] & { id: string };
 
 type FormattedEntryErrors = z.inferFormattedError<typeof entrySchema>;
 
-type MediaFormProps = {
+type AddMediaFormProps = {
   pageLoaded: boolean;
   media: ArrayFormItem;
   mediaIndex: number;
@@ -31,7 +31,7 @@ type MediaFormProps = {
   medias: ArrayFormItem[];
 };
 
-const MediaForm = ({
+const AddMediaForm = ({
   pageLoaded,
   media,
   mediaIndex,
@@ -40,7 +40,7 @@ const MediaForm = ({
   errors,
   removeMedia,
   medias,
-}: MediaFormProps) => {
+}: AddMediaFormProps) => {
   const providers = [
     { value: "gutenberg", label: "Gutenberg" },
     { value: "libgen", label: "Libgen" },
@@ -60,18 +60,12 @@ const MediaForm = ({
             <p className="text-sm font-light">Provider</p>
             {pageLoaded ? (
               <Select
-                closeMenuOnSelect={false}
                 name={`media[${mediaIndex}][mirrors][0][provider]`}
                 options={providers}
                 className="bg-card-secondary"
                 classNamePrefix="select"
                 components={animatedComponents}
                 styles={selectStyles}
-                value={
-                  providers.find(
-                    (provider) => provider.value === media.mirrors[0].provider
-                  ) || null
-                }
                 isClearable
               />
             ) : (
@@ -99,18 +93,12 @@ const MediaForm = ({
             <p className="text-sm font-light">Mimetype</p>
             {pageLoaded ? (
               <Select
-                closeMenuOnSelect={false}
                 name={`media[${mediaIndex}][mirrors][0][mimeType]`}
                 options={formatSelector}
                 className="bg-card-secondary"
                 classNamePrefix="select"
                 components={animatedComponents}
                 styles={selectStyles}
-                value={
-                  formatSelector.find(
-                    (format) => format.value === media.mirrors[0].mimeType
-                  ) || null
-                }
                 isClearable
               />
             ) : (
@@ -189,4 +177,4 @@ const MediaForm = ({
   );
 };
 
-export default MediaForm;
+export default AddMediaForm;
