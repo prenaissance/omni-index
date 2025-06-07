@@ -1,14 +1,8 @@
-import {
-  Form,
-  Link,
-  useSearchParams,
-  useNavigation,
-  NavLink,
-} from "react-router";
+import { Form, Link, useSearchParams, NavLink } from "react-router";
 import { useEffect, useState } from "react";
 import { TextArea } from "../ui/text-area";
 import { Button } from "../ui/button";
-import { ChevronIcon, SpinnerIcon, TrashIcon } from "../icons";
+import { ChevronIcon, TrashIcon } from "../icons";
 import Confirmation from "../ui/confirmation";
 import LikeButton from "./like";
 import type { paths } from "~/lib/api-types";
@@ -27,8 +21,6 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
   const user = useAuth();
   const [comment, setComment] = useState("");
   const [pageLoaded, setPageLoaded] = useState(false);
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
   const page = Number.parseInt(searchParams.get("page") || "1");
   const limit = Number.parseInt(searchParams.get("limit") || "10");
 
@@ -37,7 +29,7 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
     setComment("");
   }, []);
 
-  const isButtonDisabled = comment.trim().length === 0 && pageLoaded;
+  const isButtonDisabled = comment?.trim()?.length === 0 && pageLoaded;
   return (
     <div className="w-full flex flex-col gap-5">
       <div className="w-full rounded-lg bg-card overflow-hidden group relative">
@@ -69,9 +61,9 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
             <Button
               type="submit"
               className="absolute bottom-3 right-5 w-32"
-              disabled={!user || isButtonDisabled || isSubmitting}
+              disabled={!user || isButtonDisabled}
             >
-              {isSubmitting ? <SpinnerIcon /> : "Submit"}
+              Submit
             </Button>
           </Form>
         </div>
