@@ -63,7 +63,7 @@ const eventRoutes: FastifyPluginAsyncTypebox = async (app) => {
   app.patch(
     "/:eventId/status",
     {
-      onRequest: app.auth([app.verifyRoles([UserRole.User, UserRole.Admin])]),
+      onRequest: app.auth([app.verifyRoles([UserRole.Owner, UserRole.Admin])]),
       schema: {
         params: Type.Object({
           eventId: ObjectIdSchema({
