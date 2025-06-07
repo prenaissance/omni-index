@@ -69,9 +69,9 @@ export const Comments = ({ comments, bookId }: CommentsProps) => {
             <Button
               type="submit"
               className="absolute bottom-3 right-5 w-32"
-              disabled={!user || isButtonDisabled || isSubmitting}
+              disabled={!user || isButtonDisabled}
             >
-              {isSubmitting ? <SpinnerIcon /> : "Submit"}
+              {"Submit"}
             </Button>
           </Form>
         </div>
