@@ -75,11 +75,7 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
     <div className="m-10 rounded-lg bg-card pl-10 pr-6 py-5 relative">
       <div className="flex items-center justify-between mb-2 pr-4">
         <h1 className="text-2xl font-bold">Nodes Configuration</h1>
-        <Tooltip
-          variant="light"
-          content={"Add a node"}
-          className="w-fit whitespace-nowrap"
-        >
+        <div>
           <div>
             <input
               type="checkbox"
@@ -104,7 +100,7 @@ export default function NodesConfig({ loaderData }: Route.ComponentProps) {
               </Confirmation>
             </div>
           </div>
-        </Tooltip>
+        </div>
       </div>
       <div
         className={`h-[calc(100vh-240px)] pr-4 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-card-secondary [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar:horizontal]:h-1
